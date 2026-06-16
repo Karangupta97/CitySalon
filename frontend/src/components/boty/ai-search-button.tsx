@@ -62,7 +62,7 @@ export function AISearchButton() {
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-primary text-primary-foreground flex items-center justify-center boty-shadow hover:scale-105 boty-transition group"
+        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-primary text-primary-foreground flex items-center justify-center boty-shadow hover:scale-105 active:scale-95 boty-transition group"
         aria-label="AI-Powered Search"
       >
         <Sparkles className="w-5 h-5 group-hover:rotate-12 boty-transition" />
@@ -76,12 +76,12 @@ export function AISearchButton() {
         />
       )}
 
-      {/* Panel */}
+      {/* Panel — full-width bottom sheet on mobile, centered modal on desktop */}
       <div
-        className={`fixed z-[70] bottom-0 left-0 right-0 md:bottom-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:max-w-lg md:w-full md:rounded-2xl bg-background border border-border/50 boty-shadow overflow-hidden boty-transition ${
+        className={`fixed z-[70] inset-x-0 bottom-0 sm:bottom-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:max-w-lg sm:w-[calc(100%-2rem)] sm:rounded-2xl rounded-t-2xl bg-background border border-border/50 boty-shadow overflow-hidden boty-transition ${
           isOpen
             ? "translate-y-0 opacity-100 pointer-events-auto"
-            : "translate-y-full md:translate-y-[calc(-50%+20px)] opacity-0 pointer-events-none"
+            : "translate-y-full sm:translate-y-[calc(-50%+20px)] opacity-0 pointer-events-none"
         }`}
         style={{ maxHeight: '85vh' }}
       >
@@ -117,7 +117,7 @@ export function AISearchButton() {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="e.g. Bridal makeup in Bandra..."
-                className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground/50 px-1"
+                className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground/50 px-1 min-w-0"
                 autoFocus={isOpen}
               />
               <button
@@ -163,16 +163,16 @@ export function AISearchButton() {
               {mockResults.map((salon) => (
                 <div
                   key={salon.name}
-                  className="group flex items-center justify-between p-3.5 rounded-xl border border-border/30 hover:border-primary/20 hover:bg-muted/20 boty-transition cursor-pointer"
+                  className="group flex items-center justify-between p-3 sm:p-3.5 rounded-xl border border-border/30 hover:border-primary/20 hover:bg-muted/20 boty-transition cursor-pointer"
                 >
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-0.5">
-                      <span className="text-sm font-medium text-foreground">{salon.name}</span>
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-primary/8 text-primary font-medium">{salon.match}%</span>
+                      <span className="text-sm font-medium text-foreground truncate">{salon.name}</span>
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-primary/8 text-primary font-medium flex-shrink-0">{salon.match}%</span>
                     </div>
                     <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
-                      <MapPin className="w-3 h-3" />{salon.area}
-                      <Star className="w-3 h-3 fill-primary text-primary" />{salon.rating}
+                      <MapPin className="w-3 h-3 flex-shrink-0" />{salon.area}
+                      <Star className="w-3 h-3 fill-primary text-primary flex-shrink-0" />{salon.rating}
                     </div>
                     <p className="text-[11px] text-muted-foreground/70 mt-1 line-clamp-1">{salon.reason}</p>
                   </div>

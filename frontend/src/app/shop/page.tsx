@@ -198,23 +198,23 @@ export default function ShopPage() {
     <main className="min-h-screen">
       <Header />
       
-      <div className="pt-28 pb-20">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+      <div className="pt-20 sm:pt-24 lg:pt-28 pb-12 sm:pb-16 lg:pb-20">
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
           {/* Header */}
-          <div className="text-center mb-12">
-            <span className="text-sm tracking-[0.3em] uppercase text-primary mb-4 block">
+          <div className="text-center mb-8 sm:mb-12">
+            <span className="text-xs sm:text-sm tracking-[0.2em] sm:tracking-[0.3em] uppercase text-primary mb-3 sm:mb-4 block">
               Our Collection
             </span>
-            <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-foreground mb-4 text-balance">
+            <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-foreground mb-3 sm:mb-4 text-balance">
               Shop All Products
             </h1>
-            <p className="text-lg text-muted-foreground max-w-md mx-auto">
+            <p className="text-base sm:text-lg text-muted-foreground max-w-md mx-auto">
               Discover our complete range of natural skincare essentials
             </p>
           </div>
 
           {/* Filter Bar */}
-          <div className="flex items-center justify-between mb-10 pb-6 border-b border-border/50">
+          <div className="flex items-center justify-between mb-6 sm:mb-10 pb-4 sm:pb-6 border-b border-border/50">
             <button
               type="button"
               onClick={() => setShowFilters(!showFilters)}
@@ -287,7 +287,7 @@ export default function ShopPage() {
           {/* Product Grid */}
           <div 
             ref={gridRef}
-            className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
+            className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6"
           >
             {filteredProducts.map((product, index) => (
               <ProductCard 
@@ -325,7 +325,7 @@ function ProductCard({
       }`}
       style={{ transitionDelay: `${index * 80}ms` }}
     >
-      <div className="bg-card rounded-3xl overflow-hidden boty-shadow boty-transition group-hover:scale-[1.02]">
+      <div className="bg-card rounded-2xl sm:rounded-3xl overflow-hidden boty-shadow boty-transition group-hover:scale-[1.02]">
         {/* Image */}
         <div className="relative aspect-square bg-muted overflow-hidden">
           {/* Skeleton */}
@@ -347,7 +347,7 @@ function ProductCard({
           {/* Badge */}
           {product.badge && (
             <span
-              className={`absolute top-4 left-4 px-3 py-1 rounded-full text-xs tracking-wide ${
+              className={`absolute top-3 left-3 sm:top-4 sm:left-4 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs tracking-wide ${
                 product.badge === "Sale"
                   ? "bg-destructive/10 text-destructive"
                   : product.badge === "New"
@@ -361,24 +361,24 @@ function ProductCard({
           {/* Quick add button */}
           <button
             type="button"
-            className="absolute bottom-4 right-4 w-12 h-12 rounded-full bg-background/90 backdrop-blur-sm flex items-center justify-center opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 boty-transition boty-shadow"
+            className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-background/90 backdrop-blur-sm flex items-center justify-center sm:opacity-0 sm:translate-y-2 sm:group-hover:opacity-100 sm:group-hover:translate-y-0 boty-transition boty-shadow"
             onClick={(e) => {
               e.preventDefault()
             }}
             aria-label="Add to cart"
           >
-            <ShoppingBag className="w-5 h-5 text-foreground" />
+            <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5 text-foreground" />
           </button>
         </div>
 
         {/* Info */}
-        <div className="p-6">
-          <h3 className="font-serif text-xl text-foreground mb-1">{product.name}</h3>
-          <p className="text-sm text-muted-foreground mb-4">{product.description}</p>
+        <div className="p-3 sm:p-4 lg:p-6">
+          <h3 className="font-serif text-base sm:text-lg lg:text-xl text-foreground mb-0.5 sm:mb-1 truncate">{product.name}</h3>
+          <p className="text-xs sm:text-sm text-muted-foreground mb-2 sm:mb-4 truncate">{product.description}</p>
           <div className="flex items-center gap-2">
-            <span className="text-lg font-medium text-foreground">${product.price}</span>
+            <span className="text-sm sm:text-lg font-medium text-foreground">${product.price}</span>
             {product.originalPrice && (
-              <span className="text-sm text-muted-foreground line-through">
+              <span className="text-xs sm:text-sm text-muted-foreground line-through">
                 ${product.originalPrice}
               </span>
             )}

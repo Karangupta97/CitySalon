@@ -123,20 +123,20 @@ export default function ProductPage() {
     <main className="min-h-screen">
       <Header />
       
-      <div className="pt-28 pb-20">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+      <div className="pt-20 sm:pt-24 lg:pt-28 pb-12 sm:pb-16 lg:pb-20">
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
           {/* Back Link */}
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground boty-transition mb-8"
+            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground boty-transition mb-5 sm:mb-8"
           >
             <ChevronLeft className="w-4 h-4" />
             Back to Shop
           </Link>
 
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-20">
             {/* Product Image */}
-            <div className="relative aspect-square rounded-3xl overflow-hidden bg-card boty-shadow">
+            <div className="relative aspect-square rounded-2xl sm:rounded-3xl overflow-hidden bg-card boty-shadow">
               <Image
                 src={product.image || "/placeholder.svg"}
                 alt={product.name}
@@ -149,14 +149,14 @@ export default function ProductPage() {
             {/* Product Info */}
             <div className="flex flex-col">
               {/* Header */}
-              <div className="mb-8">
-                <span className="text-sm tracking-[0.3em] uppercase text-primary mb-2 block">
+              <div className="mb-6 sm:mb-8">
+                <span className="text-xs sm:text-sm tracking-[0.3em] uppercase text-primary mb-2 block">
                   CitySalon Essentials
                 </span>
-                <h1 className="font-serif text-4xl md:text-5xl text-foreground mb-3">
+                <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl text-foreground mb-2 sm:mb-3">
                   {product.name}
                 </h1>
-                <p className="text-lg text-muted-foreground italic mb-4">
+                <p className="text-base sm:text-lg text-muted-foreground italic mb-3 sm:mb-4">
                   {product.tagline}
                 </p>
                 
@@ -176,8 +176,8 @@ export default function ProductPage() {
               </div>
 
               {/* Price */}
-              <div className="flex items-center gap-3 mb-8">
-                <span className="text-3xl font-medium text-foreground">${product.price}</span>
+              <div className="flex items-center gap-3 mb-6 sm:mb-8">
+                <span className="text-2xl sm:text-3xl font-medium text-foreground">${product.price}</span>
                 {product.originalPrice && (
                   <span className="text-xl text-muted-foreground line-through">
                     ${product.originalPrice}

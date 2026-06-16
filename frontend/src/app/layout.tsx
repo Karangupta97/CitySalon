@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from 'next'
 import { DM_Sans, Playfair_Display } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { CartProvider } from '@/components/boty/cart-context'
+import { ServiceWorkerRegistration } from '@/components/boty/sw-register'
 import './globals.css'
 
 const dmSans = DM_Sans({ 
@@ -22,6 +23,15 @@ export const metadata: Metadata = {
   description: 'Discover, filter, and book top-rated beauty salons near you. CitySalon.',
   generator: 'v0.app',
   keywords: ['skincare', 'natural', 'organic', 'beauty', 'body care', 'cruelty-free'],
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'CitySalon',
+  },
+  formatDetection: {
+    telephone: true,
+  },
   icons: {
     icon: [
       {
@@ -37,12 +47,16 @@ export const metadata: Metadata = {
         type: 'image/svg+xml',
       },
     ],
-    apple: '/apple-icon.png',
+    apple: '/icons/icon-192x192.svg',
   },
 }
 
 export const viewport: Viewport = {
-  themeColor: '#F7F4EF',
+  themeColor: '#4F5B3A',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  viewportFit: 'cover',
 }
 
 export default function RootLayout({
@@ -56,6 +70,7 @@ export default function RootLayout({
         <CartProvider>
           {children}
         </CartProvider>
+        <ServiceWorkerRegistration />
         <Analytics />
       </body>
     </html>
