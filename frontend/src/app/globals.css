@@ -159,6 +159,22 @@
   animation: blur-in 0.8s ease-out;
 }
 
+/* Fade in animation for tab content */
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.35s ease-out;
+}
+
 /* Scale fade in animation */
 @keyframes scale-fade-in {
   0% {
