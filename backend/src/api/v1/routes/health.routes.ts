@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { getPool } from "@config/db";
 import { env } from "@config/env";
 
 const router = Router();
@@ -11,23 +10,26 @@ const router = Router();
  */
 router.get("/health", async (_req, res) => {
   let dbStatus = "UNKNOWN";
-  let dbClient = null;
 
   try {
-    if (env.DATABASE_URL || env.DB_HOST) {
-      const pool = getPool();
-      dbClient = await pool.connect();
-      await dbClient.query("SELECT 1");
-      dbStatus = "CONNECTED";
+    if (env.SUPABASE_URL && env.SUPABASE_ANON_KEY) {
+      const response = await fetch(`${env.SUPABASE_URL}/rest/v1/`, {
+        method: "GET",
+        headers: {
+          "apikey": env.SUPABASE_ANON_KEY,
+        },
+      });
+
+      if (response.ok) {
+        dbStatus = "CONNECTED";
+      } else {
+        dbStatus = `ERROR: Status ${response.status} - ${response.statusText}`;
+      }
     } else {
       dbStatus = "NOT_CONFIGURED";
     }
   } catch (err: any) {
     dbStatus = `ERROR: ${err.message}`;
-  } finally {
-    if (dbClient) {
-      dbClient.release();
-    }
   }
 
   res.status(200).json({

@@ -27,9 +27,17 @@ import {
   Send,
   ThumbsUp,
   Navigation,
+  ShoppingBag,
+  MessageCircle,
+  Plus,
+  Check,
+  Info,
+  Sparkles,
+  BadgeCheck,
+  Activity,
+  Bot,
+  Shield,
 } from "lucide-react"
-import { Header } from "@/components/boty/header"
-import { Footer } from "@/components/boty/footer"
 import { salons } from "@/data/salons"
 
 const salonNavItems = [
@@ -70,6 +78,12 @@ export default function SalonPage() {
   const [reviewName, setReviewName] = useState("")
   const [reviewService, setReviewService] = useState("")
   const [showReviewForm, setShowReviewForm] = useState(false)
+  const [serviceKart, setServiceKart] = useState<string[]>([])
+  const [showEnquiryForm, setShowEnquiryForm] = useState(false)
+  const [enquiryName, setEnquiryName] = useState("")
+  const [enquiryPhone, setEnquiryPhone] = useState("")
+  const [enquiryMessage, setEnquiryMessage] = useState("")
+  const [enquirySent, setEnquirySent] = useState(false)
 
   const salonNavRef = useRef<HTMLDivElement>(null)
 
@@ -90,7 +104,6 @@ export default function SalonPage() {
   if (!salon) {
     return (
       <main className="min-h-screen">
-        <Header />
         <div className="pt-28 pb-20 text-center max-w-7xl mx-auto px-4">
           <h1 className="font-serif text-3xl text-foreground mb-4">Salon not found</h1>
           <p className="text-muted-foreground mb-8">
@@ -101,7 +114,6 @@ export default function SalonPage() {
             Back to Home
           </Link>
         </div>
-        <Footer />
       </main>
     )
   }
@@ -114,7 +126,6 @@ export default function SalonPage() {
 
   return (
     <main className="min-h-screen bg-background">
-      <Header />
 
       <div className="pt-16 sm:pt-20 md:pt-24 lg:pt-28 pb-10 sm:pb-14 lg:pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-5 md:px-6 lg:px-8">
@@ -192,11 +203,11 @@ export default function SalonPage() {
                     ))}
                   </div>
                 </nav>
-                <button type="button" className="flex-shrink-0 inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 md:py-2.5 bg-foreground text-background rounded-full text-[11px] sm:text-xs md:text-sm font-medium boty-transition hover:bg-foreground/90">
+                <Link href={`/salon/${salonId}/book`} className="flex-shrink-0 inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 md:py-2.5 bg-foreground text-background rounded-full text-[11px] sm:text-xs md:text-sm font-medium boty-transition hover:bg-foreground/90">
                   <Calendar className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                   <span className="hidden sm:inline">Book Now</span>
                   <span className="sm:hidden">Book</span>
-                </button>
+                </Link>
               </div>
             </div>
           </div>
@@ -212,6 +223,107 @@ export default function SalonPage() {
                       <p className="font-serif text-xl sm:text-2xl text-foreground/80 italic leading-relaxed">
                         &ldquo;{salon.tagline}&rdquo;
                       </p>
+                    </div>
+
+                    {/* Trust Badges Row — Hygiene, Live Status, Price Guarantee */}
+                    <div className="mb-10 sm:mb-12 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                      {/* Hygiene Score Badge */}
+                      <div className="flex items-center gap-3 p-4 sm:p-5 rounded-2xl bg-card/70 border border-border/20 group hover:border-primary/30 boty-transition">
+                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/15 to-primary/5 flex items-center justify-center flex-shrink-0">
+                          <Shield className="w-5 h-5 text-primary" />
+                        </div>
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className="text-lg font-bold text-primary">{salon.hygieneScore}%</span>
+                            <span className="text-[10px] uppercase tracking-wider text-primary font-medium bg-primary/8 px-2 py-0.5 rounded-full">Verified</span>
+                          </div>
+                          <p className="text-xs text-muted-foreground mt-0.5">Hygiene Score</p>
+                        </div>
+                      </div>
+
+                      {/* Live Wait Time */}
+                      <div className="flex items-center gap-3 p-4 sm:p-5 rounded-2xl bg-card/70 border border-border/20 group hover:border-primary/30 boty-transition">
+                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                          salon.liveStatus === "available" ? "bg-green-50" :
+                          salon.liveStatus === "short-wait" ? "bg-amber-50" :
+                          salon.liveStatus === "busy" ? "bg-orange-50" : "bg-red-50"
+                        }`}>
+                          <Activity className={`w-5 h-5 ${
+                            salon.liveStatus === "available" ? "text-green-600" :
+                            salon.liveStatus === "short-wait" ? "text-amber-600" :
+                            salon.liveStatus === "busy" ? "text-orange-600" : "text-red-600"
+                          }`} />
+                        </div>
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className={`w-2 h-2 rounded-full animate-pulse ${
+                              salon.liveStatus === "available" ? "bg-green-500" :
+                              salon.liveStatus === "short-wait" ? "bg-amber-500" :
+                              salon.liveStatus === "busy" ? "bg-orange-500" : "bg-red-500"
+                            }`} />
+                            <span className="text-sm font-semibold text-foreground">
+                              {salon.liveStatus === "available" ? "Available Now" :
+                               salon.liveStatus === "short-wait" ? `${salon.waitTime} wait` :
+                               salon.liveStatus === "busy" ? "Busy" : "Fully Booked"}
+                            </span>
+                          </div>
+                          <p className="text-xs text-muted-foreground mt-0.5">Live Status</p>
+                        </div>
+                      </div>
+
+                      {/* Price Guarantee */}
+                      {salon.priceGuarantee && (
+                        <div className="flex items-center gap-3 p-4 sm:p-5 rounded-2xl bg-card/70 border border-border/20 group hover:border-primary/30 boty-transition">
+                          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-accent/20 to-accent/5 flex items-center justify-center flex-shrink-0">
+                            <BadgeCheck className="w-5 h-5 text-accent" />
+                          </div>
+                          <div className="min-w-0">
+                            <span className="text-sm font-semibold text-foreground">Price Guarantee</span>
+                            <p className="text-xs text-muted-foreground mt-0.5">Price shown = price charged</p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* AI Review Summary */}
+                    <div className="mb-10 sm:mb-12 p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-primary/5 via-card/50 to-accent/5 border border-primary/10">
+                      <div className="flex items-start gap-3 mb-3">
+                        <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <Bot className="w-4 h-4 text-primary" />
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h4 className="text-sm font-semibold text-foreground">AI Review Summary</h4>
+                            <span className="text-[9px] uppercase tracking-wider text-primary bg-primary/8 px-1.5 py-0.5 rounded-full font-medium">Based on {salon.reviews} reviews</span>
+                          </div>
+                        </div>
+                      </div>
+                      <p className="text-sm text-foreground/80 leading-relaxed pl-11">{salon.aiReviewSummary}</p>
+                    </div>
+
+                    {/* Hygiene Checklist Detail */}
+                    <div className="mb-10 sm:mb-12">
+                      <div className="flex items-center gap-2 mb-5">
+                        <span className="w-5 h-px bg-primary/40" />
+                        <h3 className="text-[11px] uppercase tracking-[0.2em] text-primary font-medium">Hygiene & Safety</h3>
+                      </div>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        {[
+                          { label: "Autoclave Sterilization", checked: salon.hygieneChecklist.autoclaveSterlization },
+                          { label: "Fresh Towels Every Client", checked: salon.hygieneChecklist.freshTowels },
+                          { label: "Licensed Staff", checked: salon.hygieneChecklist.licensedStaff },
+                          { label: "Disposable Kits", checked: salon.hygieneChecklist.disposableKits },
+                          { label: "Regular Sanitization", checked: salon.hygieneChecklist.regularSanitization },
+                          { label: "Air Purification", checked: salon.hygieneChecklist.airPurification },
+                        ].map((item) => (
+                          <div key={item.label} className="flex items-start gap-2.5 p-3 sm:p-4 rounded-xl bg-card/50 border border-border/10">
+                            <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${item.checked ? "bg-primary/15" : "bg-muted"}`}>
+                              {item.checked ? <Check className="w-3 h-3 text-primary" /> : <span className="w-2 h-2 rounded-full bg-muted-foreground/30" />}
+                            </div>
+                            <span className="text-xs text-foreground/80 leading-snug">{item.label}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
 
                     <div className="mb-10 sm:mb-12">
@@ -292,7 +404,8 @@ export default function SalonPage() {
 
                 {/* ─── SERVICES TAB ─── */}
                 {activeTab === "services" && (
-                  <div className="animate-fade-in">
+                  <div className="animate-fade-in relative">
+                    {/* Section Header */}
                     <div className="mb-6 sm:mb-8">
                       <div className="flex items-center gap-2 mb-3">
                         <span className="w-5 h-px bg-primary/40" />
@@ -302,7 +415,8 @@ export default function SalonPage() {
                       <p className="text-sm text-muted-foreground">{salon.services.length} curated services for your beauty needs</p>
                     </div>
 
-                    <div className="flex gap-2 overflow-x-auto pb-4 mb-6 sm:mb-8 scrollbar-hide -mx-1 px-1">
+                    {/* Category Filter */}
+                    <div className="flex gap-2 overflow-x-auto pb-4 mb-5 scrollbar-hide -mx-1 px-1">
                       {serviceCategories.map((cat) => {
                         const count = cat === "All" ? salon.services.length : salon.services.filter((s) => s.category === cat).length
                         return (
@@ -313,28 +427,226 @@ export default function SalonPage() {
                       })}
                     </div>
 
-                    <div className="rounded-2xl border border-border/20 overflow-hidden">
-                      <div className="max-h-[500px] sm:max-h-[550px] overflow-y-auto scrollbar-thin">
-                        {filteredServices.map((service, index) => (
-                          <div key={service.name} className={`group flex items-center justify-between gap-4 py-4 sm:py-5 px-4 sm:px-5 hover:bg-card/60 boty-transition ${index !== filteredServices.length - 1 ? "border-b border-border/20" : ""}`}>
-                            <div className="flex-1 min-w-0">
-                              <h4 className="text-sm sm:text-base font-medium text-foreground truncate group-hover:text-primary boty-transition">{service.name}</h4>
-                              <div className="flex items-center gap-3 mt-1.5">
-                                <span className="inline-flex items-center gap-1 text-xs text-muted-foreground"><Clock className="w-3 h-3" />{service.duration}</span>
-                                <span className="w-1 h-1 rounded-full bg-border" />
-                                <span className="text-xs text-primary/70 font-medium">{service.category}</span>
-                              </div>
-                            </div>
-                            <span className="text-sm sm:text-base font-bold text-foreground whitespace-nowrap">{service.price}</span>
+                        {/* Service Cards */}
+                        <div className="rounded-2xl border border-border/20 overflow-hidden bg-card/30">
+                          <div className="max-h-[520px] sm:max-h-[580px] overflow-y-auto scrollbar-thin">
+                            {filteredServices.map((service, index) => {
+                              const inKart = serviceKart.includes(service.name)
+                              return (
+                                <div key={service.name} className={`group flex items-center gap-3 sm:gap-4 py-4 sm:py-5 px-4 sm:px-5 hover:bg-card/80 boty-transition ${index !== filteredServices.length - 1 ? "border-b border-border/15" : ""}`}>
+                                  <div className="flex-1 min-w-0">
+                                    <h4 className="text-sm sm:text-base font-medium text-foreground truncate group-hover:text-primary boty-transition">{service.name}</h4>
+                                    <div className="flex items-center gap-3 mt-1.5">
+                                      <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+                                        <Clock className="w-3 h-3" />{service.duration}
+                                      </span>
+                                      <span className="w-1 h-1 rounded-full bg-border" />
+                                      <span className="text-xs text-primary/70 font-medium">{service.category}</span>
+                                    </div>
+                                  </div>
+                                  <span className="text-sm sm:text-base font-bold text-foreground whitespace-nowrap">{service.price}</span>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setServiceKart((prev) =>
+                                        inKart ? prev.filter((n) => n !== service.name) : [...prev, service.name]
+                                      )
+                                    }}
+                                    className={`flex-shrink-0 w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center boty-transition ${
+                                      inKart
+                                        ? "bg-primary text-primary-foreground"
+                                        : "bg-card border border-border/40 text-muted-foreground hover:border-primary/40 hover:text-primary"
+                                    }`}
+                                    aria-label={inKart ? `Remove ${service.name} from kart` : `Add ${service.name} to kart`}
+                                  >
+                                    {inKart ? <Check className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
+                                  </button>
+                                </div>
+                              )
+                            })}
                           </div>
-                        ))}
-                      </div>
+                        </div>
+
+                        {filteredServices.length > 7 && (
+                          <p className="text-[11px] text-muted-foreground/60 mt-3 text-center">↕ Scroll to see all {filteredServices.length} services</p>
+                        )}
+
+                    {/* Info Footer */}
+                    <div className="mt-4 flex items-start gap-2 px-1">
+                      <Info className="w-3.5 h-3.5 text-muted-foreground/60 mt-0.5 flex-shrink-0" />
+                      <p className="text-xs text-muted-foreground/70 leading-relaxed">
+                        Prices may vary based on hair length and complexity. GST applicable on all services.
+                      </p>
                     </div>
 
-                    {filteredServices.length > 7 && (
-                      <p className="text-[11px] text-muted-foreground/60 mt-3 text-center">↕ Scroll to see all {filteredServices.length} services</p>
+                    {/* Desktop Kart — Beside services section */}
+                    {serviceKart.length > 0 && activeTab === "services" && (
+                      <div className="hidden xl:block fixed right-6 2xl:right-10 top-24 w-[300px] 2xl:w-[320px] z-40 animate-fade-in">
+                        <div className="rounded-3xl border border-border/20 bg-background boty-shadow-lg overflow-hidden">
+                          <div className="px-5 py-4 border-b border-border/15">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-3">
+                                <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
+                                  <ShoppingBag className="w-4 h-4 text-primary" />
+                                </div>
+                                <div>
+                                  <h3 className="text-base font-semibold text-foreground">Your Kart</h3>
+                                  <p className="text-xs text-muted-foreground">{serviceKart.length} service{serviceKart.length > 1 ? "s" : ""}</p>
+                                </div>
+                              </div>
+                              <button type="button" onClick={() => setServiceKart([])} className="text-xs text-muted-foreground hover:text-destructive boty-transition">Clear all</button>
+                            </div>
+                          </div>
+                          <div className="px-5 py-3 max-h-[250px] overflow-y-auto scrollbar-thin">
+                            {serviceKart.map((name, idx) => {
+                              const svc = salon.services.find((s) => s.name === name)
+                              return (
+                                <div key={name} className={`flex items-center justify-between gap-3 py-3.5 ${idx !== serviceKart.length - 1 ? "border-b border-border/10" : ""}`}>
+                                  <div className="min-w-0 flex-1">
+                                    <p className="text-sm font-medium text-foreground truncate">{name}</p>
+                                    <p className="text-xs text-muted-foreground mt-0.5">{svc?.duration}</p>
+                                  </div>
+                                  <div className="flex items-center gap-3 flex-shrink-0">
+                                    <span className="text-sm font-semibold text-foreground">{svc?.price}</span>
+                                    <button type="button" onClick={() => setServiceKart((prev) => prev.filter((n) => n !== name))} className="w-6 h-6 rounded-full bg-muted/60 border border-border/20 flex items-center justify-center text-muted-foreground hover:bg-destructive/10 hover:text-destructive hover:border-destructive/20 boty-transition" aria-label={`Remove ${name}`}>
+                                      <span className="text-[10px] leading-none">✕</span>
+                                    </button>
+                                  </div>
+                                </div>
+                              )
+                            })}
+                          </div>
+                          <div className="px-5 py-4 border-t border-border/15">
+                            <div className="flex items-end justify-between mb-4">
+                              <div>
+                                <p className="text-[11px] text-muted-foreground uppercase tracking-wider">Total</p>
+                                <p className="font-serif text-2xl font-semibold text-primary mt-0.5">₹{serviceKart.reduce((sum, name) => { const svc = salon.services.find((s) => s.name === name); return sum + (svc ? parseInt(svc.price.replace(/[₹,]/g, "")) : 0) }, 0).toLocaleString()}</p>
+                              </div>
+                              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                                <Clock className="w-3.5 h-3.5" />
+                                <span>{(() => { let t = 0; serviceKart.forEach((n) => { const s = salon.services.find((sv) => sv.name === n); if (s) { if (s.duration.includes("hr")) t += parseFloat(s.duration) * 60; else t += parseInt(s.duration) } }); const h = Math.floor(t / 60); const m = t % 60; if (!h) return `${m} min`; if (!m) return `${h} hr`; return `${h} hr ${m} min` })()}</span>
+                              </div>
+                            </div>
+                            <div className="flex flex-col gap-2.5">
+                              <Link href={`/salon/${salonId}/book`} className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 boty-transition boty-shadow">
+                                <Calendar className="w-4 h-4" />Book Now
+                              </Link>
+                              <button type="button" onClick={() => setShowEnquiryForm(true)} className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full border border-border/40 text-sm font-medium text-foreground hover:bg-card boty-transition">
+                                <MessageCircle className="w-4 h-4" />Send Enquiry
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     )}
-                    <p className="text-xs text-muted-foreground mt-6 text-center leading-relaxed">Prices may vary based on hair length and complexity. GST applicable on all services.</p>
+
+                    {/* Mobile/Tablet Kart Bottom Bar */}
+                    {serviceKart.length > 0 && activeTab === "services" && (
+                      <div className="fixed bottom-0 left-0 right-0 xl:hidden bg-background/95 backdrop-blur-xl border-t border-border/30 z-50 animate-fade-in safe-bottom">
+                        <div className="max-w-7xl mx-auto px-4 py-3">
+                          <div className="flex items-center justify-between gap-3">
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-2 mb-0.5">
+                                <ShoppingBag className="w-3.5 h-3.5 text-primary" />
+                                <span className="text-xs font-medium text-foreground">{serviceKart.length} service{serviceKart.length > 1 ? "s" : ""}</span>
+                              </div>
+                              <p className="font-serif text-lg font-semibold text-primary">₹{serviceKart.reduce((sum, name) => { const svc = salon.services.find((s) => s.name === name); return sum + (svc ? parseInt(svc.price.replace(/[₹,]/g, "")) : 0) }, 0).toLocaleString()}</p>
+                            </div>
+                            <div className="flex items-center gap-2 flex-shrink-0">
+                              <button type="button" onClick={() => setShowEnquiryForm(true)} className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-full border border-border text-xs font-medium text-foreground hover:bg-card boty-transition">
+                                <MessageCircle className="w-3.5 h-3.5" />Enquiry
+                              </button>
+                              <Link href={`/salon/${salonId}/book`} className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 boty-transition">
+                                <Calendar className="w-3.5 h-3.5" />Book Now
+                              </Link>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* ─── ENQUIRY MODAL ─── */}
+                {showEnquiryForm && (
+                  <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => { setShowEnquiryForm(false); setEnquirySent(false) }} />
+                    <div className="relative w-full max-w-md bg-background rounded-3xl border border-border/30 p-6 sm:p-8 boty-shadow-lg animate-scale-fade-in">
+                      {enquirySent ? (
+                        <div className="text-center py-4">
+                          <div className="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <Check className="w-7 h-7 text-primary" />
+                          </div>
+                          <h3 className="font-serif text-xl text-foreground mb-2">Enquiry Sent!</h3>
+                          <p className="text-sm text-muted-foreground mb-6">The salon will get back to you shortly via phone or WhatsApp.</p>
+                          <button type="button" onClick={() => { setShowEnquiryForm(false); setEnquirySent(false) }} className="px-6 py-2.5 bg-primary text-primary-foreground rounded-full text-sm font-medium boty-transition hover:bg-primary/90">
+                            Done
+                          </button>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="flex items-center justify-between mb-5">
+                            <div>
+                              <h3 className="font-serif text-xl text-foreground">Send Enquiry</h3>
+                              <p className="text-xs text-muted-foreground mt-0.5">Ask about services, pricing, or availability</p>
+                            </div>
+                            <button type="button" onClick={() => setShowEnquiryForm(false)} className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground boty-transition" aria-label="Close">
+                              <ChevronDown className="w-4 h-4 rotate-[-90deg]" />
+                            </button>
+                          </div>
+
+                          {serviceKart.length > 0 && (
+                            <div className="mb-4 p-3 rounded-xl bg-primary/5 border border-primary/10">
+                              <p className="text-xs font-medium text-primary mb-1.5">Services you&apos;re interested in:</p>
+                              <p className="text-xs text-foreground/80">{serviceKart.join(", ")}</p>
+                            </div>
+                          )}
+
+                          <div className="space-y-3">
+                            <div>
+                              <label htmlFor="eq-name" className="text-xs font-medium text-foreground mb-1 block">Your Name *</label>
+                              <input id="eq-name" type="text" value={enquiryName} onChange={(e) => setEnquiryName(e.target.value)} placeholder="Full name" className="w-full px-4 py-2.5 rounded-xl bg-card/70 border border-border/30 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 boty-transition" />
+                            </div>
+                            <div>
+                              <label htmlFor="eq-phone" className="text-xs font-medium text-foreground mb-1 block">Phone Number *</label>
+                              <input id="eq-phone" type="tel" value={enquiryPhone} onChange={(e) => setEnquiryPhone(e.target.value)} placeholder="+91 98765 43210" className="w-full px-4 py-2.5 rounded-xl bg-card/70 border border-border/30 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 boty-transition" />
+                            </div>
+                            <div>
+                              <label htmlFor="eq-msg" className="text-xs font-medium text-foreground mb-1 block">Message (optional)</label>
+                              <textarea id="eq-msg" value={enquiryMessage} onChange={(e) => setEnquiryMessage(e.target.value)} placeholder="Any questions about timing, pricing, or specific requests..." rows={3} className="w-full px-4 py-2.5 rounded-xl bg-card/70 border border-border/30 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 boty-transition resize-none" />
+                            </div>
+                          </div>
+
+                          <div className="flex gap-3 mt-5">
+                            <button type="button" onClick={() => setShowEnquiryForm(false)} className="flex-1 px-4 py-2.5 rounded-full border border-border text-sm font-medium text-foreground hover:bg-card boty-transition">
+                              Cancel
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (enquiryName.trim() && enquiryPhone.trim()) {
+                                  setEnquirySent(true)
+                                  setEnquiryName("")
+                                  setEnquiryPhone("")
+                                  setEnquiryMessage("")
+                                }
+                              }}
+                              disabled={!enquiryName.trim() || !enquiryPhone.trim()}
+                              className={`flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium boty-transition ${
+                                enquiryName.trim() && enquiryPhone.trim()
+                                  ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                                  : "bg-muted text-muted-foreground cursor-not-allowed"
+                              }`}
+                            >
+                              <Send className="w-3.5 h-3.5" />
+                              Send Enquiry
+                            </button>
+                          </div>
+
+                          <p className="text-[10px] text-muted-foreground/60 mt-3 text-center">Your info is shared only with this salon. No spam.</p>
+                        </>
+                      )}
+                    </div>
                   </div>
                 )}
 
@@ -347,30 +659,62 @@ export default function SalonPage() {
                         <span className="text-[11px] uppercase tracking-[0.2em] text-primary font-medium">Team</span>
                       </div>
                       <h2 className="font-serif text-xl sm:text-2xl lg:text-3xl text-foreground">Our Stylists</h2>
-                      <p className="text-sm text-muted-foreground mt-2">Our team of experienced professionals is dedicated to making you look and feel your best.</p>
+                      <p className="text-sm text-muted-foreground mt-2">Book a specific stylist based on their expertise and ratings.</p>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {[
-                        { name: "Priya Sharma", role: "Senior Hair Stylist", experience: "8 years", speciality: "Balayage & Color", clients: "2,400+" },
-                        { name: "Rahul Desai", role: "Creative Director", experience: "12 years", speciality: "Precision Cuts", clients: "4,200+" },
-                        { name: "Sneha Patel", role: "Skin Specialist", experience: "6 years", speciality: "Hydra Facials", clients: "1,800+" },
-                        { name: "Ananya Mehta", role: "Makeup Artist", experience: "10 years", speciality: "Bridal Makeup", clients: "3,100+" },
-                        { name: "Vikram Joshi", role: "Hair Stylist", experience: "5 years", speciality: "Keratin & Smoothening", clients: "1,500+" },
-                        { name: "Divya Nair", role: "Nail Artist", experience: "4 years", speciality: "Gel Extensions & Art", clients: "1,200+" },
-                      ].map((stylist) => (
-                        <div key={stylist.name} className="group flex items-start gap-4 p-5 sm:p-6 rounded-2xl bg-card/70 border border-border/20 hover:border-primary/30 hover:shadow-lg boty-transition">
-                          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/10 flex items-center justify-center flex-shrink-0">
-                            <span className="text-base font-bold text-primary">{stylist.name.split(" ").map(n => n[0]).join("")}</span>
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <h4 className="text-sm sm:text-base font-medium text-foreground mb-0.5">{stylist.name}</h4>
-                            <p className="text-xs text-primary font-medium mb-2.5">{stylist.role}</p>
-                            <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-muted-foreground mb-2.5">
-                              <span>{stylist.experience} experience</span>
-                              <span>{stylist.clients} clients served</span>
+                      {salon.stylists.map((stylist) => (
+                        <div key={stylist.id} className="group relative p-5 sm:p-6 rounded-2xl bg-card/70 border border-border/20 hover:border-primary/30 hover:shadow-lg boty-transition">
+                          {/* Availability indicator */}
+                          <div className="absolute top-4 right-4">
+                            <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-[10px] font-medium ${
+                              stylist.availability === "available" ? "bg-green-50 text-green-700 border border-green-200" :
+                              stylist.availability === "busy" ? "bg-amber-50 text-amber-700 border border-amber-200" :
+                              "bg-muted text-muted-foreground border border-border"
+                            }`}>
+                              <span className={`w-1.5 h-1.5 rounded-full ${
+                                stylist.availability === "available" ? "bg-green-500 animate-pulse" :
+                                stylist.availability === "busy" ? "bg-amber-500" : "bg-muted-foreground/50"
+                              }`} />
+                              {stylist.availability === "available" ? "Available" : stylist.availability === "busy" ? "Busy" : "Day Off"}
                             </div>
-                            <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] sm:text-[11px] bg-primary/8 text-primary font-medium">{stylist.speciality}</span>
                           </div>
+
+                          <div className="flex items-start gap-4">
+                            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/10 flex items-center justify-center flex-shrink-0">
+                              <span className="text-base font-bold text-primary">{stylist.name.split(" ").map(n => n[0]).join("")}</span>
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h4 className="text-sm sm:text-base font-medium text-foreground mb-0.5">{stylist.name}</h4>
+                              <p className="text-xs text-primary font-medium mb-2">{stylist.role}</p>
+
+                              {/* Rating */}
+                              <div className="flex items-center gap-2 mb-2.5">
+                                <div className="flex items-center gap-1">
+                                  <Star className="w-3.5 h-3.5 fill-accent text-accent" />
+                                  <span className="text-sm font-semibold text-foreground">{stylist.rating}</span>
+                                </div>
+                                <span className="text-xs text-muted-foreground">({stylist.reviewCount} reviews)</span>
+                              </div>
+
+                              <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-muted-foreground mb-3">
+                                <span>{stylist.experience} exp</span>
+                                <span>{stylist.clients} clients</span>
+                              </div>
+
+                              <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] sm:text-[11px] bg-primary/8 text-primary font-medium">{stylist.speciality}</span>
+                            </div>
+                          </div>
+
+                          {/* Book this stylist */}
+                          {stylist.availability !== "off" && (
+                            <Link
+                              href={`/salon/${salonId}/book`}
+                              className="mt-4 w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full border border-border/40 text-xs font-medium text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary boty-transition"
+                            >
+                              <Calendar className="w-3.5 h-3.5" />
+                              Book with {stylist.name.split(" ")[0]}
+                            </Link>
+                          )}
                         </div>
                       ))}
                     </div>
@@ -525,6 +869,37 @@ export default function SalonPage() {
                         </button>
                       ))}
                     </div>
+
+                    {/* Before/After Gallery */}
+                    {salon.beforeAfterGallery.length > 0 && (
+                      <div className="mt-10 sm:mt-12">
+                        <div className="flex items-center gap-2 mb-5">
+                          <span className="w-5 h-px bg-primary/40" />
+                          <span className="text-[11px] uppercase tracking-[0.2em] text-primary font-medium">Transformations</span>
+                        </div>
+                        <h3 className="font-serif text-lg sm:text-xl font-medium text-foreground mb-5">Before & After</h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                          {salon.beforeAfterGallery.map((item, idx) => (
+                            <div key={idx} className="rounded-2xl border border-border/20 overflow-hidden bg-card/50 hover:shadow-lg boty-transition">
+                              <div className="grid grid-cols-2 aspect-[2/1]">
+                                <div className="relative">
+                                  <Image src={item.before} alt={`Before ${item.service}`} fill className="object-cover" />
+                                  <span className="absolute bottom-2 left-2 text-[9px] uppercase tracking-wider font-bold text-white bg-black/60 px-2 py-0.5 rounded-full">Before</span>
+                                </div>
+                                <div className="relative">
+                                  <Image src={item.after} alt={`After ${item.service}`} fill className="object-cover" />
+                                  <span className="absolute bottom-2 right-2 text-[9px] uppercase tracking-wider font-bold text-white bg-primary/80 px-2 py-0.5 rounded-full">After</span>
+                                </div>
+                              </div>
+                              <div className="p-3.5">
+                                <p className="text-sm font-medium text-foreground">{item.service}</p>
+                                <p className="text-xs text-muted-foreground mt-0.5">by {item.stylist}</p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -746,8 +1121,6 @@ export default function SalonPage() {
           </div>
         </div>
       </div>
-
-      <Footer />
     </main>
   )
 }

@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from 'next'
 import { DM_Sans, Playfair_Display } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { CartProvider } from '@/components/boty/cart-context'
+import { AuthProvider } from '@/components/boty/auth-context'
 import { ServiceWorkerRegistration } from '@/components/boty/sw-register'
 import './globals.css'
 
@@ -67,9 +68,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${dmSans.variable} ${playfairDisplay.variable} font-sans antialiased`}>
-        <CartProvider>
-          {children}
-        </CartProvider>
+        <AuthProvider>
+          <CartProvider>
+            {children}
+          </CartProvider>
+        </AuthProvider>
         <ServiceWorkerRegistration />
         <Analytics />
       </body>

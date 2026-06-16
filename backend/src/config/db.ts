@@ -1,65 +1,51 @@
-import pg from "pg";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import { env } from "@config/env";
 import { logger } from "@utils/logger";
 
-const { Pool } = pg;
+let supabase: SupabaseClient | null = null;
+let supabaseAdmin: SupabaseClient | null = null;
 
-let pool: pg.Pool | null = null;
+/**
+ * Returns the public Supabase client using the anon public key.
+ * Respects Row Level Security (RLS) constraints.
+ */
+export function getSupabase(): SupabaseClient {
+  if (!supabase) {
+    supabase = createClient(env.SUPABASE_URL, env.SUPABASE_ANON_KEY);
+  }
+  return supabase;
+}
 
-export function getPool(): pg.Pool {
-  if (!pool) {
-    const connectionString = env.DATABASE_URL;
-
-    if (connectionString) {
-      pool = new Pool({
-        connectionString,
-        ssl: { rejectUnauthorized: false }, // Required for Supabase Postgres
-        max: env.DB_POOL_MAX,
-        min: env.DB_POOL_MIN,
-        idleTimeoutMillis: 30000,
-        connectionTimeoutMillis: 5000,
-      });
-    } else if (env.DB_HOST) {
-      pool = new Pool({
-        host: env.DB_HOST,
-        port: env.DB_PORT,
-        database: env.DB_NAME,
-        user: env.DB_USER,
-        password: env.DB_PASSWORD,
-        ssl: { rejectUnauthorized: false }, // Required for Supabase Postgres
-        max: env.DB_POOL_MAX,
-        min: env.DB_POOL_MIN,
-        idleTimeoutMillis: 30000,
-        connectionTimeoutMillis: 5000,
-      });
-    } else {
-      throw new Error("❌ Database configuration error: Neither DATABASE_URL nor DB_HOST environment variables are defined.");
-    }
-
-    pool.on("error", (err) => {
-      logger.error("Unexpected error on idle database client:", err);
+/**
+ * Returns the admin Supabase client using the service_role key.
+ * Bypasses Row Level Security (RLS) constraints.
+ */
+export function getSupabaseAdmin(): SupabaseClient {
+  if (!supabaseAdmin) {
+    supabaseAdmin = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+      },
     });
   }
-  return pool;
+  return supabaseAdmin;
 }
 
 export async function connectDB(): Promise<void> {
   try {
-    const client = await getPool().connect();
-    // Verify connection is active
-    await client.query("SELECT 1");
-    client.release();
-    logger.info("✅ Database connected successfully");
+    // Initialize both clients
+    getSupabase();
+    getSupabaseAdmin();
+    logger.info("✅ Supabase public and admin clients initialized successfully");
   } catch (error) {
-    logger.error("❌ Database connection failed:", error);
+    logger.error("❌ Supabase client initialization failed:", error);
     process.exit(1);
   }
 }
 
 export async function disconnectDB(): Promise<void> {
-  if (pool) {
-    await pool.end();
-    pool = null;
-    logger.info("Database connection closed");
-  }
+  supabase = null;
+  supabaseAdmin = null;
+  logger.info("Supabase clients cleared");
 }

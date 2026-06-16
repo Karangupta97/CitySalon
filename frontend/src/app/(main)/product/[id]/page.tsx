@@ -5,8 +5,6 @@ import Image from "next/image"
 import Link from "next/link"
 import { useParams } from "next/navigation"
 import { ChevronLeft, Minus, Plus, ChevronDown, Leaf, Heart, Award, Recycle, Star, Check } from "lucide-react"
-import { Header } from "@/components/boty/header"
-import { Footer } from "@/components/boty/footer"
 
 const products: Record<string, {
   id: string
@@ -121,7 +119,6 @@ export default function ProductPage() {
 
   return (
     <main className="min-h-screen">
-      <Header />
       
       <div className="pt-20 sm:pt-24 lg:pt-28 pb-12 sm:pb-16 lg:pb-20">
         <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
@@ -303,8 +300,6 @@ export default function ProductPage() {
           </div>
         </div>
       </div>
-
-      <Footer />
     </main>
   )
 }

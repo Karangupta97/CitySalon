@@ -31,6 +31,12 @@ export function Header() {
               Explore
             </Link>
             <Link
+              href="/advisor"
+              className="text-sm tracking-wide text-foreground/70 hover:text-foreground boty-transition"
+            >
+              AI Advisor
+            </Link>
+            <Link
               href="/for-salons"
               className="text-sm tracking-wide text-foreground/70 hover:text-foreground boty-transition"
             >
@@ -82,6 +88,13 @@ export function Header() {
               onClick={() => setIsMenuOpen(false)}
             >
               Explore
+            </Link>
+            <Link
+              href="/advisor"
+              className="text-sm tracking-wide text-foreground/70 hover:text-foreground boty-transition py-1.5"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              AI Advisor
             </Link>
             <Link
               href="/for-salons"

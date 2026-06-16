@@ -17,6 +17,35 @@ export interface SalonZone {
   image: string
 }
 
+export interface SalonStylist {
+  id: string
+  name: string
+  role: string
+  experience: string
+  speciality: string
+  clients: string
+  rating: number
+  reviewCount: number
+  image: string
+  availability: "available" | "busy" | "off"
+}
+
+export interface BeforeAfterImage {
+  before: string
+  after: string
+  service: string
+  stylist: string
+}
+
+export interface HygieneChecklist {
+  autoclaveSterlization: boolean
+  freshTowels: boolean
+  licensedStaff: boolean
+  disposableKits: boolean
+  regularSanitization: boolean
+  airPurification: boolean
+}
+
 export interface SalonData {
   id: string
   name: string
@@ -40,6 +69,15 @@ export interface SalonData {
   designPhilosophy: string
   highlights: string[]
   amenities: string[]
+  // New deep profile fields
+  hygieneScore: number
+  hygieneChecklist: HygieneChecklist
+  liveStatus: "available" | "short-wait" | "busy" | "fully-booked"
+  waitTime: string
+  aiReviewSummary: string
+  priceGuarantee: boolean
+  stylists: SalonStylist[]
+  beforeAfterGallery: BeforeAfterImage[]
 }
 
 export const salons: Record<string, SalonData> = {
@@ -188,6 +226,32 @@ export const salons: Record<string, SalonData> = {
       "Online Booking",
       "Card Payment Accepted",
       "Sanitized Equipment",
+    ],
+    hygieneScore: 96,
+    hygieneChecklist: {
+      autoclaveSterlization: true,
+      freshTowels: true,
+      licensedStaff: true,
+      disposableKits: true,
+      regularSanitization: true,
+      airPurification: true,
+    },
+    liveStatus: "short-wait",
+    waitTime: "~15 min",
+    aiReviewSummary: "Customers love the keratin treatment and balayage work by Priya. The ambience and crystal chandeliers get frequent praise. Staff is described as friendly and professional. Common feedback: parking can be difficult on weekends, and occasional 10–15 minute wait times during peak hours. Bridal packages are highly recommended.",
+    priceGuarantee: true,
+    stylists: [
+      { id: "priya", name: "Priya Sharma", role: "Senior Hair Stylist", experience: "8 years", speciality: "Balayage & Color", clients: "2,400+", rating: 4.9, reviewCount: 312, image: "/placeholder-user.jpg", availability: "available" },
+      { id: "rahul", name: "Rahul Desai", role: "Creative Director", experience: "12 years", speciality: "Precision Cuts", clients: "4,200+", rating: 4.8, reviewCount: 485, image: "/placeholder-user.jpg", availability: "busy" },
+      { id: "sneha", name: "Sneha Patel", role: "Skin Specialist", experience: "6 years", speciality: "Hydra Facials", clients: "1,800+", rating: 4.9, reviewCount: 198, image: "/placeholder-user.jpg", availability: "available" },
+      { id: "ananya", name: "Ananya Mehta", role: "Makeup Artist", experience: "10 years", speciality: "Bridal Makeup", clients: "3,100+", rating: 4.7, reviewCount: 267, image: "/placeholder-user.jpg", availability: "available" },
+      { id: "vikram", name: "Vikram Joshi", role: "Hair Stylist", experience: "5 years", speciality: "Keratin & Smoothening", clients: "1,500+", rating: 4.8, reviewCount: 156, image: "/placeholder-user.jpg", availability: "off" },
+      { id: "divya", name: "Divya Nair", role: "Nail Artist", experience: "4 years", speciality: "Gel Extensions & Art", clients: "1,200+", rating: 4.7, reviewCount: 134, image: "/placeholder-user.jpg", availability: "available" },
+    ],
+    beforeAfterGallery: [
+      { before: "/images/bento-skin-model.jpg", after: "/images/skincare-ritual.jpg", service: "Balayage", stylist: "Priya Sharma" },
+      { before: "/images/natural-leaf.jpg", after: "/images/hero-model.jpg", service: "Keratin Treatment", stylist: "Vikram Joshi" },
+      { before: "/images/036a9eb7-4aa9-44aa-ba0a-c3a03061efca.png", after: "/images/add13a77-0251-4025-aa57-2aa5760e6d04.png", service: "Bridal Makeup", stylist: "Ananya Mehta" },
     ],
   },
 }

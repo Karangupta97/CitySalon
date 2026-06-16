@@ -7,16 +7,10 @@ const envSchema = z.object({
   NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
   PORT: z.string().default("5000").transform(Number),
 
-  // Database — Supabase PostgreSQL
-  DATABASE_URL: z.string().optional(),
-  DB_HOST: z.string().optional(),
-  DB_PORT: z.string().default("5432").transform(Number),
-  DB_NAME: z.string().optional(),
-  DB_USER: z.string().optional(),
-  DB_PASSWORD: z.string().optional(),
-  DB_SSL: z.string().default("require"),
-  DB_POOL_MIN: z.string().default("2").transform(Number),
-  DB_POOL_MAX: z.string().default("10").transform(Number),
+  // Supabase REST client credentials
+  SUPABASE_URL: z.string().url(),
+  SUPABASE_ANON_KEY: z.string(),
+  SUPABASE_SERVICE_ROLE_KEY: z.string(),
 
   // Auth
   JWT_SECRET: z.string().min(32).optional(),
