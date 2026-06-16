@@ -28,14 +28,11 @@ import {
   HelpCircle,
   Users,
   Image as ImageIcon,
-  Scissors,
   Package,
 } from "lucide-react"
 import { Header } from "@/components/boty/header"
 import { Footer } from "@/components/boty/footer"
 import { salons } from "@/data/salons"
-
-type AccordionSection = "about" | "design" | "zones" | null
 
 const salonNavItems = [
   { id: "overview", label: "Overview" },
@@ -65,15 +62,12 @@ export default function SalonPage() {
   const salon = salons[salonId]
 
   const [activeCategory, setActiveCategory] = useState("All")
-  const [openAccordion, setOpenAccordion] = useState<AccordionSection>("about")
   const [activeGalleryIndex, setActiveGalleryIndex] = useState(0)
   const [isFavorited, setIsFavorited] = useState(false)
   const [activeTab, setActiveTab] = useState("overview")
   const [isNavSticky, setIsNavSticky] = useState(false)
 
   const salonNavRef = useRef<HTMLDivElement>(null)
-  const activeIndicatorRef = useRef<HTMLDivElement>(null)
-  const tabButtonsRef = useRef<Record<string, HTMLButtonElement | null>>({})
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -90,17 +84,6 @@ export default function SalonPage() {
     window.addEventListener("scroll", handleScroll, { passive: true })
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
-
-  // Animate active indicator
-  useEffect(() => {
-    const activeButton = tabButtonsRef.current[activeTab]
-    const indicator = activeIndicatorRef.current
-    if (activeButton && indicator) {
-      const { offsetLeft, offsetWidth } = activeButton
-      indicator.style.left = `${offsetLeft}px`
-      indicator.style.width = `${offsetWidth}px`
-    }
-  }, [activeTab])
 
   const handleTabChange = (id: string) => {
     setActiveTab(id)
@@ -140,10 +123,6 @@ export default function SalonPage() {
     activeCategory === "All"
       ? salon.services
       : salon.services.filter((s) => s.category === activeCategory)
-
-  const toggleAccordion = (section: AccordionSection) => {
-    setOpenAccordion(openAccordion === section ? null : section)
-  }
 
   return (
     <main className="min-h-screen">
@@ -224,37 +203,37 @@ export default function SalonPage() {
           {/* Secondary Navigation Bar */}
           <div
             ref={salonNavRef}
-            className={`sticky top-[56px] sm:top-[64px] lg:top-[68px] z-40 -mx-5 sm:-mx-6 lg:-mx-8 transition-all duration-300 ${
+            className={`sticky top-[76px] sm:top-[88px] lg:top-[92px] z-40 mt-6 sm:mt-8 transition-all duration-300 ${
               isNavSticky
-                ? "bg-background/80 backdrop-blur-xl border-b border-border/40 shadow-[0_4px_20px_rgba(0,0,0,0.04)]"
-                : "bg-background border-b border-border/20"
+                ? "-mx-5 sm:-mx-6 lg:-mx-8 px-5 sm:px-6 lg:px-8"
+                : ""
             }`}
           >
-            <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
-              <nav className="relative flex items-center overflow-x-auto scrollbar-hide" aria-label="Salon sections">
-                <div className="flex items-center gap-0 min-w-max relative">
-                  {/* Sliding active indicator */}
-                  <div
-                    ref={activeIndicatorRef}
-                    className="absolute bottom-0 h-[2px] bg-foreground rounded-full transition-all duration-300 ease-out"
-                  />
-                  {salonNavItems.map((item) => (
-                    <button
-                      key={item.id}
-                      ref={(el) => { tabButtonsRef.current[item.id] = el }}
-                      type="button"
-                      onClick={() => handleTabChange(item.id)}
-                      className={`relative px-4 sm:px-5 lg:px-6 py-4 text-sm tracking-wide whitespace-nowrap boty-transition ${
-                        activeTab === item.id
-                          ? "text-foreground font-medium"
-                          : "text-muted-foreground hover:text-foreground/80"
-                      }`}
-                    >
-                      {item.label}
-                    </button>
-                  ))}
-                </div>
-              </nav>
+            <div className={`rounded-xl sm:rounded-2xl transition-all duration-300 ${
+              isNavSticky
+                ? "bg-background/90 backdrop-blur-xl shadow-lg border border-border/40 rounded-none sm:rounded-none"
+                : "bg-card border border-border/30"
+            }`}>
+              <div className="max-w-7xl mx-auto px-3 sm:px-5 lg:px-6">
+                <nav className="relative flex items-center overflow-x-auto scrollbar-hide" aria-label="Salon sections">
+                  <div className="flex items-center gap-0.5 sm:gap-1 min-w-max relative py-1">
+                    {salonNavItems.map((item) => (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => handleTabChange(item.id)}
+                        className={`relative px-3 sm:px-4 lg:px-5 py-2.5 sm:py-3 text-xs sm:text-sm rounded-lg boty-transition ${
+                          activeTab === item.id
+                            ? "text-primary-foreground bg-foreground font-medium shadow-sm"
+                            : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                        }`}
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+                </nav>
+              </div>
             </div>
           </div>
 
@@ -267,100 +246,107 @@ export default function SalonPage() {
                 {/* ─── OVERVIEW TAB ─── */}
                 {activeTab === "overview" && (
                   <div className="animate-fade-in">
-                    <p className="font-serif text-lg sm:text-xl text-foreground/80 italic mb-6 sm:mb-8">
-                      &ldquo;{salon.tagline}&rdquo;
-                    </p>
+                    {/* Tagline */}
+                    <div className="mb-8 sm:mb-10">
+                      <p className="font-serif text-xl sm:text-2xl text-foreground/80 italic leading-relaxed">
+                        &ldquo;{salon.tagline}&rdquo;
+                      </p>
+                    </div>
 
-                    {/* About */}
-                    <div className="border-t border-border/50 mb-8">
-                      <button
-                        type="button"
-                        onClick={() => toggleAccordion("about")}
-                        className="w-full flex items-center justify-between py-5 text-left"
-                      >
-                        <span className="font-serif text-lg font-medium text-foreground">About the Salon</span>
-                        <ChevronDown className={`w-5 h-5 text-muted-foreground boty-transition ${openAccordion === "about" ? "rotate-180" : ""}`} />
-                      </button>
-                      <div className={`overflow-hidden boty-transition ${openAccordion === "about" ? "max-h-[600px] pb-5" : "max-h-0"}`}>
-                        <p className="text-sm sm:text-base text-muted-foreground leading-relaxed mb-4">
-                          {salon.description}
-                        </p>
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                          {salon.highlights.map((highlight) => (
-                            <div key={highlight} className="flex items-start gap-2 p-3 rounded-lg bg-card">
-                              <Star className="w-3.5 h-3.5 text-primary mt-0.5 flex-shrink-0" />
-                              <span className="text-xs text-foreground/80">{highlight}</span>
-                            </div>
-                          ))}
-                        </div>
+                    {/* About Section */}
+                    <div className="mb-10">
+                      <h3 className="font-serif text-lg sm:text-xl font-medium text-foreground mb-4">
+                        About the Salon
+                      </h3>
+                      <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+                        {salon.description}
+                      </p>
+                    </div>
+
+                    {/* Gallery Preview */}
+                    <div className="mb-10">
+                      <div className="flex items-center justify-between mb-5">
+                        <h3 className="font-serif text-lg sm:text-xl font-medium text-foreground">
+                          Gallery
+                        </h3>
+                        <button
+                          type="button"
+                          onClick={() => handleTabChange("gallery")}
+                          className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium text-primary hover:text-primary/80 boty-transition"
+                        >
+                          View all photos
+                          <ChevronLeft className="w-3.5 h-3.5 rotate-180" />
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
+                        {salon.galleryImages.slice(0, 6).map((img, index) => (
+                          <button
+                            key={img.src}
+                            type="button"
+                            onClick={() => {
+                              setActiveGalleryIndex(index)
+                              handleTabChange("gallery")
+                            }}
+                            className={`relative rounded-xl sm:rounded-2xl overflow-hidden group ${
+                              index === 0 ? "col-span-2 sm:col-span-2 aspect-[16/9]" : "aspect-square"
+                            }`}
+                          >
+                            <Image
+                              src={img.src}
+                              alt={img.alt}
+                              fill
+                              className="object-cover group-hover:scale-105 boty-transition"
+                            />
+                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 boty-transition" />
+                            {index === 5 && salon.galleryImages.length > 6 && (
+                              <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                                <span className="text-white text-sm sm:text-base font-medium">
+                                  +{salon.galleryImages.length - 5} more
+                                </span>
+                              </div>
+                            )}
+                          </button>
+                        ))}
                       </div>
                     </div>
 
-                    {/* Design Story */}
-                    <div className="border-t border-border/50 mb-8">
-                      <button
-                        type="button"
-                        onClick={() => toggleAccordion("design")}
-                        className="w-full flex items-center justify-between py-5 text-left"
-                      >
-                        <span className="font-serif text-lg font-medium text-foreground">
-                          Design Story — by {salon.designFirm}
-                        </span>
-                        <ChevronDown className={`w-5 h-5 text-muted-foreground boty-transition ${openAccordion === "design" ? "rotate-180" : ""}`} />
-                      </button>
-                      <div className={`overflow-hidden boty-transition ${openAccordion === "design" ? "max-h-[400px] pb-5" : "max-h-0"}`}>
-                        <div className="flex items-center gap-3 mb-4">
-                          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                            <span className="text-sm font-serif font-medium text-primary">SS</span>
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium text-foreground">{salon.principalDesigner}</p>
-                            <p className="text-xs text-muted-foreground">Principal Designer, {salon.designFirm}</p>
-                          </div>
-                        </div>
-                        <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-                          {salon.designPhilosophy}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Zones */}
-                    <div className="border-t border-b border-border/50 mb-8">
-                      <button
-                        type="button"
-                        onClick={() => toggleAccordion("zones")}
-                        className="w-full flex items-center justify-between py-5 text-left"
-                      >
-                        <span className="font-serif text-lg font-medium text-foreground">Salon Zones & Spaces</span>
-                        <ChevronDown className={`w-5 h-5 text-muted-foreground boty-transition ${openAccordion === "zones" ? "rotate-180" : ""}`} />
-                      </button>
-                      <div className={`overflow-hidden boty-transition ${openAccordion === "zones" ? "max-h-[1200px] pb-5" : "max-h-0"}`}>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          {salon.zones.map((zone) => (
-                            <div key={zone.name} className="rounded-xl overflow-hidden bg-card">
-                              <div className="relative aspect-[16/10]">
-                                <Image src={zone.image} alt={zone.name} fill className="object-cover" />
-                              </div>
-                              <div className="p-4">
-                                <h4 className="font-medium text-foreground text-sm mb-1">{zone.name}</h4>
-                                <p className="text-xs text-muted-foreground leading-relaxed">{zone.description}</p>
-                              </div>
+                    {/* Highlights */}
+                    <div className="mb-10">
+                      <h3 className="font-serif text-lg sm:text-xl font-medium text-foreground mb-5">
+                        What Sets Us Apart
+                      </h3>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {salon.highlights.map((highlight, index) => (
+                          <div
+                            key={highlight}
+                            className="flex items-start gap-3 p-4 rounded-xl bg-card border border-border/20 hover:border-primary/20 boty-transition"
+                          >
+                            <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                              <span className="text-[11px] font-semibold text-primary">{index + 1}</span>
                             </div>
-                          ))}
-                        </div>
+                            <span className="text-sm text-foreground/80 leading-relaxed">{highlight}</span>
+                          </div>
+                        ))}
                       </div>
                     </div>
 
                     {/* Amenities */}
                     <div>
-                      <h3 className="font-serif text-lg font-medium text-foreground mb-4">Amenities</h3>
+                      <h3 className="font-serif text-lg sm:text-xl font-medium text-foreground mb-5">
+                        Amenities & Facilities
+                      </h3>
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                         {salon.amenities.map((amenity) => {
                           const IconComp = amenityIcons[amenity] || ShieldCheck
                           return (
-                            <div key={amenity} className="flex items-center gap-2.5 p-3 rounded-lg bg-card">
-                              <IconComp className="w-4 h-4 text-primary flex-shrink-0" />
-                              <span className="text-xs text-foreground/80">{amenity}</span>
+                            <div
+                              key={amenity}
+                              className="flex flex-col items-center gap-2.5 p-4 rounded-xl bg-card border border-border/20 text-center hover:border-primary/20 boty-transition"
+                            >
+                              <div className="w-10 h-10 rounded-full bg-primary/8 flex items-center justify-center">
+                                <IconComp className="w-4.5 h-4.5 text-primary" />
+                              </div>
+                              <span className="text-xs text-foreground/80 leading-tight">{amenity}</span>
                             </div>
                           )
                         })}
@@ -372,60 +358,70 @@ export default function SalonPage() {
                 {/* ─── SERVICES TAB ─── */}
                 {activeTab === "services" && (
                   <div className="animate-fade-in">
-                    <div className="flex items-center gap-3 mb-6">
-                      <Scissors className="w-5 h-5 text-primary" />
-                      <h2 className="font-serif text-xl sm:text-2xl text-foreground">Services & Pricing</h2>
+                    {/* Header */}
+                    <div className="mb-6 sm:mb-8">
+                      <h2 className="font-serif text-xl sm:text-2xl lg:text-3xl text-foreground mb-1.5">
+                        Services & Pricing
+                      </h2>
+                      <p className="text-sm text-muted-foreground">
+                        {salon.services.length} curated services for your beauty needs
+                      </p>
                     </div>
 
-                    {/* Category Tabs */}
-                    <div className="flex gap-2 overflow-x-auto pb-4 mb-5 scrollbar-hide">
-                      {serviceCategories.map((cat) => (
-                        <button
-                          key={cat}
-                          type="button"
-                          onClick={() => setActiveCategory(cat)}
-                          className={`flex-shrink-0 px-4 py-2 rounded-full text-sm boty-transition ${
-                            activeCategory === cat
-                              ? "bg-primary text-primary-foreground"
-                              : "bg-card text-foreground/70 hover:text-foreground hover:bg-card/80"
-                          }`}
-                        >
-                          {cat}
-                        </button>
-                      ))}
+                    {/* Category Filter */}
+                    <div className="flex gap-2 overflow-x-auto pb-4 mb-6 sm:mb-8 scrollbar-hide -mx-1 px-1">
+                      {serviceCategories.map((cat) => {
+                        const count = cat === "All"
+                          ? salon.services.length
+                          : salon.services.filter((s) => s.category === cat).length
+                        return (
+                          <button
+                            key={cat}
+                            type="button"
+                            onClick={() => setActiveCategory(cat)}
+                            className={`flex-shrink-0 px-4 py-2 rounded-full text-xs sm:text-sm font-medium boty-transition ${
+                              activeCategory === cat
+                                ? "bg-foreground text-background shadow-sm"
+                                : "bg-transparent text-muted-foreground border border-border/60 hover:border-foreground/30 hover:text-foreground"
+                            }`}
+                          >
+                            {cat} ({count})
+                          </button>
+                        )
+                      })}
                     </div>
 
-                    {/* Service List */}
-                    <div className="space-y-2">
-                      {filteredServices.map((service) => (
+                    {/* Services List */}
+                    <div className="space-y-1">
+                      {filteredServices.map((service, index) => (
                         <div
                           key={service.name}
-                          className="flex items-center justify-between p-4 rounded-xl bg-card hover:bg-card/80 boty-transition group"
+                          className="group flex items-center justify-between gap-4 py-4 sm:py-5 border-b border-border/30 last:border-b-0 hover:bg-muted/30 -mx-3 px-3 sm:-mx-4 sm:px-4 rounded-lg boty-transition"
                         >
-                          <div>
-                            <h4 className="text-sm font-medium text-foreground">{service.name}</h4>
-                            <div className="flex items-center gap-2 mt-1">
-                              <Clock className="w-3 h-3 text-muted-foreground" />
-                              <span className="text-xs text-muted-foreground">{service.duration}</span>
-                              <span className="text-xs text-muted-foreground px-1.5 py-0.5 rounded bg-muted">
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-sm sm:text-base font-medium text-foreground truncate">
+                              {service.name}
+                            </h4>
+                            <div className="flex items-center gap-3 mt-1.5">
+                              <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+                                <Clock className="w-3 h-3" />
+                                {service.duration}
+                              </span>
+                              <span className="w-1 h-1 rounded-full bg-border" />
+                              <span className="text-xs text-muted-foreground">
                                 {service.category}
                               </span>
                             </div>
                           </div>
-                          <div className="text-right">
-                            <span className="text-sm font-semibold text-foreground">{service.price}</span>
-                            <button
-                              type="button"
-                              className="block mt-1 text-[11px] text-primary font-medium opacity-0 group-hover:opacity-100 boty-transition"
-                            >
-                              Book Now →
-                            </button>
-                          </div>
+                          <span className="text-sm sm:text-base font-semibold text-foreground whitespace-nowrap">
+                            {service.price}
+                          </span>
                         </div>
                       ))}
                     </div>
 
-                    <p className="text-xs text-muted-foreground mt-6 text-center">
+                    {/* Footer */}
+                    <p className="text-xs text-muted-foreground mt-8 text-center leading-relaxed">
                       Prices may vary based on hair length and complexity. GST applicable on all services.
                     </p>
                   </div>
