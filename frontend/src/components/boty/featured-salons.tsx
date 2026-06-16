@@ -111,17 +111,18 @@ export function FeaturedSalons() {
   const { ref, isVisible } = useScrollReveal()
 
   return (
-    <section className="py-12 sm:py-16 lg:py-20 bg-background" ref={ref}>
-      <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
-        <div className={`flex items-end justify-between mb-6 sm:mb-10 scroll-reveal ${isVisible ? "visible" : ""}`}>
+    <section className="py-12 sm:py-14 md:py-18 lg:py-24 bg-card/30" ref={ref}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-5 md:px-6 lg:px-8">
+        <div className={`flex items-end justify-between mb-8 sm:mb-12 scroll-reveal ${isVisible ? "visible" : ""}`}>
           <div>
+            <span className="text-[11px] uppercase tracking-[0.2em] text-primary font-medium mb-2 block">Discover</span>
             <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl text-foreground italic">
               Featured salons
             </h2>
           </div>
           <Link
             href="/salons"
-            className="hidden sm:inline-flex items-center gap-2 text-sm font-medium text-foreground/70 hover:text-foreground boty-transition group"
+            className="hidden sm:inline-flex items-center gap-2 text-sm font-medium text-foreground/70 hover:text-primary boty-transition group"
           >
             View all salons
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 boty-transition" />
@@ -134,7 +135,7 @@ export function FeaturedSalons() {
             <Link
               key={salon.id}
               href={`/salon/${salon.id}`}
-              className={`group flex-shrink-0 w-[280px] sm:w-auto snap-start rounded-2xl overflow-hidden bg-card boty-transition hover:-translate-y-2 hover:shadow-lg scroll-reveal-scale ${isVisible ? "visible" : ""} stagger-${index + 1}`}
+              className={`group flex-shrink-0 w-[280px] sm:w-auto snap-start rounded-2xl overflow-hidden bg-card boty-transition hover:-translate-y-2 hover:shadow-xl scroll-reveal-scale ${isVisible ? "visible" : ""} stagger-${index + 1}`}
             >
               {/* Image */}
               <div className="relative aspect-[4/3] overflow-hidden">
@@ -144,41 +145,42 @@ export function FeaturedSalons() {
                   fill
                   className="object-cover group-hover:scale-105 boty-transition"
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 boty-transition" />
                 {/* Badge */}
                 <div className="absolute top-3 left-3">
-                  <span className={`inline-flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-md text-[10px] sm:text-[11px] font-semibold uppercase tracking-wide ${salon.badgeColor}`}>
+                  <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] sm:text-[11px] font-semibold uppercase tracking-wide backdrop-blur-sm ${salon.badgeColor}`}>
                     {salon.badge}
                   </span>
                 </div>
                 {/* Favorite */}
                 <button
                   type="button"
-                  className="absolute top-3 right-3 w-8 h-8 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center sm:opacity-0 sm:group-hover:opacity-100 boty-transition"
+                  className="absolute top-3 right-3 w-8 h-8 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center sm:opacity-0 sm:group-hover:opacity-100 boty-transition hover:bg-background"
                   aria-label="Add to favorites"
                   onClick={(e) => e.preventDefault()}
                 >
-                  <Heart className="w-4 h-4 text-foreground/60" />
+                  <Heart className="w-4 h-4 text-foreground/60 hover:text-destructive boty-transition" />
                 </button>
               </div>
 
               {/* Content */}
-              <div className="p-3 sm:p-4">
-                <h3 className="font-serif text-sm sm:text-base font-medium text-foreground mb-1 uppercase tracking-wide">
+              <div className="p-4 sm:p-5">
+                <h3 className="font-serif text-sm sm:text-base font-medium text-foreground mb-1.5 line-clamp-1">
                   {salon.name}
                 </h3>
-                <div className="flex items-center gap-1.5 text-[11px] sm:text-xs text-muted-foreground mb-2 sm:mb-2.5">
+                <div className="flex items-center gap-1.5 text-[11px] sm:text-xs text-muted-foreground mb-3">
                   <MapPin className="w-3 h-3" />
                   <span>{salon.location}</span>
                 </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1">
-                    <Star className="w-3.5 h-3.5 fill-primary text-primary" />
+                <div className="flex items-center justify-between pt-3 border-t border-border/30">
+                  <div className="flex items-center gap-1.5">
+                    <Star className="w-3.5 h-3.5 fill-accent text-accent" />
                     <span className="text-xs sm:text-sm font-semibold text-foreground">{salon.rating}</span>
                     <span className="text-[10px] sm:text-xs text-muted-foreground">({salon.reviews.toLocaleString()})</span>
                   </div>
                   <div className="hidden sm:flex gap-1">
                     {salon.services.map((s) => (
-                      <span key={s} className="text-[10px] px-2 py-0.5 rounded bg-muted text-muted-foreground">
+                      <span key={s} className="text-[10px] px-2 py-0.5 rounded-md bg-primary/8 text-primary/80 font-medium">
                         {s}
                       </span>
                     ))}
@@ -193,7 +195,7 @@ export function FeaturedSalons() {
         <div className="mt-6 text-center sm:hidden">
           <Link
             href="/salons"
-            className="inline-flex items-center gap-2 text-sm font-medium text-foreground/70 hover:text-foreground boty-transition"
+            className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80 boty-transition"
           >
             View all salons <ArrowRight className="w-4 h-4" />
           </Link>

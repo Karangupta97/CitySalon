@@ -17,12 +17,15 @@ export function CategorySection() {
   const { ref, isVisible } = useScrollReveal()
 
   return (
-    <section className="py-12 sm:py-16 lg:py-20 bg-background" ref={ref}>
-      <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
-        <div className={`flex items-end justify-between mb-6 sm:mb-10 scroll-reveal ${isVisible ? "visible" : ""}`}>
-          <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl text-foreground italic">
-            Browse by category
-          </h2>
+    <section className="py-12 sm:py-14 md:py-18 lg:py-24 bg-background" ref={ref}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-5 md:px-6 lg:px-8">
+        <div className={`flex items-end justify-between mb-8 sm:mb-12 scroll-reveal ${isVisible ? "visible" : ""}`}>
+          <div>
+            <span className="text-[11px] uppercase tracking-[0.2em] text-primary font-medium mb-2 block">Explore</span>
+            <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl text-foreground italic">
+              Browse by category
+            </h2>
+          </div>
         </div>
 
         <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-6 gap-3 sm:gap-4">
@@ -30,10 +33,10 @@ export function CategorySection() {
             <Link
               key={cat.name}
               href={cat.href}
-              className={`group flex flex-col items-center gap-2 sm:gap-3 py-4 sm:py-6 px-3 sm:px-4 rounded-xl sm:rounded-2xl border border-border/40 hover:border-primary/30 hover:bg-primary/3 boty-transition active:scale-95 hover:-translate-y-1 scroll-reveal-scale ${isVisible ? "visible" : ""} stagger-${index + 1}`}
+              className={`group flex flex-col items-center gap-3 sm:gap-4 py-5 sm:py-7 px-3 sm:px-4 rounded-2xl sm:rounded-3xl bg-card/60 border border-border/30 hover:border-primary/40 hover:bg-primary/5 boty-transition active:scale-95 hover:-translate-y-1 hover:shadow-md scroll-reveal-scale ${isVisible ? "visible" : ""} stagger-${index + 1}`}
             >
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-border/50 flex items-center justify-center group-hover:border-primary/40 group-hover:bg-primary/8 boty-transition">
-                <cat.icon className="w-4 h-4 sm:w-5 sm:h-5 text-foreground/60 group-hover:text-primary boty-transition" strokeWidth={1.5} />
+              <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-primary/15 to-primary/5 flex items-center justify-center group-hover:from-primary/25 group-hover:to-primary/10 boty-transition">
+                <cat.icon className="w-5 h-5 sm:w-6 sm:h-6 text-primary/70 group-hover:text-primary boty-transition" strokeWidth={1.5} />
               </div>
               <span className="text-xs sm:text-sm font-medium text-foreground/80 group-hover:text-foreground boty-transition">
                 {cat.name}

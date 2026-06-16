@@ -37,8 +37,8 @@ export function Footer() {
   const { ref, isVisible } = useScrollReveal()
 
   return (
-    <footer className="bg-card pt-12 sm:pt-16 lg:pt-20 pb-6 sm:pb-8" ref={ref}>
-      <div className={`max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 scroll-reveal ${isVisible ? "visible" : ""}`}>
+    <footer className="bg-card pt-10 sm:pt-12 md:pt-16 lg:pt-20 pb-6 sm:pb-8" ref={ref}>
+      <div className={`max-w-7xl mx-auto px-4 sm:px-5 md:px-6 lg:px-8 scroll-reveal ${isVisible ? "visible" : ""}`}>
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 sm:gap-10 mb-10 sm:mb-16">
           {/* Brand */}
           <div className="col-span-2 sm:col-span-2 md:col-span-4 lg:col-span-1">
