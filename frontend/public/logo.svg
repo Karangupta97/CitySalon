@@ -1,0 +1,20 @@
+<svg width="200" height="40" viewBox="0 0 200 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- CitySalon wordmark with leaf accent -->
+  <style>
+    @media (prefers-color-scheme: light) {
+      .logo-text { fill: #2C2C2C; }
+      .logo-leaf { fill: #4F5B3A; }
+    }
+    @media (prefers-color-scheme: dark) {
+      .logo-text { fill: #F7F4EF; }
+      .logo-leaf { fill: #8B9A6D; }
+    }
+  </style>
+  <!-- Leaf icon mark -->
+  <path class="logo-leaf" d="M10 8c0 0-1 12-12 16c0 0 12-1 12-16z" transform="translate(2, 2)" opacity="0.9"/>
+  <path class="logo-leaf" d="M10 8l-10 13" stroke-width="1.2" stroke-linecap="round" fill="none" transform="translate(2, 2)" stroke="#4F5B3A"/>
+  <!-- Text: CitySalon in Playfair-style serif -->
+  <text class="logo-text" x="22" y="28" font-family="'Playfair Display', serif" font-size="26" font-weight="500" letter-spacing="2">
+    CitySalon
+  </text>
+</svg>

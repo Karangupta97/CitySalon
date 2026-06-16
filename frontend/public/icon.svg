@@ -1,0 +1,23 @@
+<svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    @media (prefers-color-scheme: light) {
+      .cs-bg { fill: #4F5B3A; }
+      .cs-mark { fill: none; stroke: #F7F4EF; }
+      .cs-leaf { fill: #F7F4EF; stroke: #F7F4EF; }
+    }
+    @media (prefers-color-scheme: dark) {
+      .cs-bg { fill: #F7F4EF; }
+      .cs-mark { fill: none; stroke: #4F5B3A; }
+      .cs-leaf { fill: #4F5B3A; stroke: #4F5B3A; }
+    }
+  </style>
+  <rect class="cs-bg" width="180" height="180" rx="40"/>
+  <!-- CS monogram -->
+  <g class="cs-mark" stroke-width="14" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M84 62A34 34 0 1 0 84 130"/>
+    <path d="M102 76c0-9 7-16 16-16h2c9 0 16 7 16 16s-7 16-16 16h-2c-9 0-16 7-16 16s7 16 16 16h2c9 0 16-7 16-16"/>
+  </g>
+  <!-- Organic leaf accent -->
+  <path class="cs-leaf" d="M138 32c-1 10-7 17-19 21c10-2 17-8 19-21z" stroke-width="0"/>
+  <path class="cs-leaf" d="M136 34l-15 16" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+</svg>
