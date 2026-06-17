@@ -6,6 +6,7 @@ export interface UserRow {
   email: string;
   phone_number?: string;
   password_hash: string;
+  role?: string;
   is_verified?: boolean;
   verification_token?: string | null;
   verification_token_expires_at?: string | null;

@@ -27,6 +27,7 @@ export function generateRefreshToken(payload: TokenPayload): string {
 
 /**
  * Verify access token signatures.
+ * Alias: verifyToken — used by auth middleware.
  */
 export function verifyAccessToken(token: string): TokenPayload | null {
   try {
@@ -35,6 +36,9 @@ export function verifyAccessToken(token: string): TokenPayload | null {
     return null;
   }
 }
+
+/** Alias for verifyAccessToken — used by auth middleware. */
+export const verifyToken = verifyAccessToken;
 
 /**
  * Verify refresh token signatures.

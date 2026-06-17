@@ -118,7 +118,7 @@ export class AuthService {
     }
 
     // Generate session JWT tokens
-    const payload = { userId: user.id!, email: user.email };
+    const payload = { userId: user.id!, email: user.email, role: (user as any).role || "customer" };
     const accessToken = generateAccessToken(payload);
     const refreshToken = generateRefreshToken(payload);
 
@@ -240,7 +240,7 @@ export class AuthService {
     }
 
     // Generate session JWT tokens
-    const payload = { userId: user.id!, email: user.email };
+    const payload = { userId: user.id!, email: user.email, role: (user as any).role || "customer" };
     const accessToken = generateAccessToken(payload);
     const refreshToken = generateRefreshToken(payload);
 
