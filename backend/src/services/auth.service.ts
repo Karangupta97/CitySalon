@@ -80,7 +80,26 @@ export class AuthService {
    * Authenticates user, checks verification status, and returns signed access & refresh JWT tokens.
    */
   static async login(email: string, password: string): Promise<{ accessToken: string; refreshToken: string; user: Omit<UserRow, "password_hash"> }> {
-    const user = await UserRepository.findByEmail(email);
+    const normalizedEmail = email.toLowerCase().trim();
+    let user = await UserRepository.findByEmail(normalizedEmail);
+
+    // Auto-seed hackathon judge user if logging in with demo credentials and user doesn't exist yet
+    if (!user && normalizedEmail === "judge@citysalon.com") {
+      try {
+        const password_hash = await bcrypt.hash("Password123!", 12);
+        user = await UserRepository.create({
+          full_name: "Demo Judge",
+          email: "judge@citysalon.com",
+          password_hash,
+          is_verified: true,
+          verification_token: null,
+          verification_token_expires_at: null,
+        });
+      } catch (err) {
+        console.error("Failed to seed demo judge user:", err);
+      }
+    }
+
     if (!user) {
       throw new UnauthorizedError("Invalid email or password credentials.");
     }
