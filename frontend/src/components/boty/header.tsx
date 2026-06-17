@@ -37,10 +37,10 @@ export function Header() {
               AI Advisor
             </Link>
             <Link
-              href="/for-salons"
+              href="/salons"
               className="text-sm tracking-wide text-foreground/70 hover:text-foreground boty-transition"
             >
-              For Salons
+              Salons Near You
             </Link>
             <Link
               href="/cities"
@@ -97,11 +97,11 @@ export function Header() {
               AI Advisor
             </Link>
             <Link
-              href="/for-salons"
+              href="/salons"
               className="text-sm tracking-wide text-foreground/70 hover:text-foreground boty-transition py-1.5"
               onClick={() => setIsMenuOpen(false)}
             >
-              For Salons
+              Salons Near You
             </Link>
             <Link
               href="/cities"
