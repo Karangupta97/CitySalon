@@ -61,4 +61,25 @@ export class AuthController {
     await AuthService.resetPassword(token, password);
     return sendSuccess(res, null, "Password has been successfully updated. You can now log in with your new credentials.");
   });
+
+  /**
+   * Handles Google OAuth token login.
+   */
+  static googleLogin = asyncHandler(async (req: Request, res: Response) => {
+    const { idToken } = req.body;
+    if (!idToken || typeof idToken !== "string") {
+      throw new BadRequestError("Google ID Token is required.");
+    }
+    const { accessToken, refreshToken, user } = await AuthService.googleLogin(idToken);
+
+    // Set secure HttpOnly cookie for refresh tokens
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+    return sendSuccess(res, { accessToken, user }, "Google login successful.");
+  });
 }

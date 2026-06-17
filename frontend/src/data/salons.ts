@@ -1,257 +1,296 @@
 export interface SalonService {
-  name: string
-  duration: string
-  price: string
-  category: string
+  name: string;
+  price: number;
+  duration: string;
+  category: string;
 }
 
-export interface SalonGalleryImage {
-  src: string
-  alt: string
-  caption: string
+export interface Salon {
+  id: string;
+  name: string;
+  area: string;
+  city: string;
+  rating: number;
+  reviewCount: number;
+  startingPrice: number;
+  services: SalonService[];
+  specialties: string[];
+  availableSlots: Record<string, string[]>;
+  distanceKm: number;
+  verified: boolean;
+  hygieneScore: number;
+  tags: string[];
 }
 
-export interface SalonZone {
-  name: string
-  description: string
-  image: string
-}
-
-export interface SalonStylist {
-  id: string
-  name: string
-  role: string
-  experience: string
-  speciality: string
-  clients: string
-  rating: number
-  reviewCount: number
-  image: string
-  availability: "available" | "busy" | "off"
-}
-
-export interface BeforeAfterImage {
-  before: string
-  after: string
-  service: string
-  stylist: string
-}
-
-export interface HygieneChecklist {
-  autoclaveSterlization: boolean
-  freshTowels: boolean
-  licensedStaff: boolean
-  disposableKits: boolean
-  regularSanitization: boolean
-  airPurification: boolean
-}
-
-export interface SalonData {
-  id: string
-  name: string
-  tagline: string
-  description: string
-  heroImage: string
-  galleryImages: SalonGalleryImage[]
-  rating: number
-  reviews: number
-  location: string
-  fullAddress: string
-  phone: string
-  email: string
-  website: string
-  instagram: string
-  openingHours: Record<string, string>
-  services: SalonService[]
-  zones: SalonZone[]
-  designFirm: string
-  principalDesigner: string
-  designPhilosophy: string
-  highlights: string[]
-  amenities: string[]
-  // New deep profile fields
-  hygieneScore: number
-  hygieneChecklist: HygieneChecklist
-  liveStatus: "available" | "short-wait" | "busy" | "fully-booked"
-  waitTime: string
-  aiReviewSummary: string
-  priceGuarantee: boolean
-  stylists: SalonStylist[]
-  beforeAfterGallery: BeforeAfterImage[]
-}
-
-export const salons: Record<string, SalonData> = {
-  "akshita-shoanak": {
-    id: "akshita-shoanak",
-    name: "Akshita Shoanak Studio Salon",
-    tagline: "Where luxury meets comfort — a glamorous journey through refined beauty",
-    description:
-      "Located in Ulwe, Navi Mumbai, Akshita Shoanak Studio Salon is a sophisticated hospitality space designed by Studio Serif. The salon harmoniously balances luxury and comfort through rich maroon and green palettes, refined textures, and a spatial composition that enhances both experience and elegance. Every element is rooted in a unified design language that celebrates glamour and grace.",
-    heroImage: "/images/hero-model.jpg",
-    galleryImages: [
-      {
-        src: "/images/bento-skin-model.jpg",
-        alt: "Reception area with maroon-toned desk",
-        caption: "Maroon-toned reception with natural sunlight",
-      },
-      {
-        src: "/images/skincare-ritual.jpg",
-        alt: "Hairdressing area with green chairs",
-        caption: "Elegant hairdressing zone with crystal chandelier",
-      },
-      {
-        src: "/images/natural-leaf.jpg",
-        alt: "Skin room with tropical wallpaper",
-        caption: "Serene skin room with tropical accents",
-      },
-      {
-        src: "/images/036a9eb7-4aa9-44aa-ba0a-c3a03061efca.png",
-        alt: "Pedicure station with maroon chairs",
-        caption: "Professional pedicure station",
-      },
-      {
-        src: "/images/add13a77-0251-4025-aa57-2aa5760e6d04.png",
-        alt: "Makeup room with illuminated mirror",
-        caption: "First floor makeup room with dramatic lighting",
-      },
-      {
-        src: "/images/bf965cf4-e728-4e72-ab1b-16b1cd8f1822.png",
-        alt: "Nail art station",
-        caption: "Precision nail art station with modern décor",
-      },
-    ],
+export const salons: Salon[] = [
+  {
+    id: "salon-001",
+    name: "Glow & Grace Studio",
+    area: "Bandra West",
+    city: "Mumbai",
     rating: 4.9,
-    reviews: 856,
-    location: "Ulwe, Navi Mumbai",
-    fullAddress: "Sector 19, Ulwe, Navi Mumbai, Maharashtra 410206",
-    phone: "+91 98765 43210",
-    email: "hello@akshitashoanak.com",
-    website: "https://www.akshitashoanak.com",
-    instagram: "https://www.instagram.com/akshitashoanakstudio",
-    openingHours: {
-      Monday: "10:00 AM – 8:00 PM",
-      Tuesday: "10:00 AM – 8:00 PM",
-      Wednesday: "10:00 AM – 8:00 PM",
-      Thursday: "10:00 AM – 8:00 PM",
-      Friday: "10:00 AM – 9:00 PM",
-      Saturday: "9:00 AM – 9:00 PM",
-      Sunday: "9:00 AM – 7:00 PM",
-    },
+    reviewCount: 342,
+    startingPrice: 1500,
     services: [
-      // Hair Services
-      { name: "Haircut & Styling", duration: "45 min", price: "₹599", category: "Hair" },
-      { name: "Hair Coloring (Global)", duration: "2 hrs", price: "₹2,999", category: "Hair" },
-      { name: "Highlights & Balayage", duration: "2.5 hrs", price: "₹4,499", category: "Hair" },
-      { name: "Keratin Treatment", duration: "3 hrs", price: "₹5,999", category: "Hair" },
-      { name: "Hair Spa & Deep Conditioning", duration: "1 hr", price: "₹1,499", category: "Hair" },
-      { name: "Smoothening Treatment", duration: "3 hrs", price: "₹6,999", category: "Hair" },
-      // Skin Services
-      { name: "Classic Facial", duration: "1 hr", price: "₹999", category: "Skin" },
-      { name: "Gold Facial Treatment", duration: "1.5 hrs", price: "₹1,999", category: "Skin" },
-      { name: "Anti-Aging Facial", duration: "1.5 hrs", price: "₹2,499", category: "Skin" },
-      { name: "De-Tan Treatment", duration: "45 min", price: "₹799", category: "Skin" },
-      { name: "Hydra Facial", duration: "1 hr", price: "₹3,499", category: "Skin" },
-      // Makeup
-      { name: "Party Makeup", duration: "1 hr", price: "₹2,499", category: "Makeup" },
-      { name: "Bridal Makeup", duration: "3 hrs", price: "₹15,999", category: "Makeup" },
-      { name: "Engagement Makeup", duration: "2 hrs", price: "₹8,999", category: "Makeup" },
-      { name: "Air-Brush Makeup", duration: "1.5 hrs", price: "₹4,999", category: "Makeup" },
-      // Nails
-      { name: "Classic Manicure", duration: "30 min", price: "₹499", category: "Nails" },
-      { name: "Gel Nail Extensions", duration: "1.5 hrs", price: "₹1,999", category: "Nails" },
-      { name: "Nail Art (per nail)", duration: "15 min", price: "₹149", category: "Nails" },
-      { name: "Spa Pedicure", duration: "45 min", price: "₹799", category: "Nails" },
-      // Body
-      { name: "Full Body Waxing", duration: "1.5 hrs", price: "₹1,999", category: "Body" },
-      { name: "Threading & Shaping", duration: "20 min", price: "₹199", category: "Body" },
+      { name: "Bridal Makeup", price: 8000, duration: "2.5 hrs", category: "bridal" },
+      { name: "Bridal Trial", price: 2500, duration: "1.5 hrs", category: "bridal" },
+      { name: "HD Party Makeup", price: 3500, duration: "1 hr", category: "makeup" },
+      { name: "Hair Styling", price: 1500, duration: "45 min", category: "hair" },
+      { name: "Facial - Gold", price: 2000, duration: "1 hr", category: "skin" },
     ],
-    zones: [
-      {
-        name: "Main Entry & Reception",
-        description:
-          "The glass-fronted entryway sets a bold tone with blend of signage and polished flooring. A maroon-toned reception desk anchors the space, brightened by natural sunlight through expansive windows with intricate ceiling wallpaper.",
-        image: "/images/bento-skin-model.jpg",
-      },
-      {
-        name: "Hairdressing Area",
-        description:
-          "Featuring lush green chairs and double-height elegantly framed mirrors, a crystal chandelier and intricately papered ceiling add glamorous flourish while integrating luxury and utility seamlessly.",
-        image: "/images/skincare-ritual.jpg",
-      },
-      {
-        name: "Nail Art Station",
-        description:
-          "Designed for precision and style with spacious tables, modern chairs, display accents, and focused lighting that underscore this chic and efficient setting.",
-        image: "/images/bf965cf4-e728-4e72-ab1b-16b1cd8f1822.png",
-      },
-      {
-        name: "Skin Room",
-        description:
-          "A palette of deep green and oakwood tones with tropical wallpaper creates a tranquil environment tailored for calming, personalized skincare rituals.",
-        image: "/images/natural-leaf.jpg",
-      },
-      {
-        name: "Pedicure Station",
-        description:
-          "Outfitted with plush maroon chairs and professional pedicure equipment. Green walls with elaborate murals introduce freshness while adjustable stools and functional lighting elevate the experience.",
-        image: "/images/036a9eb7-4aa9-44aa-ba0a-c3a03061efca.png",
-      },
-      {
-        name: "First Floor Makeup Room",
-        description:
-          "Rich maroon walls and large illuminated mirrors define this dramatic yet inviting setting, tailored for beauty transformations where functionality meets flair.",
-        image: "/images/add13a77-0251-4025-aa57-2aa5760e6d04.png",
-      },
-    ],
-    designFirm: "Studio Serif",
-    principalDesigner: "Anmol Kataria",
-    designPhilosophy:
-      "Studio Serif crafted an immersive environment that feels glamorous yet grounded. Each zone reflects a unique identity while maintaining a cohesive visual narrative — from the tropical calm of the skin room to the bold charm of the makeup area. The entire salon follows a single theme, with each space adding to one complete visual story.",
-    highlights: [
-      "Designed by award-winning Studio Serif",
-      "Rich maroon & green colour palette throughout",
-      "Crystal chandeliers & designer lighting",
-      "Double-height mirrors in hairdressing zone",
-      "Tropical-themed skin treatment rooms",
-      "Two-floor premium salon experience",
-      "Premium imported hair care products",
-      "Complimentary beverages during service",
-    ],
-    amenities: [
-      "Free WiFi",
-      "Complimentary Beverages",
-      "Dedicated Parking",
-      "Air Conditioned",
-      "Wheelchair Accessible",
-      "Online Booking",
-      "Card Payment Accepted",
-      "Sanitized Equipment",
-    ],
-    hygieneScore: 96,
-    hygieneChecklist: {
-      autoclaveSterlization: true,
-      freshTowels: true,
-      licensedStaff: true,
-      disposableKits: true,
-      regularSanitization: true,
-      airPurification: true,
+    specialties: ["bridal", "party makeup", "hair styling"],
+    availableSlots: {
+      "2026-06-18": ["10:00", "11:30", "14:00", "16:00"],
+      "2026-06-19": ["09:00", "11:00", "13:00", "15:30"],
+      "2026-06-20": ["10:00", "12:00", "14:30", "17:00"],
+      "2026-06-21": ["09:30", "11:00", "13:30", "16:00", "18:00"],
     },
-    liveStatus: "short-wait",
-    waitTime: "~15 min",
-    aiReviewSummary: "Customers love the keratin treatment and balayage work by Priya. The ambience and crystal chandeliers get frequent praise. Staff is described as friendly and professional. Common feedback: parking can be difficult on weekends, and occasional 10–15 minute wait times during peak hours. Bridal packages are highly recommended.",
-    priceGuarantee: true,
-    stylists: [
-      { id: "priya", name: "Priya Sharma", role: "Senior Hair Stylist", experience: "8 years", speciality: "Balayage & Color", clients: "2,400+", rating: 4.9, reviewCount: 312, image: "/placeholder-user.jpg", availability: "available" },
-      { id: "rahul", name: "Rahul Desai", role: "Creative Director", experience: "12 years", speciality: "Precision Cuts", clients: "4,200+", rating: 4.8, reviewCount: 485, image: "/placeholder-user.jpg", availability: "busy" },
-      { id: "sneha", name: "Sneha Patel", role: "Skin Specialist", experience: "6 years", speciality: "Hydra Facials", clients: "1,800+", rating: 4.9, reviewCount: 198, image: "/placeholder-user.jpg", availability: "available" },
-      { id: "ananya", name: "Ananya Mehta", role: "Makeup Artist", experience: "10 years", speciality: "Bridal Makeup", clients: "3,100+", rating: 4.7, reviewCount: 267, image: "/placeholder-user.jpg", availability: "available" },
-      { id: "vikram", name: "Vikram Joshi", role: "Hair Stylist", experience: "5 years", speciality: "Keratin & Smoothening", clients: "1,500+", rating: 4.8, reviewCount: 156, image: "/placeholder-user.jpg", availability: "off" },
-      { id: "divya", name: "Divya Nair", role: "Nail Artist", experience: "4 years", speciality: "Gel Extensions & Art", clients: "1,200+", rating: 4.7, reviewCount: 134, image: "/placeholder-user.jpg", availability: "available" },
-    ],
-    beforeAfterGallery: [
-      { before: "/images/bento-skin-model.jpg", after: "/images/skincare-ritual.jpg", service: "Balayage", stylist: "Priya Sharma" },
-      { before: "/images/natural-leaf.jpg", after: "/images/hero-model.jpg", service: "Keratin Treatment", stylist: "Vikram Joshi" },
-      { before: "/images/036a9eb7-4aa9-44aa-ba0a-c3a03061efca.png", after: "/images/add13a77-0251-4025-aa57-2aa5760e6d04.png", service: "Bridal Makeup", stylist: "Ananya Mehta" },
-    ],
+    distanceKm: 2.1,
+    verified: true,
+    hygieneScore: 9.5,
+    tags: ["bridal-specialist", "premium", "trained-artists"],
   },
-}
+  {
+    id: "salon-002",
+    name: "The Hair Loft",
+    area: "Andheri West",
+    city: "Mumbai",
+    rating: 4.7,
+    reviewCount: 218,
+    startingPrice: 800,
+    services: [
+      { name: "Keratin Treatment", price: 4500, duration: "2 hrs", category: "hair" },
+      { name: "Olaplex Treatment", price: 3500, duration: "1.5 hrs", category: "hair" },
+      { name: "Hair Color (Global)", price: 3000, duration: "2 hrs", category: "hair" },
+      { name: "Haircut - Women", price: 800, duration: "30 min", category: "hair" },
+      { name: "Hair Spa", price: 1200, duration: "45 min", category: "hair" },
+    ],
+    specialties: ["keratin", "hair color", "hair treatments"],
+    availableSlots: {
+      "2026-06-18": ["09:00", "11:00", "13:00", "15:00", "17:00"],
+      "2026-06-19": ["10:00", "12:00", "14:00", "16:00"],
+      "2026-06-20": ["09:30", "11:30", "14:00", "16:30"],
+      "2026-06-21": ["10:00", "12:00", "14:30", "17:00"],
+    },
+    distanceKm: 4.5,
+    verified: true,
+    hygieneScore: 9.0,
+    tags: ["hair-specialist", "organic-products", "experienced"],
+  },
+  {
+    id: "salon-003",
+    name: "Luxe Grooming Co.",
+    area: "Juhu",
+    city: "Mumbai",
+    rating: 4.8,
+    reviewCount: 156,
+    startingPrice: 400,
+    services: [
+      { name: "Men's Haircut", price: 400, duration: "30 min", category: "grooming" },
+      { name: "Beard Trim & Shape", price: 250, duration: "20 min", category: "grooming" },
+      { name: "Premium Facial - Men", price: 1500, duration: "45 min", category: "skin" },
+      { name: "Hair Color - Men", price: 1000, duration: "45 min", category: "hair" },
+      { name: "Head Massage", price: 500, duration: "30 min", category: "spa" },
+    ],
+    specialties: ["men's grooming", "beard styling", "men's facials"],
+    availableSlots: {
+      "2026-06-18": ["09:00", "10:00", "11:00", "12:00", "14:00", "15:00", "16:00", "17:00"],
+      "2026-06-19": ["09:00", "10:30", "12:00", "14:00", "16:00", "18:00"],
+      "2026-06-20": ["10:00", "11:30", "13:00", "15:00", "17:00"],
+      "2026-06-21": ["09:00", "11:00", "13:00", "15:00", "17:00", "19:00"],
+    },
+    distanceKm: 3.2,
+    verified: true,
+    hygieneScore: 9.2,
+    tags: ["mens-specialist", "premium-grooming", "walk-in"],
+  },
+  {
+    id: "salon-004",
+    name: "Serene Spa & Salon",
+    area: "Worli",
+    city: "Mumbai",
+    rating: 4.6,
+    reviewCount: 289,
+    startingPrice: 600,
+    services: [
+      { name: "Deep Cleansing Facial", price: 1800, duration: "1 hr", category: "skin" },
+      { name: "Oily Skin Facial", price: 1200, duration: "45 min", category: "skin" },
+      { name: "Anti-Aging Facial", price: 2500, duration: "1 hr", category: "skin" },
+      { name: "Body Massage", price: 2000, duration: "1 hr", category: "spa" },
+      { name: "Mani-Pedi", price: 600, duration: "1 hr", category: "nails" },
+    ],
+    specialties: ["facials", "skin care", "spa treatments"],
+    availableSlots: {
+      "2026-06-18": ["10:00", "12:00", "14:00", "16:00"],
+      "2026-06-19": ["09:00", "11:00", "13:00", "15:00", "17:00"],
+      "2026-06-20": ["10:00", "12:30", "15:00"],
+      "2026-06-21": ["09:00", "11:00", "14:00", "16:30"],
+    },
+    distanceKm: 5.8,
+    verified: true,
+    hygieneScore: 9.4,
+    tags: ["spa-specialist", "organic", "relaxation"],
+  },
+  {
+    id: "salon-005",
+    name: "Khar Beauty Bar",
+    area: "Khar West",
+    city: "Mumbai",
+    rating: 4.5,
+    reviewCount: 178,
+    startingPrice: 500,
+    services: [
+      { name: "Nail Art", price: 800, duration: "45 min", category: "nails" },
+      { name: "Gel Extensions", price: 2000, duration: "1.5 hrs", category: "nails" },
+      { name: "Waxing - Full Body", price: 2500, duration: "1.5 hrs", category: "waxing" },
+      { name: "Threading - Full Face", price: 150, duration: "15 min", category: "threading" },
+      { name: "Cleanup Facial", price: 500, duration: "30 min", category: "skin" },
+    ],
+    specialties: ["nail art", "waxing", "quick services"],
+    availableSlots: {
+      "2026-06-18": ["09:00", "10:00", "11:00", "13:00", "14:00", "15:00", "16:00"],
+      "2026-06-19": ["09:30", "11:00", "12:30", "14:00", "16:00"],
+      "2026-06-20": ["10:00", "11:30", "13:00", "15:00", "17:00"],
+      "2026-06-21": ["09:00", "10:30", "12:00", "14:00", "16:00", "18:00"],
+    },
+    distanceKm: 2.8,
+    verified: true,
+    hygieneScore: 8.8,
+    tags: ["nail-specialist", "affordable", "express-services"],
+  },
+  {
+    id: "salon-006",
+    name: "Aura Hair & Skin",
+    area: "Powai",
+    city: "Mumbai",
+    rating: 4.7,
+    reviewCount: 203,
+    startingPrice: 700,
+    services: [
+      { name: "Keratin Smoothing", price: 3800, duration: "2 hrs", category: "hair" },
+      { name: "Balayage", price: 5000, duration: "3 hrs", category: "hair" },
+      { name: "Women's Haircut", price: 700, duration: "30 min", category: "hair" },
+      { name: "Hydra Facial", price: 3000, duration: "1 hr", category: "skin" },
+      { name: "Bridal Package", price: 9000, duration: "3 hrs", category: "bridal" },
+    ],
+    specialties: ["hair color", "bridal", "advanced facials"],
+    availableSlots: {
+      "2026-06-18": ["10:00", "12:00", "14:30"],
+      "2026-06-19": ["09:30", "11:30", "14:00", "16:30"],
+      "2026-06-20": ["10:00", "13:00", "15:30"],
+      "2026-06-21": ["09:00", "11:00", "14:00", "16:00", "18:00"],
+    },
+    distanceKm: 7.3,
+    verified: true,
+    hygieneScore: 9.1,
+    tags: ["premium", "experienced-stylists", "unisex"],
+  },
+  {
+    id: "salon-007",
+    name: "Heritage Salon",
+    area: "Colaba",
+    city: "Mumbai",
+    rating: 4.4,
+    reviewCount: 412,
+    startingPrice: 300,
+    services: [
+      { name: "Classic Haircut", price: 300, duration: "20 min", category: "hair" },
+      { name: "Shave & Facial", price: 500, duration: "30 min", category: "grooming" },
+      { name: "Hair Color", price: 1500, duration: "1 hr", category: "hair" },
+      { name: "Head & Shoulder Massage", price: 400, duration: "20 min", category: "spa" },
+      { name: "Threading", price: 100, duration: "10 min", category: "threading" },
+    ],
+    specialties: ["classic cuts", "traditional grooming"],
+    availableSlots: {
+      "2026-06-18": ["08:00", "09:00", "10:00", "11:00", "12:00", "14:00", "15:00", "16:00", "17:00"],
+      "2026-06-19": ["08:00", "09:30", "11:00", "12:30", "14:00", "15:30", "17:00"],
+      "2026-06-20": ["09:00", "10:30", "12:00", "14:00", "16:00"],
+      "2026-06-21": ["08:00", "10:00", "12:00", "14:00", "16:00", "18:00"],
+    },
+    distanceKm: 8.1,
+    verified: true,
+    hygieneScore: 8.5,
+    tags: ["budget-friendly", "walk-in", "traditional"],
+  },
+  {
+    id: "salon-008",
+    name: "Bliss Unisex Salon",
+    area: "Dadar West",
+    city: "Mumbai",
+    rating: 4.6,
+    reviewCount: 267,
+    startingPrice: 450,
+    services: [
+      { name: "Haircut - Men", price: 450, duration: "25 min", category: "grooming" },
+      { name: "Haircut - Women", price: 600, duration: "30 min", category: "hair" },
+      { name: "Smoothening", price: 4000, duration: "2.5 hrs", category: "hair" },
+      { name: "Party Makeup", price: 2500, duration: "1 hr", category: "makeup" },
+      { name: "Full Body Waxing", price: 2000, duration: "1.5 hrs", category: "waxing" },
+    ],
+    specialties: ["unisex", "smoothening", "party ready"],
+    availableSlots: {
+      "2026-06-18": ["09:00", "10:30", "12:00", "14:00", "15:30", "17:00"],
+      "2026-06-19": ["09:30", "11:00", "13:00", "15:00", "17:00"],
+      "2026-06-20": ["10:00", "12:00", "14:30", "16:30"],
+      "2026-06-21": ["09:00", "11:00", "13:00", "15:00", "17:30"],
+    },
+    distanceKm: 6.0,
+    verified: true,
+    hygieneScore: 8.9,
+    tags: ["unisex", "mid-range", "family-friendly"],
+  },
+  {
+    id: "salon-009",
+    name: "Velvet Touch Spa",
+    area: "Borivali West",
+    city: "Mumbai",
+    rating: 4.5,
+    reviewCount: 134,
+    startingPrice: 500,
+    services: [
+      { name: "Swedish Massage", price: 2500, duration: "1 hr", category: "spa" },
+      { name: "Aroma Therapy", price: 3000, duration: "1.5 hrs", category: "spa" },
+      { name: "De-Tan Facial", price: 1000, duration: "45 min", category: "skin" },
+      { name: "Pedicure - Luxury", price: 800, duration: "45 min", category: "nails" },
+      { name: "Hair Spa Premium", price: 1500, duration: "1 hr", category: "hair" },
+    ],
+    specialties: ["spa", "relaxation", "body treatments"],
+    availableSlots: {
+      "2026-06-18": ["10:00", "12:00", "14:00", "16:00"],
+      "2026-06-19": ["09:00", "11:00", "13:00", "15:00"],
+      "2026-06-20": ["10:30", "13:00", "15:30"],
+      "2026-06-21": ["09:00", "11:30", "14:00", "16:30", "18:30"],
+    },
+    distanceKm: 12.5,
+    verified: true,
+    hygieneScore: 9.3,
+    tags: ["spa-focused", "premium-experience", "peaceful"],
+  },
+  {
+    id: "salon-010",
+    name: "Urban Chic Studio",
+    area: "Chembur",
+    city: "Mumbai",
+    rating: 4.8,
+    reviewCount: 189,
+    startingPrice: 600,
+    services: [
+      { name: "Bridal Makeup", price: 7000, duration: "2 hrs", category: "bridal" },
+      { name: "Engagement Makeup", price: 4500, duration: "1.5 hrs", category: "bridal" },
+      { name: "Nail Art - Premium", price: 1200, duration: "1 hr", category: "nails" },
+      { name: "Hair Highlights", price: 3500, duration: "2 hrs", category: "hair" },
+      { name: "Oxygen Facial", price: 2200, duration: "1 hr", category: "skin" },
+    ],
+    specialties: ["bridal", "nail art", "trendy styles"],
+    availableSlots: {
+      "2026-06-18": ["09:30", "11:30", "14:00", "16:30"],
+      "2026-06-19": ["10:00", "12:00", "14:30", "17:00"],
+      "2026-06-20": ["09:00", "11:00", "13:30", "16:00"],
+      "2026-06-21": ["10:00", "12:30", "15:00", "17:30"],
+    },
+    distanceKm: 9.2,
+    verified: true,
+    hygieneScore: 9.0,
+    tags: ["trendy", "bridal-packages", "instagram-worthy"],
+  },
+];

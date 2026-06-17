@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect, useCallback } from "react"
+import Image from "next/image"
 import Link from "next/link"
 import {
   Sparkles,
@@ -21,6 +22,10 @@ import {
   Menu,
   X,
   LogIn,
+  Search,
+  Shield,
+  Mic,
+  MicOff,
 } from "lucide-react"
 import { useAuth } from "@/components/boty/auth-context"
 
@@ -33,12 +38,17 @@ interface Message {
 }
 
 interface SalonSuggestion {
+  id: string
   name: string
   area: string
   rating: number
+  reviews: number
   service: string
   price: string
-  slug: string
+  image: string
+  hygieneScore: number
+  liveStatus: string
+  distance: string
 }
 
 interface ChatSession {
@@ -53,7 +63,9 @@ const quickPrompts = [
   { icon: Scissors, label: "Hair damaged from bleaching", prompt: "My hair is damaged from bleaching, what treatment should I get first?" },
   { icon: Droplets, label: "Best facial for dry skin", prompt: "I have dry, flaky skin. What type of facial would help me the most?" },
   { icon: Heart, label: "Bridal prep timeline", prompt: "I'm getting married in 3 months. What treatments should I start now?" },
+  { icon: Search, label: "Find a salon near me", prompt: "Find me a good salon nearby for a haircut and spa" },
   { icon: Leaf, label: "Chemical-free hair care", prompt: "I want to switch to chemical-free hair products. What should I look for?" },
+  { icon: Star, label: "Best rated salons", prompt: "Show me the top-rated salons with best hygiene scores" },
 ]
 
 function generateTitle(firstMessage: string): string {
@@ -61,89 +73,22 @@ function generateTitle(firstMessage: string): string {
   return words.length > 40 ? words.substring(0, 40) + "..." : words
 }
 
-function getAIResponse(query: string, userName?: string): { text: string; salons?: SalonSuggestion[] } {
-  const q = query.toLowerCase()
+async function callAdvisorAPI(
+  messages: { role: string; content: string }[],
+  userName?: string
+): Promise<{ text: string; salonSuggestions?: SalonSuggestion[] }> {
+  const res = await fetch("/api/advisor/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ messages, userName }),
+  })
 
-  // Greeting detection
-  if (q.match(/^(hi|hello|hey|good morning|good evening|good afternoon|namaste|hii+)/)) {
-    const greeting = userName
-      ? `Hey ${userName}! 👋 Great to see you back. I'm your personal beauty advisor — here to help with hair care, skincare routines, treatment recommendations, or finding the perfect salon.\n\nWhat can I help you with today?`
-      : `Hey there! 👋 I'm your AI Beauty Advisor — think of me as your personal beauty consultant available 24/7.\n\nI can help you with:\n• **Hair care** — damage repair, color advice, treatments\n• **Skincare** — routines, facials, product recommendations\n• **Bridal prep** — timelines, packages, artist booking\n• **Salon finder** — matching you with the right salon for your needs & budget\n\nWhat's on your mind today?`
-    return { text: greeting }
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: "Network error" }))
+    throw new Error(err.error || "Failed to get response")
   }
 
-  // Hair damage / bleach
-  if (q.includes("bleach") || q.includes("damage") || q.includes("protein") || q.includes("dry hair") || q.includes("frizz")) {
-    return {
-      text: "For bleach-damaged or frizzy hair, I'd recommend starting with a **protein treatment** before any further color work. Here's your recovery plan:\n\n1. **Olaplex or Keratin treatment** — rebuilds broken disulfide bonds in the hair shaft\n2. **Deep conditioning mask** — apply weekly for 4–6 weeks (look for ones with argan oil or shea butter)\n3. **Avoid heat styling** for at least 2 weeks post-treatment\n4. Switch to a **sulfate-free shampoo** to retain moisture\n5. Use a **leave-in conditioner** with argan oil or coconut milk daily\n6. Sleep on a **silk pillowcase** — reduces friction breakage\n\n**Timeline:** You should see significant improvement in 3–4 weeks with consistent care.\n\nHere are salons near you offering these treatments:",
-      salons: [
-        { name: "Akshita Shoanak Studio", area: "Ulwe, Navi Mumbai", rating: 4.9, service: "Keratin Treatment", price: "₹5,999", slug: "akshita-shoanak" },
-        { name: "Glamour Studio", area: "Bandra West", rating: 4.8, service: "Olaplex Treatment", price: "₹3,499", slug: "akshita-shoanak" },
-        { name: "Hair Revival Salon", area: "Vashi", rating: 4.7, service: "Protein Treatment", price: "₹1,299", slug: "akshita-shoanak" },
-      ],
-    }
-  }
-
-  // Dry skin / facial
-  if (q.includes("dry") || q.includes("flaky") || q.includes("facial") || q.includes("glow") || q.includes("hydrat")) {
-    return {
-      text: "For dry, dehydrated skin, here are the best facial options ranked by effectiveness:\n\n**Top Picks:**\n1. **Hydra Facial** — vortex suction deeply cleanses + infuses serums. Best for immediate glow and long-term hydration.\n2. **Oxygen Facial** — pushes concentrated oxygen + hyaluronic acid into skin layers.\n3. **Gold Facial** — boosts blood circulation and gives a dewy, radiant finish.\n\n**At-home routine between visits:**\n- Morning: Hyaluronic acid serum → moisturizer → SPF 50\n- Night: Gentle cleanser → niacinamide → rich night cream\n- Weekly: Sheet mask with ceramides\n\n**Pro tips:**\n• Apply moisturizer on slightly damp skin — locks in 3× more hydration\n• Avoid hot water on face — use lukewarm\n• Drink 2.5L+ water daily — hydration starts from within\n\nHere are salons with availability:",
-      salons: [
-        { name: "Akshita Shoanak Studio", area: "Ulwe, Navi Mumbai", rating: 4.9, service: "Hydra Facial", price: "₹3,499", slug: "akshita-shoanak" },
-        { name: "Skin & Glow Clinic", area: "Airoli", rating: 4.8, service: "Oxygen Facial", price: "₹2,999", slug: "akshita-shoanak" },
-      ],
-    }
-  }
-
-  // Bridal
-  if (q.includes("bridal") || q.includes("wedding") || q.includes("married") || q.includes("bride")) {
-    return {
-      text: "Congratulations! Here's your complete **3-month bridal prep timeline**:\n\n**Month 1 — Foundation:**\n- Start consistent skincare (cleanse → tone → moisturize → SPF daily)\n- Monthly facials — Hydra or Gold facial for glow\n- Hair spa every 2 weeks for texture improvement\n- Begin body polishing treatments\n- Start drinking 3L water/day + add biotin supplements\n\n**Month 2 — Enhancement:**\n- Trial makeup session (book 2–3 different artists to compare)\n- Hair color or highlights if desired (gives time for adjustments)\n- Teeth whitening if planned\n- Start threading/shaping to establish your preferred brow shape\n- Body waxing schedule — do a test run now\n\n**Month 3 — Final Prep:**\n- Final facial: 5 days before (not closer — skin needs recovery)\n- Threading & shaping: 2 days before\n- Hair wash + deep condition: 1 day before\n- Mani-pedi: 1 day before\n- Bridal makeup + hairstyling: Day of ✨\n\n**Pro tip:** Book your bridal artist 2–3 months in advance — the best ones fill up fast!\n\nTop-rated bridal salons near you:",
-      salons: [
-        { name: "Akshita Shoanak Studio", area: "Ulwe, Navi Mumbai", rating: 4.9, service: "Bridal Makeup", price: "₹15,999", slug: "akshita-shoanak" },
-        { name: "The Bridal Room", area: "Khar West", rating: 4.8, service: "Complete Bridal Package", price: "₹22,999", slug: "akshita-shoanak" },
-      ],
-    }
-  }
-
-  // Natural / organic
-  if (q.includes("natural") || q.includes("chemical-free") || q.includes("organic") || q.includes("ayurved")) {
-    return {
-      text: "Great choice going chemical-free! Here's your complete guide:\n\n**Ingredients to AVOID:**\n- SLS / SLES (harsh detergents that strip natural oils)\n- Parabens (preservatives linked to scalp irritation)\n- Silicones (dimethicone — creates buildup, fake smoothness)\n- Synthetic fragrances (can cause sensitivity)\n\n**Natural ingredients to LOOK FOR:**\n- **Amla & Shikakai** — natural cleansing + shine\n- **Bhringraj oil** — promotes hair growth, reduces greying\n- **Aloe vera** — soothes scalp inflammation\n- **Coconut milk** — deep conditioning\n- **Reetha (soapnut)** — gentle natural lather\n- **Hibiscus** — prevents premature greying\n\n**Indian brands worth trying:** Juicy Chemistry, Plum, Forest Essentials, Kama Ayurveda, Rustic Art\n\n**Salon treatments (chemical-free):**\n- Herbal hair spa (zero chemicals)\n- Ayurvedic scalp therapy (medicated oils)\n- Natural henna for color (avoid black henna — contains PPD)\n\n**Transition tip:** Your hair may feel waxy or different for 2–3 weeks as silicone buildup detoxes. This is completely normal — stick with it!",
-    }
-  }
-
-  // Hair fall
-  if (q.includes("hair fall") || q.includes("hair loss") || q.includes("thinning") || q.includes("bald")) {
-    return {
-      text: "Hair fall can have multiple causes. Here's a structured approach:\n\n**First, identify the cause:**\n- **Nutritional** — low iron, vitamin D, biotin deficiency\n- **Stress** — telogen effluvium (temporary, recovers in 3–6 months)\n- **Hormonal** — thyroid issues, PCOS, postpartum\n- **Mechanical** — tight hairstyles, heat damage, chemical overprocessing\n\n**Immediate steps:**\n1. Get blood work done (iron, ferritin, vitamin D, thyroid panel)\n2. Start a biotin + zinc supplement (consult your doctor)\n3. Use a mild, sulfate-free shampoo — don't wash daily\n4. Apply minoxidil 2% if recommended by dermatologist\n5. Scalp massage with warm coconut/castor oil 2× per week\n\n**Salon treatments that help:**\n- PRP therapy (platelet-rich plasma) — stimulates follicles\n- Mesotherapy — vitamin injection into scalp\n- LED light therapy — improves blood flow\n- Hair spa with keratin — strengthens existing strands\n\n**Don't:** Use home remedies like onion juice without patch testing first — it can irritate sensitive scalps.\n\nWant me to find salons offering hair fall treatments near you?",
-      salons: [
-        { name: "Akshita Shoanak Studio", area: "Ulwe, Navi Mumbai", rating: 4.9, service: "Hair Spa & Conditioning", price: "₹1,499", slug: "akshita-shoanak" },
-      ],
-    }
-  }
-
-  // Acne
-  if (q.includes("acne") || q.includes("pimple") || q.includes("breakout") || q.includes("oily skin")) {
-    return {
-      text: "For acne-prone or oily skin, here's what I recommend:\n\n**Daily routine:**\n- Morning: Salicylic acid cleanser → niacinamide serum → oil-free moisturizer → SPF 50 (gel-based)\n- Night: Double cleanse (oil → foam) → retinol (start 2×/week) → lightweight moisturizer\n\n**Key ingredients:**\n- **Salicylic acid (BHA)** — unclogs pores\n- **Niacinamide** — controls oil, reduces redness\n- **Retinol** — prevents future breakouts, fades marks\n- **Tea tree oil** — spot treatment (diluted)\n- **Zinc** — reduces inflammation\n\n**Salon treatments:**\n- Chemical peel (glycolic/lactic acid) — monthly\n- LED blue light therapy — kills acne bacteria\n- Extraction facial — professional comedone removal\n- Carbon laser facial — deep pore cleansing\n\n**Avoid:** Heavy creams, pore-clogging makeup, touching your face, dairy (for some people)\n\n**Timeline:** Consistent routine shows results in 6–8 weeks. Acne scars take 3–6 months to fade.",
-      salons: [
-        { name: "Akshita Shoanak Studio", area: "Ulwe, Navi Mumbai", rating: 4.9, service: "Hydra Facial", price: "₹3,499", slug: "akshita-shoanak" },
-      ],
-    }
-  }
-
-  // Thank you / appreciation
-  if (q.match(/thank|thanks|helpful|great advice|perfect/)) {
-    return {
-      text: "You're welcome! 😊 I'm glad I could help. Feel free to come back anytime you have beauty or salon-related questions.\n\n**Quick reminders:**\n- Consistency is key — most treatments need 4–6 weeks to show results\n- Always patch-test new products\n- Stay hydrated and get enough sleep — it shows on your skin!\n\nIs there anything else I can help you with?",
-    }
-  }
-
-  // Default
-  return {
-    text: "That's a great question! Here's what I'd suggest:\n\n1. **Consult a professional** — a trained stylist can assess your specific hair/skin type in person for the most accurate advice\n2. **Start simple** — introduce one new product or treatment at a time so you can track what works\n3. **Be patient** — most beauty treatments show real results after 4–6 weeks of consistency\n4. **Protect daily** — SPF 50 for skin, heat protectant spray for hair\n\n**General wellness tips that show on your skin & hair:**\n- Hydration — aim for 2.5L water daily\n- Sleep — 7+ hours is ideal for cell regeneration\n- Diet — biotin (eggs, nuts), zinc (seeds), omega-3s (fish, flaxseed)\n- Stress management — cortisol directly impacts skin & hair health\n\nWould you like me to recommend specific salons or treatments? Just tell me:\n- Your **location**\n- Your **main concern**\n- Your **budget range**\n\nAnd I'll find the best matches! 🎯",
-  }
+  return res.json()
 }
 
 function useChatHistory(userId: string | null) {
@@ -203,6 +148,8 @@ export default function AIBeautyAdvisorPage() {
   const [isTyping, setIsTyping] = useState(false)
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null)
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [isListening, setIsListening] = useState(false)
+  const recognitionRef = useRef<SpeechRecognition | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
@@ -210,6 +157,65 @@ export default function AIBeautyAdvisorPage() {
   }
 
   useEffect(() => { scrollToBottom() }, [messages, isTyping])
+
+  // Cleanup speech recognition on unmount
+  useEffect(() => {
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.abort()
+      }
+    }
+  }, [])
+
+  const toggleListening = () => {
+    if (isListening) {
+      recognitionRef.current?.stop()
+      setIsListening(false)
+      return
+    }
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+    if (!SpeechRecognition) {
+      alert("Speech recognition is not supported in your browser. Please try Chrome or Edge.")
+      return
+    }
+
+    const recognition = new SpeechRecognition()
+    recognition.lang = "en-IN"
+    recognition.interimResults = true
+    recognition.continuous = false
+
+    let finalTranscript = ""
+
+    recognition.onstart = () => setIsListening(true)
+
+    recognition.onresult = (event: SpeechRecognitionEvent) => {
+      let interim = ""
+      finalTranscript = ""
+      for (let i = 0; i < event.results.length; i++) {
+        const result = event.results[i]
+        if (result.isFinal) {
+          finalTranscript += result[0].transcript
+        } else {
+          interim += result[0].transcript
+        }
+      }
+      setInput(finalTranscript || interim)
+    }
+
+    recognition.onerror = () => setIsListening(false)
+
+    recognition.onend = () => {
+      setIsListening(false)
+      // Auto-send the final transcript
+      if (finalTranscript.trim()) {
+        handleSend(finalTranscript.trim())
+      }
+    }
+
+    recognitionRef.current = recognition
+    recognition.start()
+  }
 
   const handleSend = async (text?: string) => {
     const messageText = text || input.trim()
@@ -227,29 +233,45 @@ export default function AIBeautyAdvisorPage() {
     setInput("")
     setIsTyping(true)
 
-    await new Promise((r) => setTimeout(r, 1000 + Math.random() * 800))
+    try {
+      // Build message history for context
+      const chatHistory = updatedMessages.map((m) => ({
+        role: m.role,
+        content: m.content,
+      }))
 
-    const response = getAIResponse(messageText, user?.name?.split(" ")[0])
-    const assistantMessage: Message = {
-      id: (Date.now() + 1).toString(),
-      role: "assistant",
-      content: response.text,
-      salonSuggestions: response.salons,
-      timestamp: Date.now(),
-    }
+      const response = await callAdvisorAPI(chatHistory, user?.name?.split(" ")[0])
 
-    const finalMessages = [...updatedMessages, assistantMessage]
-    setMessages(finalMessages)
-    setIsTyping(false)
-
-    // Save to history if logged in
-    if (user) {
-      if (activeSessionId) {
-        updateSession(activeSessionId, finalMessages)
-      } else {
-        const session = createSession(messageText, finalMessages)
-        setActiveSessionId(session.id)
+      const assistantMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        content: response.text,
+        salonSuggestions: response.salonSuggestions,
+        timestamp: Date.now(),
       }
+
+      const finalMessages = [...updatedMessages, assistantMessage]
+      setMessages(finalMessages)
+
+      if (user) {
+        if (activeSessionId) {
+          updateSession(activeSessionId, finalMessages)
+        } else {
+          const session = createSession(messageText, finalMessages)
+          setActiveSessionId(session.id)
+        }
+      }
+    } catch (error) {
+      // Show error as assistant message
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        content: "I'm having trouble connecting right now. Please check that the Gemini API key is configured in your `.env.local` file and try again.\n\nIf the issue persists, please try again in a moment.",
+        timestamp: Date.now(),
+      }
+      setMessages([...updatedMessages, errorMessage])
+    } finally {
+      setIsTyping(false)
     }
   }
 
@@ -285,14 +307,12 @@ export default function AIBeautyAdvisorPage() {
       {/* Sidebar — Chat History (logged-in users only) */}
       {user && (
         <>
-          {/* Mobile overlay */}
           {sidebarOpen && (
             <div className="fixed inset-0 bg-black/30 z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />
           )}
           <aside className={`fixed lg:relative z-50 lg:z-auto top-0 left-0 h-full w-[280px] bg-card/95 backdrop-blur-xl border-r border-border/20 flex flex-col boty-transition ${
             sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
           }`}>
-            {/* Sidebar Header */}
             <div className="flex items-center justify-between p-4 border-b border-border/15">
               <span className="text-sm font-medium text-foreground">Chat History</span>
               <div className="flex items-center gap-1">
@@ -305,7 +325,6 @@ export default function AIBeautyAdvisorPage() {
               </div>
             </div>
 
-            {/* Session List */}
             <div className="flex-1 overflow-y-auto scrollbar-thin p-2">
               {sessions.length === 0 ? (
                 <p className="text-xs text-muted-foreground/60 text-center py-8 px-4">Your conversations will appear here</p>
@@ -335,7 +354,6 @@ export default function AIBeautyAdvisorPage() {
               )}
             </div>
 
-            {/* Sidebar Footer — User Info */}
             <div className="p-3 border-t border-border/15">
               <div className="flex items-center gap-2.5 px-2">
                 <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
@@ -354,7 +372,7 @@ export default function AIBeautyAdvisorPage() {
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top Bar */}
-        <header className="flex-shrink-0 flex items-center justify-between px-4 sm:px-6 py-3 border-b border-border/20">
+        <header className="flex-shrink-0 flex items-center justify-between px-4 sm:px-6 py-3 border-b border-border/10 bg-background/80 backdrop-blur-md">
           <div className="flex items-center gap-3">
             {user && (
               <button type="button" onClick={() => setSidebarOpen(true)} className="w-8 h-8 rounded-lg hover:bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground boty-transition lg:hidden" aria-label="Open history">
@@ -367,23 +385,29 @@ export default function AIBeautyAdvisorPage() {
             </Link>
           </div>
 
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
-              <Sparkles className="w-3.5 h-3.5 text-primary" />
+          <div className="flex items-center gap-2.5">
+            <div className="relative">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary/15 to-accent/10 flex items-center justify-center ring-1 ring-primary/10">
+                <Sparkles className="w-4 h-4 text-primary" />
+              </div>
+              <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-background" />
             </div>
-            <span className="text-sm font-medium text-foreground">Beauty Advisor</span>
+            <div className="hidden sm:block">
+              <span className="text-sm font-medium text-foreground block leading-tight">Beauty Advisor</span>
+              <span className="text-[10px] text-emerald-600 font-medium">Online</span>
+            </div>
+            <span className="text-sm font-medium text-foreground sm:hidden">Advisor</span>
           </div>
 
           <div className="flex items-center gap-2">
             {!user && (
               <Link href="/auth/login" className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary boty-transition">
                 <LogIn className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Sign in to save</span>
+                <span className="hidden sm:inline">Sign in</span>
               </Link>
             )}
-            <button type="button" onClick={handleNewChat} className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground boty-transition" aria-label="New chat">
+            <button type="button" onClick={handleNewChat} className="w-8 h-8 rounded-lg hover:bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground boty-transition" aria-label="New chat">
               <RotateCcw className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">New</span>
             </button>
           </div>
         </header>
@@ -394,25 +418,36 @@ export default function AIBeautyAdvisorPage() {
             {/* Empty State */}
             {messages.length === 0 && !isTyping && (
               <div className="flex flex-col items-center justify-center min-h-[60vh]">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/15 to-accent/10 flex items-center justify-center mb-6">
-                  <Sparkles className="w-6 h-6 text-primary" />
+                <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/15 via-primary/10 to-accent/10 flex items-center justify-center mb-6 shadow-lg shadow-primary/5">
+                  <Sparkles className="w-7 h-7 text-primary" />
+                  <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 ring-3 ring-background flex items-center justify-center">
+                    <div className="w-1.5 h-1.5 rounded-full bg-white" />
+                  </div>
                 </div>
                 <h1 className="font-serif text-2xl sm:text-3xl text-foreground text-center mb-2">
-                  {user ? `Hi ${user.name.split(" ")[0]}, how can I help?` : "How can I help you today?"}
+                  {user ? `Hi ${user.name.split(" ")[0]}, how can I help?` : "Your Beauty Advisor"}
                 </h1>
-                <p className="text-sm text-muted-foreground text-center max-w-md mb-10">
+                <p className="text-sm text-muted-foreground/70 text-center max-w-md mb-3">
                   {user
-                    ? "Your chats are saved automatically. Ask me anything about beauty & wellness."
-                    : "Ask me about hair, skin, treatments, or finding the right salon. Sign in to save your chat history."
+                    ? "Ask me about beauty advice, skincare, or find the perfect salon."
+                    : "Get personalized beauty advice and find your perfect salon match."
                   }
                 </p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-xl">
+                {!user && (
+                  <p className="text-[11px] text-muted-foreground/40 text-center mb-8">
+                    Sign in to save your chat history
+                  </p>
+                )}
+                {user && <div className="mb-8" />}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 w-full max-w-2xl">
                   {quickPrompts.map((item) => {
                     const Icon = item.icon
                     return (
-                      <button key={item.label} type="button" onClick={() => handleSend(item.prompt)} className="flex items-start gap-3 p-4 rounded-xl border border-border/30 bg-card/40 text-left hover:bg-card/80 hover:border-primary/20 boty-transition group">
-                        <Icon className="w-4 h-4 text-primary/70 mt-0.5 flex-shrink-0 group-hover:text-primary boty-transition" />
-                        <span className="text-sm text-foreground/70 leading-snug group-hover:text-foreground boty-transition">{item.label}</span>
+                      <button key={item.label} type="button" onClick={() => handleSend(item.prompt)} className="flex items-center gap-3 p-3.5 rounded-xl border border-border/20 bg-card/30 text-left hover:bg-card/70 hover:border-primary/20 hover:shadow-sm boty-transition group">
+                        <div className="w-8 h-8 rounded-lg bg-primary/8 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/12 boty-transition">
+                          <Icon className="w-3.5 h-3.5 text-primary/70 group-hover:text-primary boty-transition" />
+                        </div>
+                        <span className="text-xs text-foreground/60 leading-snug group-hover:text-foreground boty-transition">{item.label}</span>
                       </button>
                     )
                   })}
@@ -421,77 +456,150 @@ export default function AIBeautyAdvisorPage() {
             )}
 
             {/* Messages */}
-            <div className="space-y-6">
-              {messages.map((message) => (
-                <div key={message.id} className={`${message.role === "assistant" ? "bg-card/40 -mx-4 sm:-mx-6 px-4 sm:px-6 py-5 rounded-xl" : ""}`}>
-                  <div className="max-w-3xl mx-auto">
-                    <div className="flex gap-4">
-                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                        message.role === "user" ? "bg-foreground/10" : "bg-primary/10"
-                      }`}>
-                        {message.role === "user" ? (
-                          <User className="w-4 h-4 text-foreground/70" />
-                        ) : (
-                          <Sparkles className="w-4 h-4 text-primary" />
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0 pt-0.5">
-                        <p className="text-xs font-medium text-foreground/60 mb-1.5">
-                          {message.role === "user" ? (user?.name?.split(" ")[0] || "You") : "Beauty Advisor"}
-                        </p>
-                        <div className="text-sm text-foreground leading-relaxed whitespace-pre-line">
-                          {message.content.split("**").map((part, i) =>
-                            i % 2 === 1 ? <strong key={i} className="font-semibold">{part}</strong> : <span key={i}>{part}</span>
+            <div className="space-y-5">
+              {messages.map((message, msgIndex) => (
+                <div
+                  key={message.id}
+                  className={`animate-blur-in opacity-0 ${message.role === "user" ? "flex justify-end" : ""}`}
+                  style={{ animationDelay: `${msgIndex * 0.05}s`, animationFillMode: "forwards" }}
+                >
+                  {/* User Message — Right-aligned bubble */}
+                  {message.role === "user" && (
+                    <div className="max-w-[85%] sm:max-w-[75%]">
+                      <div className="flex items-end gap-2.5 justify-end">
+                        <div className="flex flex-col items-end">
+                          <div className="bg-primary text-primary-foreground px-4 py-3 rounded-2xl rounded-br-md shadow-sm">
+                            <p className="text-sm leading-relaxed">{message.content}</p>
+                          </div>
+                          <span className="text-[10px] text-muted-foreground/50 mt-1.5 mr-1">
+                            {new Date(message.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                          </span>
+                        </div>
+                        <div className="w-7 h-7 rounded-full bg-foreground/10 flex items-center justify-center flex-shrink-0 mb-5">
+                          {user ? (
+                            <span className="text-[9px] font-bold text-foreground/70">{user.name.split(" ").map(n => n[0]).join("")}</span>
+                          ) : (
+                            <User className="w-3.5 h-3.5 text-foreground/60" />
                           )}
                         </div>
-
-                        {/* Salon Suggestions */}
-                        {message.salonSuggestions && message.salonSuggestions.length > 0 && (
-                          <div className="mt-4 space-y-2">
-                            {message.salonSuggestions.map((salon) => (
-                              <Link
-                                key={salon.name + salon.service}
-                                href={`/salon/${salon.slug}`}
-                                className="flex items-center justify-between p-3.5 rounded-xl border border-border/30 hover:border-primary/30 hover:bg-background boty-transition group"
-                              >
-                                <div className="min-w-0 flex-1">
-                                  <div className="flex items-center gap-2 mb-1">
-                                    <span className="text-sm font-medium text-foreground">{salon.name}</span>
-                                    <div className="flex items-center gap-0.5">
-                                      <Star className="w-3 h-3 fill-accent text-accent" />
-                                      <span className="text-[11px] text-muted-foreground">{salon.rating}</span>
-                                    </div>
-                                  </div>
-                                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                                    <span className="inline-flex items-center gap-1"><MapPin className="w-3 h-3" />{salon.area}</span>
-                                    <span>{salon.service}</span>
-                                    <span className="font-medium text-primary">{salon.price}</span>
-                                  </div>
-                                </div>
-                                <ArrowRight className="w-4 h-4 text-muted-foreground/30 group-hover:text-primary flex-shrink-0 ml-3 group-hover:translate-x-0.5 boty-transition" />
-                              </Link>
-                            ))}
-                          </div>
-                        )}
                       </div>
                     </div>
-                  </div>
+                  )}
+
+                  {/* AI Message — Left-aligned, full-width card */}
+                  {message.role === "assistant" && (
+                    <div className="max-w-full">
+                      <div className="flex gap-3">
+                        <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary/20 to-accent/10 flex items-center justify-center flex-shrink-0 mt-0.5 shadow-sm ring-1 ring-primary/10">
+                          <Sparkles className="w-4 h-4 text-primary" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-xs font-semibold text-primary/80">Beauty Advisor</span>
+                            <span className="text-[10px] text-muted-foreground/40">
+                              {new Date(message.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                            </span>
+                          </div>
+                          <div className="bg-card/60 border border-border/20 rounded-2xl rounded-tl-md px-5 py-4 shadow-sm">
+                            <div className="text-sm text-foreground/90 leading-[1.7] whitespace-pre-line">
+                              {message.content.split("**").map((part, i) =>
+                                i % 2 === 1 ? <strong key={i} className="font-semibold text-foreground">{part}</strong> : <span key={i}>{part}</span>
+                              )}
+                            </div>
+
+                            {/* Salon Suggestions — Premium Cards */}
+                            {message.salonSuggestions && message.salonSuggestions.length > 0 && (
+                              <div className="mt-5 pt-4 border-t border-border/15 space-y-3">
+                                <p className="text-[11px] uppercase tracking-wider text-muted-foreground/60 font-medium">Recommended Salons</p>
+                                {message.salonSuggestions.map((salon) => {
+                                  const statusColors: Record<string, string> = {
+                                    available: "bg-emerald-500",
+                                    "short-wait": "bg-amber-400",
+                                    busy: "bg-orange-400",
+                                    "fully-booked": "bg-red-400",
+                                  }
+                                  const statusLabels: Record<string, string> = {
+                                    available: "Walk-in",
+                                    "short-wait": "Short wait",
+                                    busy: "Busy",
+                                    "fully-booked": "Booked",
+                                  }
+                                  return (
+                                    <Link
+                                      key={salon.id + salon.service}
+                                      href={`/salon/${salon.id}`}
+                                      className="flex items-center gap-3.5 p-3 rounded-xl bg-background/60 border border-border/20 hover:border-primary/25 hover:shadow-md boty-transition group"
+                                    >
+                                      <div className="relative w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 ring-1 ring-border/10">
+                                        <Image
+                                          src={salon.image}
+                                          alt={salon.name}
+                                          fill
+                                          className="object-cover group-hover:scale-105 boty-transition"
+                                        />
+                                        {/* Live status dot */}
+                                        <div className="absolute top-1 right-1">
+                                          <span className={`block w-2.5 h-2.5 rounded-full ${statusColors[salon.liveStatus] || "bg-gray-400"} ring-2 ring-background shadow-sm`} />
+                                        </div>
+                                      </div>
+                                      <div className="min-w-0 flex-1">
+                                        <div className="flex items-center gap-2 mb-0.5">
+                                          <span className="text-[13px] font-medium text-foreground truncate group-hover:text-primary boty-transition">{salon.name}</span>
+                                        </div>
+                                        <div className="flex items-center gap-2 mb-1">
+                                          <div className="flex items-center gap-0.5">
+                                            <Star className="w-3 h-3 fill-accent text-accent" />
+                                            <span className="text-[11px] font-semibold text-foreground">{salon.rating}</span>
+                                          </div>
+                                          <span className="text-[10px] text-muted-foreground">({salon.reviews.toLocaleString()} reviews)</span>
+                                          <span className="text-border">·</span>
+                                          <span className="inline-flex items-center gap-1 text-[10px] text-muted-foreground">
+                                            <Shield className="w-2.5 h-2.5 text-primary/60" />
+                                            {salon.hygieneScore}%
+                                          </span>
+                                        </div>
+                                        <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
+                                          <span className="inline-flex items-center gap-1">
+                                            <MapPin className="w-3 h-3" />
+                                            {salon.area}
+                                          </span>
+                                          <span className="text-border">·</span>
+                                          <span className="font-medium text-primary">{salon.price}</span>
+                                          <span className="text-border">·</span>
+                                          <span className="inline-flex items-center gap-1">
+                                            <span className={`w-1.5 h-1.5 rounded-full ${statusColors[salon.liveStatus] || "bg-gray-400"}`} />
+                                            {statusLabels[salon.liveStatus] || salon.liveStatus}
+                                          </span>
+                                        </div>
+                                      </div>
+                                      <ArrowRight className="w-4 h-4 text-muted-foreground/20 group-hover:text-primary flex-shrink-0 group-hover:translate-x-0.5 boty-transition" />
+                                    </Link>
+                                  )
+                                })}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
 
               {/* Typing Indicator */}
               {isTyping && (
-                <div className="bg-card/40 -mx-4 sm:-mx-6 px-4 sm:px-6 py-5 rounded-xl">
-                  <div className="max-w-3xl mx-auto flex gap-4">
-                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      <Sparkles className="w-4 h-4 text-primary" />
-                    </div>
-                    <div className="pt-2">
+                <div className="flex gap-3 animate-blur-in">
+                  <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary/20 to-accent/10 flex items-center justify-center flex-shrink-0 shadow-sm ring-1 ring-primary/10">
+                    <Sparkles className="w-4 h-4 text-primary animate-pulse" />
+                  </div>
+                  <div className="bg-card/60 border border-border/20 rounded-2xl rounded-tl-md px-5 py-4 shadow-sm">
+                    <div className="flex items-center gap-2">
                       <div className="flex items-center gap-1.5">
-                        <div className="w-2 h-2 rounded-full bg-foreground/30 animate-pulse" />
-                        <div className="w-2 h-2 rounded-full bg-foreground/30 animate-pulse" style={{ animationDelay: "0.2s" }} />
-                        <div className="w-2 h-2 rounded-full bg-foreground/30 animate-pulse" style={{ animationDelay: "0.4s" }} />
+                        <div className="w-2 h-2 rounded-full bg-primary/40 animate-bounce" style={{ animationDuration: "0.6s" }} />
+                        <div className="w-2 h-2 rounded-full bg-primary/40 animate-bounce" style={{ animationDuration: "0.6s", animationDelay: "0.15s" }} />
+                        <div className="w-2 h-2 rounded-full bg-primary/40 animate-bounce" style={{ animationDuration: "0.6s", animationDelay: "0.3s" }} />
                       </div>
+                      <span className="text-[11px] text-muted-foreground/50 ml-2">Thinking...</span>
                     </div>
                   </div>
                 </div>
@@ -502,25 +610,38 @@ export default function AIBeautyAdvisorPage() {
         </main>
 
         {/* Input Area */}
-        <footer className="flex-shrink-0 border-t border-border/20 bg-background safe-bottom">
+        <footer className="flex-shrink-0 border-t border-border/10 bg-gradient-to-t from-background via-background to-background/80 safe-bottom">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
             <form onSubmit={handleSubmit}>
-              <div className="flex items-end gap-2 p-2 bg-card/60 border border-border/30 rounded-2xl focus-within:border-primary/30 focus-within:bg-card/80 boty-transition">
+              <div className="flex items-end gap-2 p-2.5 bg-card/80 border border-border/25 rounded-2xl shadow-lg shadow-black/[0.03] focus-within:border-primary/40 focus-within:shadow-primary/5 focus-within:shadow-xl boty-transition backdrop-blur-sm">
                 <input
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="Ask about hair, skin, treatments, salons..."
-                  className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground/50 px-3 py-2 min-w-0"
+                  placeholder="Ask about beauty, treatments, or find a salon..."
+                  className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground/40 px-3 py-2.5 min-w-0"
                   disabled={isTyping}
                 />
                 <button
+                  type="button"
+                  onClick={toggleListening}
+                  disabled={isTyping}
+                  className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 boty-transition ${
+                    isListening
+                      ? "bg-destructive/10 text-destructive ring-2 ring-destructive/30 animate-pulse"
+                      : "bg-transparent text-muted-foreground/50 hover:text-foreground hover:bg-muted/50"
+                  }`}
+                  aria-label={isListening ? "Stop listening" : "Voice input"}
+                >
+                  {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+                </button>
+                <button
                   type="submit"
                   disabled={!input.trim() || isTyping}
-                  className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 boty-transition ${
+                  className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 boty-transition ${
                     input.trim() && !isTyping
-                      ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                      : "bg-transparent text-muted-foreground/40"
+                      ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-md shadow-primary/20 scale-100 hover:scale-105"
+                      : "bg-muted/50 text-muted-foreground/30 scale-95"
                   }`}
                   aria-label="Send message"
                 >
@@ -528,8 +649,8 @@ export default function AIBeautyAdvisorPage() {
                 </button>
               </div>
             </form>
-            <p className="text-[10px] text-muted-foreground/40 text-center mt-2">
-              {user ? "Your chats are saved automatically." : "Sign in to save your chat history."} Beauty Advisor provides general guidance only.
+            <p className="text-[10px] text-muted-foreground/35 text-center mt-2.5">
+              {user ? "Chats saved automatically" : "Sign in to save history"} · AI provides general guidance only
             </p>
           </div>
         </footer>

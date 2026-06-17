@@ -1,5 +1,6 @@
 import express, { Application } from "express";
 import cors from "cors";
+import helmet from "helmet";
 import { env } from "@config/env";
 import { errorMiddleware } from "@middlewares/error.middleware";
 import { loggerMiddleware } from "@middlewares/logger.middleware";
@@ -8,6 +9,9 @@ import v1Routes from "@api/v1";
 
 export function createApp(): Application {
   const app = express();
+
+  // Security headers
+  app.use(helmet());
 
   // Enable CORS with configured origins
   app.use(cors({

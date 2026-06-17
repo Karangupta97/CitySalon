@@ -27,6 +27,13 @@ const envSchema = z.object({
 
   // App
   ALLOWED_ORIGINS: z.string().default("http://localhost:3000"),
+
+  // Google OAuth
+  GOOGLE_CLIENT_ID: z.string().optional(),
+
+  // Gemini AI
+  GEMINI_API_KEY: z.string().optional(),
+  FRONTEND_URL: z.string().default("http://localhost:3000"),
 });
 
 const parsed = envSchema.safeParse(process.env);

@@ -63,3 +63,11 @@ export const resetPasswordSchema = z.object({
     path: ["confirm_password"],
   }),
 });
+
+export const googleLoginSchema = z.object({
+  body: z.object({
+    idToken: z
+      .string()
+      .min(1, "Google ID token cannot be empty"),
+  }),
+});

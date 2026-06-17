@@ -402,3 +402,9 @@ html {
 .overflow-x-auto {
   -webkit-overflow-scrolling: touch;
 }
+
+/* Typing indicator animation for AI advisor */
+@keyframes typingPulse {
+  0%, 100% { transform: scale(1); opacity: 0.4; }
+  50% { transform: scale(1.3); opacity: 1; }
+}

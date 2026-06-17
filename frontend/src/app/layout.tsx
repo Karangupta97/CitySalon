@@ -1,6 +1,6 @@
 import React from "react"
 import type { Metadata, Viewport } from 'next'
-import { DM_Sans, Playfair_Display } from 'next/font/google'
+import { DM_Sans, Playfair_Display, Cormorant_Garamond } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { CartProvider } from '@/components/boty/cart-context'
 import { AuthProvider } from '@/components/boty/auth-context'
@@ -17,6 +17,13 @@ const playfairDisplay = Playfair_Display({
   subsets: ["latin"],
   variable: '--font-playfair',
   weight: ['400', '500', '600', '700']
+});
+
+const cormorantGaramond = Cormorant_Garamond({
+  subsets: ["latin"],
+  variable: '--font-cormorant',
+  weight: ['300', '400', '500', '600', '700'],
+  style: ['normal', 'italic'],
 });
 
 export const metadata: Metadata = {
@@ -67,7 +74,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${dmSans.variable} ${playfairDisplay.variable} font-sans antialiased`}>
+      <body className={`${dmSans.variable} ${playfairDisplay.variable} ${cormorantGaramond.variable} font-sans antialiased`}>
         <AuthProvider>
           <CartProvider>
             {children}

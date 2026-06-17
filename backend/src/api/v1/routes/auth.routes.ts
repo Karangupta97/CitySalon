@@ -6,6 +6,7 @@ import {
   loginSchema,
   forgotPasswordSchema,
   resetPasswordSchema,
+  googleLoginSchema,
 } from "@schemas/auth.schema";
 
 const router = Router();
@@ -30,6 +31,13 @@ router.get("/verify-email", AuthController.verifyEmail);
  * @access  Public
  */
 router.post("/login", validate(loginSchema), AuthController.login);
+
+/**
+ * @route   POST /api/v1/auth/google
+ * @desc    Authenticates Google ID token and returns session tokens
+ * @access  Public
+ */
+router.post("/google", validate(googleLoginSchema), AuthController.googleLogin);
 
 /**
  * @route   POST /api/v1/auth/forgot-password
