@@ -13,10 +13,17 @@ const envSchema = z.object({
   SUPABASE_SERVICE_ROLE_KEY: z.string(),
 
   // Auth
-  JWT_SECRET: z.string().min(32).optional(),
+  JWT_SECRET: z.string().min(32),
   JWT_EXPIRES_IN: z.string().default("15m"),
-  JWT_REFRESH_SECRET: z.string().min(32).optional(),
+  JWT_REFRESH_SECRET: z.string().min(32),
   JWT_REFRESH_EXPIRES_IN: z.string().default("7d"),
+
+  // SMTP configuration (Amazon SES via Nodemailer)
+  SMTP_HOST: z.string(),
+  SMTP_PORT: z.string().transform(Number),
+  SMTP_USER: z.string(),
+  SMTP_PASS: z.string(),
+  EMAIL_FROM: z.string().email(),
 
   // App
   ALLOWED_ORIGINS: z.string().default("http://localhost:3000"),

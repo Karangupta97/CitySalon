@@ -4,14 +4,16 @@ import { createContext, useContext, useState, useEffect, type ReactNode } from "
 
 export interface UserProfile {
   id: string
-  name: string
+  full_name: string
+  name: string // Backward compatibility alias for pre-existing components
   email: string
+  phone_number?: string
 }
 
 interface AuthContextType {
   user: UserProfile | null
   isLoading: boolean
-  login: (email: string, name: string) => void
+  login: (user: Omit<UserProfile, "name">, token: string) => void
   logout: () => void
 }
 
@@ -27,29 +29,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    const stored = localStorage.getItem("citysalon_user")
-    if (stored) {
+    const storedUser = localStorage.getItem("citysalon_user")
+    if (storedUser) {
       try {
-        setUser(JSON.parse(stored))
+        const parsed = JSON.parse(storedUser)
+        setUser({
+          ...parsed,
+          name: parsed.full_name || parsed.name
+        })
       } catch {}
     }
     setIsLoading(false)
   }, [])
 
-  const login = (email: string, name: string) => {
+  const login = (userProfile: Omit<UserProfile, "name">, token: string) => {
     const profile: UserProfile = {
-      id: crypto.randomUUID(),
-      name,
-      email,
-    }
-    setUser(profile)
-    localStorage.setItem("citysalon_user", JSON.stringify(profile))
-  }
+      ...userProfile,
+      name: userProfile.full_name
+    };
+    setUser(profile);
+    localStorage.setItem("citysalon_user", JSON.stringify(profile));
+    localStorage.setItem("accessToken", token);
+  };
 
   const logout = () => {
-    setUser(null)
-    localStorage.removeItem("citysalon_user")
-  }
+    setUser(null);
+    localStorage.removeItem("citysalon_user");
+    localStorage.removeItem("accessToken");
+  };
 
   return (
     <AuthContext.Provider value={{ user, isLoading, login, logout }}>

@@ -2,20 +2,45 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Eye, EyeOff, Mail, Lock, User, UserPlus, Check } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { Eye, EyeOff, Mail, Lock, User, UserPlus, Check, Phone } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { apiFetch } from "@/lib/api"
 
 export default function RegisterPage() {
+  const router = useRouter()
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [password, setPassword] = useState("")
+  const [fullName, setFullName] = useState("")
+  const [email, setEmail] = useState("")
+  const [phoneNumber, setPhoneNumber] = useState("")
+  const [errorMsg, setErrorMsg] = useState("")
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setIsLoading(true)
-    await new Promise((resolve) => setTimeout(resolve, 1500))
     setIsLoading(false)
+    setErrorMsg("")
+    setIsLoading(true)
+
+    try {
+      await apiFetch("/auth/register", {
+        method: "POST",
+        bodyData: {
+          full_name: fullName,
+          email,
+          phone_number: phoneNumber || undefined,
+          password,
+        },
+      })
+      // Success! Redirect to email verification page with email parameter
+      router.push(`/auth/verify-email?email=${encodeURIComponent(email)}`)
+    } catch (err: any) {
+      setErrorMsg(err.message || "Something went wrong. Please try again.")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const passwordChecks = [
@@ -43,6 +68,13 @@ export default function RegisterPage() {
         </p>
       </div>
 
+      {/* Error message */}
+      {errorMsg && (
+        <div className="p-3 text-xs text-red-600 bg-red-50 border border-red-200 rounded-xl text-center">
+          {errorMsg}
+        </div>
+      )}
+
       {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-3">
         <div className="relative">
@@ -50,7 +82,9 @@ export default function RegisterPage() {
           <Input
             type="text"
             placeholder="Full name"
-            className="h-11 pl-10 rounded-xl bg-muted/40 border-border/40 placeholder:text-muted-foreground/50"
+            className="h-11 pl-10 rounded-xl bg-muted/40 border-border/40 placeholder:text-muted-foreground/50 text-foreground"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
             required
           />
         </div>
@@ -60,8 +94,21 @@ export default function RegisterPage() {
           <Input
             type="email"
             placeholder="Email"
-            className="h-11 pl-10 rounded-xl bg-muted/40 border-border/40 placeholder:text-muted-foreground/50"
+            className="h-11 pl-10 rounded-xl bg-muted/40 border-border/40 placeholder:text-muted-foreground/50 text-foreground"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
+          />
+        </div>
+
+        <div className="relative">
+          <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/60" />
+          <Input
+            type="text"
+            placeholder="Phone number (Optional)"
+            className="h-11 pl-10 rounded-xl bg-muted/40 border-border/40 placeholder:text-muted-foreground/50 text-foreground"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
           />
         </div>
 
@@ -71,7 +118,7 @@ export default function RegisterPage() {
             <Input
               type={showPassword ? "text" : "password"}
               placeholder="Password"
-              className="h-11 pl-10 pr-10 rounded-xl bg-muted/40 border-border/40 placeholder:text-muted-foreground/50"
+              className="h-11 pl-10 pr-10 rounded-xl bg-muted/40 border-border/40 placeholder:text-muted-foreground/50 text-foreground"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -109,7 +156,7 @@ export default function RegisterPage() {
 
         <Button
           type="submit"
-          className="w-full h-11 rounded-xl text-sm font-semibold bg-foreground text-background hover:bg-foreground/90"
+          className="w-full h-11 rounded-xl text-sm font-semibold bg-foreground text-background hover:bg-foreground/90 mt-2"
           disabled={isLoading}
         >
           {isLoading ? (
@@ -119,7 +166,7 @@ export default function RegisterPage() {
           )}
         </Button>
 
-        <p className="text-[11px] text-muted-foreground/60 text-center leading-relaxed">
+        <p className="text-[11px] text-muted-foreground/60 text-center leading-relaxed mt-2">
           By creating an account, you agree to our{" "}
           <Link href="/" className="text-foreground/60 hover:underline">Terms</Link>
           {" "}and{" "}

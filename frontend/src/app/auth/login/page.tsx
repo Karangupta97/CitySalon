@@ -2,19 +2,46 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Eye, EyeOff, Mail, Lock, LogIn } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { Eye, EyeOff, Mail, Lock, LogIn, XCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { apiFetch } from "@/lib/api"
+import { useAuth } from "@/components/boty/auth-context"
 
 export default function LoginPage() {
+  const router = useRouter()
+  const { login } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [errorMsg, setErrorMsg] = useState("")
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setIsLoading(true)
-    await new Promise((resolve) => setTimeout(resolve, 1500))
     setIsLoading(false)
+    setErrorMsg("")
+    setIsLoading(true)
+
+    try {
+      const response: any = await apiFetch("/auth/login", {
+        method: "POST",
+        bodyData: { email, password },
+      })
+      
+      if (response?.data?.accessToken && response?.data?.user) {
+        login(response.data.user, response.data.accessToken)
+      }
+
+      // Success! Redirect home
+      router.push("/")
+      router.refresh()
+    } catch (err: any) {
+      setErrorMsg(err.message || "Invalid credentials. Please verify your email/password.")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -36,6 +63,14 @@ export default function LoginPage() {
         </p>
       </div>
 
+      {/* Error message */}
+      {errorMsg && (
+        <div className="p-3 text-xs text-red-600 bg-red-50 border border-red-200 rounded-xl text-center flex items-center justify-center gap-2">
+          <XCircle className="w-4 h-4 shrink-0" />
+          <span>{errorMsg}</span>
+        </div>
+      )}
+
       {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-3">
         <div className="relative">
@@ -43,7 +78,9 @@ export default function LoginPage() {
           <Input
             type="email"
             placeholder="Email"
-            className="h-11 pl-10 rounded-xl bg-muted/40 border-border/40 placeholder:text-muted-foreground/50"
+            className="h-11 pl-10 rounded-xl bg-muted/40 border-border/40 placeholder:text-muted-foreground/50 text-foreground"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
         </div>
@@ -53,7 +90,9 @@ export default function LoginPage() {
           <Input
             type={showPassword ? "text" : "password"}
             placeholder="Password"
-            className="h-11 pl-10 pr-10 rounded-xl bg-muted/40 border-border/40 placeholder:text-muted-foreground/50"
+            className="h-11 pl-10 pr-10 rounded-xl bg-muted/40 border-border/40 placeholder:text-muted-foreground/50 text-foreground"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             required
           />
           <button
@@ -83,7 +122,7 @@ export default function LoginPage() {
           {isLoading ? (
             <div className="w-4 h-4 border-2 border-background/30 border-t-background rounded-full animate-spin" />
           ) : (
-            "Get Started"
+            "Sign In"
           )}
         </Button>
       </form>

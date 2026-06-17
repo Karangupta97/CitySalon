@@ -29,9 +29,37 @@ export function createApp(): Application {
   // Mount versioned API routes
   app.use("/api/v1", v1Routes);
 
-  // Fallback simple root-level health check route
-  app.get("/health", (_req, res) => {
-    res.json({ status: "ok" });
+  // Root-level health check route showing server and database status
+  app.get("/health", async (_req, res) => {
+    let dbStatus = "UNKNOWN";
+
+    try {
+      if (env.SUPABASE_URL && env.SUPABASE_ANON_KEY) {
+        const response = await fetch(`${env.SUPABASE_URL}/rest/v1/`, {
+          method: "GET",
+          headers: {
+            "apikey": env.SUPABASE_ANON_KEY,
+          },
+        });
+
+        if (response.ok) {
+          dbStatus = "CONNECTED";
+        } else {
+          dbStatus = `ERROR: Status ${response.status} - ${response.statusText}`;
+        }
+      } else {
+        dbStatus = "NOT_CONFIGURED";
+      }
+    } catch (err: any) {
+      dbStatus = `ERROR: ${err.message}`;
+    }
+
+    res.json({
+      status: "ok",
+      uptime: process.uptime(),
+      timestamp: new Date().toISOString(),
+      database: dbStatus
+    });
   });
 
   // Global centralized error handling middleware

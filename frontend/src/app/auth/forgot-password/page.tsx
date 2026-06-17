@@ -2,20 +2,34 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { ArrowLeft, Mail, KeyRound } from "lucide-react"
+import { ArrowLeft, Mail, KeyRound, XCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { apiFetch } from "@/lib/api"
 
 export default function ForgotPasswordPage() {
+  const [email, setEmail] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [errorMsg, setErrorMsg] = useState("")
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setIsLoading(true)
-    await new Promise((resolve) => setTimeout(resolve, 1500))
     setIsLoading(false)
-    setIsSubmitted(true)
+    setErrorMsg("")
+    setIsLoading(true)
+
+    try {
+      await apiFetch("/auth/forgot-password", {
+        method: "POST",
+        bodyData: { email },
+      })
+      setIsSubmitted(true)
+    } catch (err: any) {
+      setErrorMsg(err.message || "Failed to submit request. Please try again.")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   if (isSubmitted) {
@@ -31,7 +45,7 @@ export default function ForgotPasswordPage() {
             Check your inbox
           </h1>
           <p className="text-muted-foreground text-sm max-w-xs mx-auto">
-            We&apos;ve sent a password reset link to your email address.
+            We&apos;ve sent a password reset link to your email address if it matches our records.
           </p>
         </div>
         <div className="space-y-3 pt-2">
@@ -76,6 +90,14 @@ export default function ForgotPasswordPage() {
         </p>
       </div>
 
+      {/* Error message */}
+      {errorMsg && (
+        <div className="p-3 text-xs text-red-600 bg-red-50 border border-red-200 rounded-xl text-center flex items-center justify-center gap-2">
+          <XCircle className="w-4 h-4 shrink-0" />
+          <span>{errorMsg}</span>
+        </div>
+      )}
+
       {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-3">
         <div className="relative">
@@ -83,7 +105,9 @@ export default function ForgotPasswordPage() {
           <Input
             type="email"
             placeholder="Email"
-            className="h-11 pl-10 rounded-xl bg-muted/40 border-border/40 placeholder:text-muted-foreground/50"
+            className="h-11 pl-10 rounded-xl bg-muted/40 border-border/40 placeholder:text-muted-foreground/50 text-foreground"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
         </div>

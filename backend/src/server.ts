@@ -1,7 +1,11 @@
+import dns from "dns";
 import { createApp } from "@config/app";
 import { connectDB } from "@config/db";
 import { env } from "@config/env";
 import { logger } from "@utils/logger";
+
+// Prioritize IPv4 addresses (resolves ENETUNREACH on IPv6-unsupported networks)
+dns.setDefaultResultOrder("ipv4first");
 
 async function bootstrap(): Promise<void> {
   // Connect to database
