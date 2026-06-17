@@ -22,7 +22,7 @@ export default function AuthLayout({
       {/* Logo top-left */}
       <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-20">
         <Link href="/">
-          <Logo size="sm" className="sm:hidden" />
+          <Logo size="sm" className="inline-flex sm:hidden" />
           <Logo size="md" className="hidden sm:inline-flex" />
         </Link>
       </div>

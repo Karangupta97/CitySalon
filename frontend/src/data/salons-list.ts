@@ -1,5 +1,3 @@
-import type { SalonData } from "./salons"
-
 export interface SalonListItem {
   id: string
   name: string

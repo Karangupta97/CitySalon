@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from "@google/generative-ai"
+import { GoogleGenerativeAI, Part } from "@google/generative-ai"
 import { NextRequest, NextResponse } from "next/server"
 import { salonsList } from "@/data/salons-list"
 
@@ -11,6 +11,14 @@ YOUR ROLE:
 - Help users find the right salon based on their needs
 - Recommend treatments, routines, and products
 - Answer questions about salon services, pricing, and availability
+- Analyze user-uploaded images (hair, skin, face) to give personalized advice
+
+IMAGE ANALYSIS:
+When a user uploads an image, analyze it carefully for:
+- Hair: texture, condition, damage level, color, style, face shape compatibility
+- Skin: tone, texture, visible concerns (acne, dryness, pigmentation, aging)
+- Face: shape (oval, round, square, heart, oblong), features, proportions
+Then provide specific, actionable recommendations based on what you see.
 
 PERSONALITY:
 - Warm, knowledgeable, and professional
@@ -57,9 +65,18 @@ TOPICS TO DECLINE:
 - Non-beauty topics (politely redirect)
 - Specific brand endorsements (suggest categories instead)`
 
+interface ChatMessage {
+  role: string
+  content: string
+  image?: string // base64 data URL
+}
+
 export async function POST(request: NextRequest) {
   try {
-    const { messages, userName } = await request.json()
+    const { messages, userName } = (await request.json()) as {
+      messages: ChatMessage[]
+      userName?: string
+    }
 
     if (!process.env.GEMINI_API_KEY) {
       return NextResponse.json(
@@ -68,30 +85,73 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" }) // Force compilation update to 2.5-flash
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" })
 
-    const chat = model.startChat({
-      history: [
+    const lastMessage = messages[messages.length - 1]
+    const hasImage = !!lastMessage.image
+
+    console.log("[Advisor] User message:", lastMessage.content)
+    if (hasImage) console.log("[Advisor] 📷 Image attached")
+
+    let responseText: string
+
+    if (hasImage) {
+      // For image messages, use generateContent directly (chat API doesn't support inline images well)
+      const historyContext = messages.slice(0, -1).map((msg) =>
+        `${msg.role === "user" ? "User" : "Advisor"}: ${msg.content}`
+      ).join("\n")
+
+      const parts: Part[] = []
+
+      // Add the image
+      const matches = lastMessage.image!.match(/^data:(.+);base64,(.+)$/)
+      if (matches) {
+        const mimeType = matches[1]
+        const supportedTypes = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"]
+        if (!supportedTypes.includes(mimeType)) {
+          return NextResponse.json(
+            { error: `Unsupported image format (${mimeType}). Please upload a JPEG, PNG, or WEBP image.` },
+            { status: 400 }
+          )
+        }
+        parts.push({
+          inlineData: { mimeType, data: matches[2] },
+        })
+      }
+
+      // Add context + user message
+      const textPrompt = [
+        SYSTEM_PROMPT,
+        `\nUser's name: ${userName || "Guest"}`,
+        historyContext ? `\nConversation so far:\n${historyContext}` : "",
+        `\nUser's latest message (with the attached image): ${lastMessage.content || "Analyze this image and give me personalized beauty/styling advice based on what you see."}`,
+      ].join("\n")
+
+      parts.push({ text: textPrompt })
+
+      const result = await model.generateContent(parts)
+      responseText = result.response.text()
+    } else {
+      // For text-only messages, use the chat API for better context handling
+      const history = [
         {
-          role: "user",
+          role: "user" as const,
           parts: [{ text: `System context: ${SYSTEM_PROMPT}\n\nThe user's name is: ${userName || "Guest"}. Greet them appropriately if this is the start of the conversation.` }],
         },
         {
-          role: "model",
-          parts: [{ text: "Understood. I'm ready to help as Beauty Advisor for CitySalon. I'll provide beauty advice, recommend salons from the available list, and format my responses clearly with bold text and bullet points. I'll include the ---SALONS--- block only when salon recommendations are relevant." }],
+          role: "model" as const,
+          parts: [{ text: "Understood. I'm ready to help as Beauty Advisor for CitySalon. I'll provide beauty advice, analyze uploaded images for personalized recommendations, recommend salons from the available list, and format my responses clearly with bold text and bullet points. I'll include the ---SALONS--- block only when salon recommendations are relevant." }],
         },
-        ...messages.slice(0, -1).map((msg: { role: string; content: string }) => ({
-          role: msg.role === "user" ? "user" : "model",
+        ...messages.slice(0, -1).map((msg) => ({
+          role: (msg.role === "user" ? "user" : "model") as "user" | "model",
           parts: [{ text: msg.content }],
         })),
-      ],
-    })
+      ]
 
-    const lastMessage = messages[messages.length - 1]
-    console.log("[Advisor] User message:", lastMessage.content)
-    
-    const result = await chat.sendMessage(lastMessage.content)
-    const responseText = result.response.text()
+      const chat = model.startChat({ history })
+      const result = await chat.sendMessage(lastMessage.content || "Hello")
+      responseText = result.response.text()
+    }
 
     console.log("[Advisor] ✅ Gemini responded successfully")
     console.log("[Advisor] Response length:", responseText.length, "chars")
@@ -110,7 +170,6 @@ export async function POST(request: NextRequest) {
           salonIds = parsed
         }
       } catch {
-        // Try parsing as comma-separated or line-separated IDs
         const rawIds = salonMatch[1].trim()
         salonIds = rawIds
           .replace(/[\[\]"']/g, "")

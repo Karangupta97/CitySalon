@@ -6,7 +6,7 @@ import {
   Loader2, Star, CheckCircle, X, Frown, Search,
 } from "lucide-react";
 import { useAdvisor, DiscoveryIntent, SalonResult } from "./advisor-context";
-import { salons } from "@/data/salons";
+import { salons } from "@/data/salons-advisor";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
 

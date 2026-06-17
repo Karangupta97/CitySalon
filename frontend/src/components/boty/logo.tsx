@@ -6,7 +6,7 @@ interface LogoProps {
   size?: "sm" | "md" | "lg"
 }
 
-export function Logo({ className = "", showIcon = true, size = "md" }: LogoProps) {
+export function Logo({ className = "inline-flex", showIcon = true, size = "md" }: LogoProps) {
   const sizes = {
     sm: { text: "text-xl", icon: 16, leaf: 0.7 },
     md: { text: "text-3xl", icon: 22, leaf: 1 },
@@ -16,7 +16,7 @@ export function Logo({ className = "", showIcon = true, size = "md" }: LogoProps
   const s = sizes[size]
 
   return (
-    <span className={`inline-flex items-center gap-1.5 ${className}`}>
+    <span className={`items-center gap-1.5 ${className}`}>
       {showIcon && (
         <svg
           width={s.icon}

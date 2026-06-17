@@ -26,6 +26,8 @@ import {
   Shield,
   Mic,
   MicOff,
+  ImagePlus,
+  Upload,
 } from "lucide-react"
 import { useAuth } from "@/components/boty/auth-context"
 
@@ -33,6 +35,7 @@ interface Message {
   id: string
   role: "user" | "assistant"
   content: string
+  image?: string // base64 data URL for user-uploaded images
   salonSuggestions?: SalonSuggestion[]
   timestamp: number
 }
@@ -74,7 +77,7 @@ function generateTitle(firstMessage: string): string {
 }
 
 async function callAdvisorAPI(
-  messages: { role: string; content: string }[],
+  messages: { role: string; content: string; image?: string }[],
   userName?: string
 ): Promise<{ text: string; salonSuggestions?: SalonSuggestion[] }> {
   const res = await fetch("/api/advisor/chat", {
@@ -149,7 +152,11 @@ export default function AIBeautyAdvisorPage() {
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [isListening, setIsListening] = useState(false)
+  const [pendingImage, setPendingImage] = useState<string | null>(null)
+  const [isDragOver, setIsDragOver] = useState(false)
+  const dragCounterRef = useRef(0)
   const recognitionRef = useRef<SpeechRecognition | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
@@ -219,25 +226,28 @@ export default function AIBeautyAdvisorPage() {
 
   const handleSend = async (text?: string) => {
     const messageText = text || input.trim()
-    if (!messageText || isTyping) return
+    if ((!messageText && !pendingImage) || isTyping) return
 
     const userMessage: Message = {
       id: Date.now().toString(),
       role: "user",
-      content: messageText,
+      content: messageText || (pendingImage ? "Analyze this image and give me beauty advice." : ""),
+      image: pendingImage || undefined,
       timestamp: Date.now(),
     }
 
     const updatedMessages = [...messages, userMessage]
     setMessages(updatedMessages)
     setInput("")
+    setPendingImage(null)
     setIsTyping(true)
 
     try {
-      // Build message history for context
+      // Build message history for context (include image on last msg)
       const chatHistory = updatedMessages.map((m) => ({
         role: m.role,
         content: m.content,
+        ...(m.image ? { image: m.image } : {}),
       }))
 
       const response = await callAdvisorAPI(chatHistory, user?.name?.split(" ")[0])
@@ -257,21 +267,99 @@ export default function AIBeautyAdvisorPage() {
         if (activeSessionId) {
           updateSession(activeSessionId, finalMessages)
         } else {
-          const session = createSession(messageText, finalMessages)
+          const session = createSession(messageText || "Image analysis", finalMessages)
           setActiveSessionId(session.id)
         }
       }
     } catch (error) {
-      // Show error as assistant message
+      const errorMsg = error instanceof Error ? error.message : "I'm having trouble connecting right now. Please try again in a moment."
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: "I'm having trouble connecting right now. Please check that the Gemini API key is configured in your `.env.local` file and try again.\n\nIf the issue persists, please try again in a moment.",
+        content: errorMsg,
         timestamp: Date.now(),
       }
       setMessages([...updatedMessages, errorMessage])
     } finally {
       setIsTyping(false)
+    }
+  }
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    // Validate file type and size
+    const supportedTypes = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"]
+    if (!supportedTypes.includes(file.type)) {
+      alert("Please upload a standard image format (JPEG, PNG, WEBP) for analysis. SVG and other formats are not supported.")
+      return
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Image must be under 5MB")
+      return
+    }
+
+    const reader = new FileReader()
+    reader.onload = () => {
+      setPendingImage(reader.result as string)
+    }
+    reader.readAsDataURL(file)
+
+    // Reset input so the same file can be selected again
+    e.target.value = ""
+  }
+
+  const processDroppedFile = (file: File) => {
+    const supportedTypes = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"]
+    if (!supportedTypes.includes(file.type)) {
+      alert("Please drop a standard image format (JPEG, PNG, WEBP) for analysis. SVG and other formats are not supported.")
+      return
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Image must be under 5MB")
+      return
+    }
+
+    const reader = new FileReader()
+    reader.onload = () => {
+      setPendingImage(reader.result as string)
+    }
+    reader.readAsDataURL(file)
+  }
+
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    dragCounterRef.current += 1
+    if (e.dataTransfer.types.includes("Files")) {
+      setIsDragOver(true)
+    }
+  }
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    dragCounterRef.current -= 1
+    if (dragCounterRef.current === 0) {
+      setIsDragOver(false)
+    }
+  }
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+  }
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsDragOver(false)
+    dragCounterRef.current = 0
+
+    const files = e.dataTransfer.files
+    if (files.length > 0) {
+      processDroppedFile(files[0])
     }
   }
 
@@ -370,7 +458,27 @@ export default function AIBeautyAdvisorPage() {
       )}
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div
+        className="flex-1 flex flex-col min-w-0 relative"
+        onDragEnter={handleDragEnter}
+        onDragLeave={handleDragLeave}
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
+      >
+        {/* Drag & Drop Overlay */}
+        {isDragOver && (
+          <div className="absolute inset-0 z-50 bg-primary/5 backdrop-blur-sm border-2 border-dashed border-primary/40 rounded-2xl m-2 flex items-center justify-center pointer-events-none">
+            <div className="flex flex-col items-center gap-3 text-center">
+              <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center">
+                <Upload className="w-7 h-7 text-primary" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-foreground">Drop image here</p>
+                <p className="text-xs text-muted-foreground mt-0.5">JPEG, PNG, or WEBP up to 5MB</p>
+              </div>
+            </div>
+          </div>
+        )}
         {/* Top Bar */}
         <header className="flex-shrink-0 flex items-center justify-between px-4 sm:px-6 py-3 border-b border-border/10 bg-background/80 backdrop-blur-md">
           <div className="flex items-center gap-3">
@@ -468,6 +576,12 @@ export default function AIBeautyAdvisorPage() {
                     <div className="max-w-[85%] sm:max-w-[75%]">
                       <div className="flex items-end gap-2.5 justify-end">
                         <div className="flex flex-col items-end">
+                          {/* User uploaded image */}
+                          {message.image && (
+                            <div className="relative w-48 h-48 sm:w-56 sm:h-56 rounded-2xl rounded-br-md overflow-hidden shadow-sm mb-1.5">
+                              <Image src={message.image} alt="Uploaded" fill className="object-cover" />
+                            </div>
+                          )}
                           <div className="bg-primary text-primary-foreground px-4 py-3 rounded-2xl rounded-br-md shadow-sm">
                             <p className="text-sm leading-relaxed">{message.content}</p>
                           </div>
@@ -612,14 +726,52 @@ export default function AIBeautyAdvisorPage() {
         {/* Input Area */}
         <footer className="flex-shrink-0 border-t border-border/10 bg-gradient-to-t from-background via-background to-background/80 safe-bottom">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
+            {/* Image Preview */}
+            {pendingImage && (
+              <div className="mb-2.5 flex items-center gap-2 p-2 bg-card/60 border border-border/20 rounded-xl">
+                <div className="relative w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+                  <Image src={pendingImage} alt="Upload preview" fill className="object-cover" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs text-foreground/70 font-medium">Image attached</p>
+                  <p className="text-[10px] text-muted-foreground">Will be analyzed for beauty advice</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setPendingImage(null)}
+                  className="w-7 h-7 rounded-lg hover:bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground boty-transition"
+                  aria-label="Remove image"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )}
             <form onSubmit={handleSubmit}>
               <div className="flex items-end gap-2 p-2.5 bg-card/80 border border-border/25 rounded-2xl shadow-lg shadow-black/[0.03] focus-within:border-primary/40 focus-within:shadow-primary/5 focus-within:shadow-xl boty-transition backdrop-blur-sm">
+                {/* Hidden file input */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/heic,image/heif"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                />
+                {/* Image upload button */}
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={isTyping}
+                  className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 boty-transition bg-transparent text-muted-foreground/50 hover:text-foreground hover:bg-muted/50 disabled:opacity-40"
+                  aria-label="Upload image"
+                >
+                  <ImagePlus className="w-4 h-4" />
+                </button>
                 <input
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="Ask about beauty, treatments, or find a salon..."
-                  className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground/40 px-3 py-2.5 min-w-0"
+                  placeholder={pendingImage ? "Add a message about this image..." : "Ask about beauty, treatments, or find a salon..."}
+                  className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground/40 px-2 py-2.5 min-w-0"
                   disabled={isTyping}
                 />
                 <button
@@ -637,9 +789,9 @@ export default function AIBeautyAdvisorPage() {
                 </button>
                 <button
                   type="submit"
-                  disabled={!input.trim() || isTyping}
+                  disabled={(!input.trim() && !pendingImage) || isTyping}
                   className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 boty-transition ${
-                    input.trim() && !isTyping
+                    (input.trim() || pendingImage) && !isTyping
                       ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-md shadow-primary/20 scale-100 hover:scale-105"
                       : "bg-muted/50 text-muted-foreground/30 scale-95"
                   }`}
@@ -650,7 +802,7 @@ export default function AIBeautyAdvisorPage() {
               </div>
             </form>
             <p className="text-[10px] text-muted-foreground/35 text-center mt-2.5">
-              {user ? "Chats saved automatically" : "Sign in to save history"} · AI provides general guidance only
+              {user ? "Chats saved automatically" : "Sign in to save history"} · Supports image upload for personalized advice
             </p>
           </div>
         </footer>

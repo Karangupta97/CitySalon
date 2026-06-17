@@ -427,7 +427,7 @@ export default function SalonPage() {
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
                     {salon.galleryImages.slice(0, 6).map((img, index) => (
                       <button
-                        key={img.src}
+                        key={`gallery-${index}`}
                         type="button"
                         onClick={() => { setActiveGalleryIndex(index); handleTabChange("gallery") }}
                         className={`relative rounded-xl sm:rounded-2xl overflow-hidden group ${index === 0 ? "col-span-2 aspect-[16/9]" : "aspect-square"}`}
@@ -762,7 +762,7 @@ export default function SalonPage() {
                 {/* Thumbnails */}
                 <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-3">
                   {salon.galleryImages.map((img, index) => (
-                    <button key={img.src} type="button" onClick={() => setActiveGalleryIndex(index)} className={`relative aspect-square rounded-xl overflow-hidden boty-transition ${index === activeGalleryIndex ? "ring-2 ring-primary ring-offset-2 ring-offset-background scale-95" : "opacity-60 hover:opacity-100 hover:scale-95"}`}>
+                    <button key={`thumb-${index}`} type="button" onClick={() => setActiveGalleryIndex(index)} className={`relative aspect-square rounded-xl overflow-hidden boty-transition ${index === activeGalleryIndex ? "ring-2 ring-primary ring-offset-2 ring-offset-background scale-95" : "opacity-60 hover:opacity-100 hover:scale-95"}`}>
                       <Image src={img.src} alt={img.alt} fill className="object-cover" />
                     </button>
                   ))}
