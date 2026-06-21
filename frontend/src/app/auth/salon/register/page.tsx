@@ -56,13 +56,13 @@ export default function SalonRegisterPage() {
     setErrorMsg("")
 
     try {
-      const response: any = await apiFetch("/auth/login", {
+      const response: any = await apiFetch("/salon-auth/login", {
         method: "POST",
         bodyData: { email: "judge@citysalon.com", password: "Password123!" },
       })
 
-      if (response?.data?.accessToken && response?.data?.user) {
-        login(response.data.user, response.data.accessToken)
+      if (response?.data?.accessToken && response?.data?.partner) {
+        login(response.data.partner, response.data.accessToken)
       }
 
       router.push("/owner/dashboard")
@@ -85,14 +85,16 @@ export default function SalonRegisterPage() {
     setIsLoading(true)
 
     try {
-      // Register the owner account
-      await apiFetch("/auth/register", {
+      // Register the owner account via partner auth (separate from client users)
+      await apiFetch("/salon-auth/register", {
         method: "POST",
         bodyData: {
           full_name: fullName,
           email,
           phone_number: phone || undefined,
           password,
+          confirm_password: password,
+          business_name: salonName || undefined,
         },
       })
 

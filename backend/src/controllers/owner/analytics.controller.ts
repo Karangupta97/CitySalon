@@ -6,7 +6,7 @@ import { asyncHandler } from "@utils/asyncHandler";
 export class OwnerAnalyticsController {
   /** GET /owner/:salonId/analytics?startDate=...&endDate=... */
   static getDashboard = asyncHandler(async (req: Request, res: Response) => {
-    const { salonId } = req.params;
+    const salonId = req.params.salonId as string;
 
     // Default to current month if no dates provided
     const now = new Date();

@@ -7,7 +7,7 @@ import { CustomerTag } from "@repositories/customer.repository";
 export class OwnerCustomerController {
   /** GET /owner/:salonId/customers?search=&tag=&limit=&offset= */
   static list = asyncHandler(async (req: Request, res: Response) => {
-    const { salonId } = req.params;
+    const salonId = req.params.salonId as string;
     const limit = Number(req.query.limit) || 50;
     const offset = Number(req.query.offset) || 0;
     const search = req.query.search as string | undefined;
@@ -18,14 +18,14 @@ export class OwnerCustomerController {
 
   /** GET /owner/:salonId/customers/:customerId */
   static getById = asyncHandler(async (req: Request, res: Response) => {
-    const { customerId } = req.params;
+    const customerId = req.params.customerId as string;
     const customer = await CustomerService.getById(customerId);
     return sendSuccess(res, customer, "Customer fetched successfully.");
   });
 
   /** PATCH /owner/:salonId/customers/:customerId */
   static update = asyncHandler(async (req: Request, res: Response) => {
-    const { customerId } = req.params;
+    const customerId = req.params.customerId as string;
     const customer = await CustomerService.update(customerId, req.body);
     return sendSuccess(res, customer, "Customer updated successfully.");
   });

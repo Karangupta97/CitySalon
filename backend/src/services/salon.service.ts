@@ -1,5 +1,5 @@
 import { SalonRepository, SalonRow } from "@repositories/salon.repository";
-import { NotFoundError, ForbiddenError } from "@errors/HttpError";
+import { NotFoundError } from "@errors/HttpError";
 import { logger } from "@utils/logger";
 
 export class SalonService {

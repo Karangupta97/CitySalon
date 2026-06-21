@@ -27,18 +27,24 @@ export default function SalonLoginPage() {
     const isDemo = email.toLowerCase().trim() === "judge@citysalon.com" && password === "Password123!"
 
     try {
-      const response: any = await apiFetch("/auth/login", {
+      const response: any = await apiFetch("/salon-auth/login", {
         method: "POST",
         bodyData: { email, password },
       })
 
-      if (response?.data?.accessToken && response?.data?.user) {
-        login(response.data.user, response.data.accessToken)
+      if (response?.data?.accessToken && response?.data?.partner) {
+        login(response.data.partner, response.data.accessToken)
       }
 
       router.push("/owner/dashboard")
       router.refresh()
     } catch (err: any) {
+      // If email not verified, redirect to OTP page
+      if (err.message?.toLowerCase().includes("verify your email")) {
+        router.push(`/auth/salon/verify-email?email=${encodeURIComponent(email)}`)
+        return
+      }
+
       if (isDemo) {
         login(
           { id: "demo-owner-id", full_name: "Demo Salon Owner", email: "judge@citysalon.com" },
@@ -61,13 +67,13 @@ export default function SalonLoginPage() {
     setErrorMsg("")
 
     try {
-      const response: any = await apiFetch("/auth/login", {
+      const response: any = await apiFetch("/salon-auth/login", {
         method: "POST",
         bodyData: { email: "judge@citysalon.com", password: "Password123!" },
       })
 
-      if (response?.data?.accessToken && response?.data?.user) {
-        login(response.data.user, response.data.accessToken)
+      if (response?.data?.accessToken && response?.data?.partner) {
+        login(response.data.partner, response.data.accessToken)
       }
 
       router.push("/owner/dashboard")

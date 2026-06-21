@@ -1,6 +1,7 @@
 import express, { Application } from "express";
 import cors from "cors";
 import helmet from "helmet";
+import cookieParser from "cookie-parser";
 import { env } from "@config/env";
 import { errorMiddleware } from "@middlewares/error.middleware";
 import { loggerMiddleware } from "@middlewares/logger.middleware";
@@ -25,6 +26,9 @@ export function createApp(): Application {
 
   // Parse URL-encoded payloads
   app.use(express.urlencoded({ extended: true }));
+
+  // Parse cookies (required for HttpOnly refresh token rotation)
+  app.use(cookieParser());
 
   // Request logging & rate limiting
   app.use(loggerMiddleware);

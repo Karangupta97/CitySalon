@@ -1,7 +1,6 @@
 import { AppointmentRepository, AppointmentRow, AppointmentStatus } from "@repositories/appointment.repository";
 import { CustomerRepository } from "@repositories/customer.repository";
-import { SalonRepository } from "@repositories/salon.repository";
-import { NotFoundError, BadRequestError } from "@errors/HttpError";
+import { NotFoundError } from "@errors/HttpError";
 import { logger } from "@utils/logger";
 
 export class AppointmentService {

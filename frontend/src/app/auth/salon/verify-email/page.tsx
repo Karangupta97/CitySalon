@@ -12,10 +12,12 @@ import {
   InputOTPSeparator,
 } from "@/components/ui/input-otp"
 import { apiFetch } from "@/lib/api"
+import { useAuth } from "@/components/boty/auth-context"
 
 function SalonVerifyEmailContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
+  const { login } = useAuth()
   const tokenParam = searchParams.get("token")
   const emailParam = searchParams.get("email") || ""
 
@@ -38,10 +40,26 @@ function SalonVerifyEmailContent() {
     setSuccessMsg("")
 
     try {
-      await apiFetch(`/auth/verify-email?token=${verificationToken}`, {
-        method: "GET",
+      const response: any = await apiFetch("/salon-auth/verify-email", {
+        method: "POST",
+        bodyData: { code: verificationToken },
       })
-      setSuccessMsg("Email verified! Your salon account is ready.")
+
+      // Auto sign-in if tokens returned
+      if (response?.data?.accessToken && response?.data?.partner) {
+        login(response.data.partner, response.data.accessToken)
+        setSuccessMsg("Email verified! Redirecting to your dashboard...")
+        setTimeout(() => {
+          router.push("/owner/dashboard")
+          router.refresh()
+        }, 1000)
+      } else {
+        setSuccessMsg("Email verified! Redirecting...")
+        setTimeout(() => {
+          router.push("/owner/dashboard")
+          router.refresh()
+        }, 1000)
+      }
     } catch (err: any) {
       setErrorMsg(err.message || "Verification failed. Please check the code and try again.")
     } finally {
@@ -64,7 +82,7 @@ function SalonVerifyEmailContent() {
     setSuccessMsg("")
 
     try {
-      await apiFetch("/auth/forgot-password", {
+      await apiFetch("/salon-auth/resend-verification", {
         method: "POST",
         bodyData: { email: emailParam },
       })
@@ -89,12 +107,9 @@ function SalonVerifyEmailContent() {
           <h1 className="font-serif text-xl font-semibold tracking-tight">Email Verified!</h1>
           <p className="text-muted-foreground text-xs max-w-xs mx-auto">{successMsg}</p>
         </div>
-        <Button
-          onClick={() => router.push("/auth/salon/login")}
-          className="w-full h-10 rounded-xl text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/95 transition-all shadow-md"
-        >
-          Sign In to Dashboard
-        </Button>
+        <div className="flex justify-center">
+          <div className="w-5 h-5 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+        </div>
       </div>
     )
   }

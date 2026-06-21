@@ -1,4 +1,4 @@
-import { AppointmentRepository, AppointmentRow } from "@repositories/appointment.repository";
+import { AppointmentRepository } from "@repositories/appointment.repository";
 import { CustomerRepository } from "@repositories/customer.repository";
 
 export interface DashboardAnalytics {
