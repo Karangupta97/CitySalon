@@ -10,6 +10,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar"
 
 export function NavMain({
@@ -22,25 +23,29 @@ export function NavMain({
   }[]
 }) {
   const pathname = usePathname()
+  const { state } = useSidebar()
+  const isCollapsed = state === "collapsed"
 
   return (
     <SidebarGroup className="p-0">
-      <SidebarGroupContent className="flex flex-col gap-4">
+      <SidebarGroupContent className="flex flex-col gap-3">
         {/* Quick Action Button */}
-        <SidebarMenu className="px-2">
+        <SidebarMenu className={isCollapsed ? "px-1" : "px-2"}>
           <SidebarMenuItem className="flex items-center">
             <SidebarMenuButton
               tooltip="Quick Create"
-              className="w-full h-9 bg-[#3D5A3A] hover:bg-[#2B3F29] text-white rounded-lg font-sans font-semibold text-xs tracking-wider cursor-pointer flex items-center justify-center gap-2 transition-all duration-200 group-data-[collapsible=icon]:p-0 border border-transparent shadow-xs"
+              className={`w-full bg-[#3D5A3A] hover:bg-[#2B3F29] text-white rounded-xl font-sans font-semibold text-xs tracking-wider cursor-pointer flex items-center justify-center gap-2.5 transition-all duration-300 border border-[#3D5A3A]/20 shadow-sm hover:shadow-md ${
+                isCollapsed ? "h-9 p-0" : "h-10 px-3"
+              }`}
             >
-              <IconCirclePlusFilled className="size-4 text-[#C4A76C] shrink-0" />
+              <IconCirclePlusFilled className={`text-[#C4A76C] shrink-0 transition-all duration-300 ${isCollapsed ? "size-5" : "size-4"}`} />
               <span className="group-data-[collapsible=icon]:hidden">Quick Create</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
 
         {/* Main Navigation Links */}
-        <SidebarMenu className="gap-1 px-2">
+        <SidebarMenu className={`gap-0.5 ${isCollapsed ? "px-1" : "px-2"}`}>
           {items.map((item) => {
             const isActive =
               pathname === item.url ||
@@ -51,23 +56,35 @@ export function NavMain({
                   tooltip={item.title}
                   isActive={isActive}
                   asChild
-                  className={`transition-all duration-200 rounded-lg py-2 px-3 group/btn ${
-                    isActive
-                      ? "bg-[#3D5A3A] text-white font-bold"
-                      : "text-[#6E6960] hover:text-[#3D5A3A] hover:bg-[#E8E0D6]/40"
+                  className={`transition-all duration-200 rounded-xl group/btn ${
+                    isCollapsed
+                      ? `h-9 w-9 mx-auto flex items-center justify-center p-0 ${
+                          isActive
+                            ? "bg-[#3D5A3A] text-white shadow-sm"
+                            : "text-[#6E6960] hover:text-[#3D5A3A] hover:bg-[#E8E0D6]/50"
+                        }`
+                      : `py-2.5 px-3 ${
+                          isActive
+                            ? "bg-[#3D5A3A] text-white font-bold shadow-sm"
+                            : "text-[#6E6960] hover:text-[#3D5A3A] hover:bg-[#E8E0D6]/40"
+                        }`
                   }`}
                 >
-                  <Link href={item.url} className="flex items-center gap-3">
+                  <Link href={item.url} className={`flex items-center ${isCollapsed ? "justify-center" : "gap-3"}`}>
                     {item.icon && (
                       <item.icon
-                        className={`size-4 transition-transform duration-200 shrink-0 ${
+                        className={`transition-all duration-200 shrink-0 ${
+                          isCollapsed ? "size-[18px]" : "size-4"
+                        } ${
                           isActive
                             ? "text-[#C4A76C]"
                             : "text-[#6E6960] group-hover/btn:text-[#3D5A3A]"
                         }`}
                       />
                     )}
-                    <span className="font-sans text-xs font-semibold tracking-wide group-data-[collapsible=icon]:hidden">{item.title}</span>
+                    <span className="font-sans text-[13px] font-medium tracking-wide group-data-[collapsible=icon]:hidden">
+                      {item.title}
+                    </span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -78,4 +95,3 @@ export function NavMain({
     </SidebarGroup>
   )
 }
-

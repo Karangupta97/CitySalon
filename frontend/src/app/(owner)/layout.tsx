@@ -1,13 +1,13 @@
 "use client"
 
 import * as React from "react"
+import Image from "next/image"
 import { usePathname } from "next/navigation"
 import {
   IconCalendar,
   IconChartBar,
   IconDashboard,
   IconHelp,
-  IconInnerShadowTop,
   IconScissors,
   IconSearch,
   IconSettings,
@@ -31,6 +31,7 @@ import {
   SidebarProvider,
   SidebarInset,
   SidebarTrigger,
+  useSidebar,
 } from "@/components/ui/sidebar"
 
 const data = {
@@ -87,39 +88,65 @@ const data = {
       url: "#",
       icon: IconHelp,
     },
-    {
-      title: "Search",
-      url: "#",
-      icon: IconSearch,
-    },
   ],
+}
+
+function SidebarLogo() {
+  const { state } = useSidebar()
+  const isCollapsed = state === "collapsed"
+
+  return (
+    <SidebarMenu>
+      <SidebarMenuItem>
+        <a href="/owner/dashboard" className="flex items-center justify-center">
+          {isCollapsed ? (
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl overflow-hidden transition-all duration-300">
+              <Image
+                src="/icon-light-32x32.svg"
+                alt="CitySalon"
+                width={32}
+                height={32}
+                className="rounded-lg"
+              />
+            </div>
+          ) : (
+            <div className="flex items-center gap-3 px-1 transition-all duration-300">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl overflow-hidden shrink-0">
+                <Image
+                  src="/icon-light-32x32.svg"
+                  alt="CitySalon"
+                  width={32}
+                  height={32}
+                  className="rounded-lg"
+                />
+              </div>
+              <div className="flex flex-col">
+                <span className="font-serif text-[15px] font-bold text-[#3D5A3A] tracking-wide leading-none">
+                  CitySalon
+                </span>
+                <span className="text-[9px] font-medium text-[#6E6960]/70 tracking-wider uppercase mt-0.5">
+                  Owner Portal
+                </span>
+              </div>
+            </div>
+          )}
+        </a>
+      </SidebarMenuItem>
+    </SidebarMenu>
+  )
 }
 
 function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar collapsible="icon" {...props} className="border-r border-[#E2D9CE]/50">
-      <SidebarHeader className="border-b border-[#E2D9CE]/50 bg-sidebar/50 px-4 py-3">
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              className="data-[slot=sidebar-menu-button]:!p-1.5 hover:bg-[#E8E0D6]/20 rounded-lg transition-all duration-200"
-            >
-              <a href="/owner/dashboard" className="flex items-center gap-2">
-                <div className="flex h-7.5 w-7.5 items-center justify-center rounded-lg bg-[#3D5A3A] text-white shadow-xs">
-                  <IconInnerShadowTop className="size-4 text-[#C4A76C]" />
-                </div>
-                <span className="font-serif text-base font-bold text-[#3D5A3A] tracking-wider leading-none">CitySalon</span>
-              </a>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+    <Sidebar collapsible="icon" {...props} className="border-r border-[#E2D9CE]/40">
+      <SidebarHeader className="border-b border-[#E2D9CE]/40 bg-sidebar/50 px-3 py-4">
+        <SidebarLogo />
       </SidebarHeader>
-      <SidebarContent className="bg-sidebar/20 px-2 py-3">
+      <SidebarContent className="bg-sidebar/20 px-2 py-4">
         <NavMain items={data.navMain} />
-        <NavSecondary items={data.navSecondary} className="mt-auto border-t border-[#E2D9CE]/30 pt-2" />
+        <NavSecondary items={data.navSecondary} className="mt-auto border-t border-[#E2D9CE]/30 pt-3" />
       </SidebarContent>
-      <SidebarFooter className="border-t border-[#E2D9CE]/50 bg-sidebar/50 px-2 py-2">
+      <SidebarFooter className="border-t border-[#E2D9CE]/40 bg-sidebar/50 px-2 py-3">
         <NavUser user={data.user} />
       </SidebarFooter>
     </Sidebar>
