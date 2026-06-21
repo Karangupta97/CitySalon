@@ -1,202 +1,214 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
-import Link from "next/link"
+import * as React from "react"
 import { usePathname } from "next/navigation"
 import {
-  LayoutDashboard,
-  Calendar,
-  Scissors,
-  Users,
-  UserCircle,
-  BarChart3,
-  Store,
-  Menu,
-  X,
-  ChevronLeft,
-  ChevronRight,
-  Bell,
-  Search,
-} from "lucide-react"
+  IconCalendar,
+  IconChartBar,
+  IconDashboard,
+  IconHelp,
+  IconInnerShadowTop,
+  IconScissors,
+  IconSearch,
+  IconSettings,
+  IconBuildingStore,
+  IconUserCircle,
+  IconUsers,
+  IconBell,
+} from "@tabler/icons-react"
 
-const navItems = [
-  { label: "Overview", href: "/owner/dashboard", icon: LayoutDashboard },
-  { label: "Appointments", href: "/owner/dashboard/appointments", icon: Calendar },
-  { label: "Services", href: "/owner/dashboard/services", icon: Scissors },
-  { label: "Staff", href: "/owner/dashboard/staff", icon: Users },
-  { label: "Customers", href: "/owner/dashboard/customers", icon: UserCircle },
-  { label: "Analytics", href: "/owner/dashboard/analytics", icon: BarChart3 },
-  { label: "Salon Profile", href: "/owner/dashboard/profile", icon: Store },
-]
+import { NavMain } from "@/components/owner/nav-main"
+import { NavSecondary } from "@/components/owner/nav-secondary"
+import { NavUser } from "@/components/owner/nav-user"
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarInset,
+  SidebarTrigger,
+} from "@/components/ui/sidebar"
+
+const data = {
+  user: {
+    name: "Radiance Studio",
+    email: "hello@radiancebeauty.in",
+    avatar: "",
+  },
+  navMain: [
+    {
+      title: "Overview",
+      url: "/owner/dashboard",
+      icon: IconDashboard,
+    },
+    {
+      title: "Appointments",
+      url: "/owner/dashboard/appointments",
+      icon: IconCalendar,
+    },
+    {
+      title: "Services",
+      url: "/owner/dashboard/services",
+      icon: IconScissors,
+    },
+    {
+      title: "Staff",
+      url: "/owner/dashboard/staff",
+      icon: IconUsers,
+    },
+    {
+      title: "Customers",
+      url: "/owner/dashboard/customers",
+      icon: IconUserCircle,
+    },
+    {
+      title: "Analytics",
+      url: "/owner/dashboard/analytics",
+      icon: IconChartBar,
+    },
+    {
+      title: "Salon Profile",
+      url: "/owner/dashboard/profile",
+      icon: IconBuildingStore,
+    },
+  ],
+  navSecondary: [
+    {
+      title: "Settings",
+      url: "/owner/dashboard/profile",
+      icon: IconSettings,
+    },
+    {
+      title: "Get Help",
+      url: "#",
+      icon: IconHelp,
+    },
+    {
+      title: "Search",
+      url: "#",
+      icon: IconSearch,
+    },
+  ],
+}
+
+function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  return (
+    <Sidebar collapsible="icon" {...props} className="border-r border-[#E2D9CE]/50">
+      <SidebarHeader className="border-b border-[#E2D9CE]/50 bg-sidebar/50 px-4 py-3">
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              className="data-[slot=sidebar-menu-button]:!p-1.5 hover:bg-[#E8E0D6]/20 rounded-lg transition-all duration-200"
+            >
+              <a href="/owner/dashboard" className="flex items-center gap-2">
+                <div className="flex h-7.5 w-7.5 items-center justify-center rounded-lg bg-[#3D5A3A] text-white shadow-xs">
+                  <IconInnerShadowTop className="size-4 text-[#C4A76C]" />
+                </div>
+                <span className="font-serif text-base font-bold text-[#3D5A3A] tracking-wider leading-none">CitySalon</span>
+              </a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
+      <SidebarContent className="bg-sidebar/20 px-2 py-3">
+        <NavMain items={data.navMain} />
+        <NavSecondary items={data.navSecondary} className="mt-auto border-t border-[#E2D9CE]/30 pt-2" />
+      </SidebarContent>
+      <SidebarFooter className="border-t border-[#E2D9CE]/50 bg-sidebar/50 px-2 py-2">
+        <NavUser user={data.user} />
+      </SidebarFooter>
+    </Sidebar>
+  )
+}
 
 export default function OwnerLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const [mobileOpen, setMobileOpen] = useState(false)
-  const [collapsed, setCollapsed] = useState(false)
-
-  // Close mobile drawer on route change
-  useEffect(() => {
-    setMobileOpen(false)
-  }, [pathname])
+  
+  // Resolve breadcrumbs dynamically based on path
+  const pathParts = pathname.split("/").filter(Boolean)
+  const isDashboard = pathParts.includes("dashboard") && pathParts.length === 2
 
   return (
-    <div className="min-h-screen bg-[#F5F4F0] flex">
-      {/* ─── Mobile Overlay ─── */}
-      {mobileOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm lg:hidden"
-          onClick={() => setMobileOpen(false)}
-        />
-      )}
-
-      {/* ─── Sidebar ─── */}
-      <aside
-        className={`
-          fixed inset-y-0 left-0 z-50 flex flex-col bg-white border-r border-gray-100
-          transition-all duration-300 ease-in-out
-          lg:static lg:translate-x-0
-          ${mobileOpen ? "translate-x-0" : "-translate-x-full"}
-          ${collapsed ? "lg:w-[72px]" : "lg:w-[240px]"}
-          w-[240px]
-        `}
-      >
-        {/* Sidebar Header */}
-        <div className="flex items-center justify-between h-16 px-4 border-b border-gray-100">
-          <Link href="/" className="flex items-center gap-2.5 overflow-hidden">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-md flex-shrink-0">
-              <Store className="w-4.5 h-4.5 text-white" />
-            </div>
-            {!collapsed && (
-              <div className="whitespace-nowrap">
-                <p className="text-sm font-bold text-gray-900 leading-tight">CitySalon</p>
-                <p className="text-[9px] text-gray-400 uppercase tracking-wider">Owner Portal</p>
-              </div>
-            )}
-          </Link>
-          {/* Mobile close */}
-          <button
-            type="button"
-            onClick={() => setMobileOpen(false)}
-            className="lg:hidden w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-50 transition-colors"
-            aria-label="Close sidebar"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        </div>
-
-        {/* Navigation */}
-        <nav className="flex-1 p-3 overflow-y-auto" aria-label="Dashboard navigation">
-          {!collapsed && (
-            <p className="text-[9px] uppercase tracking-widest text-gray-400 font-semibold px-3 mb-2">
-              Menu
-            </p>
-          )}
-          <ul className="space-y-1">
-            {navItems.map((item) => {
-              const isActive =
-                pathname === item.href ||
-                (item.href !== "/owner/dashboard" && pathname.startsWith(item.href))
-              const Icon = item.icon
-              return (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    title={collapsed ? item.label : undefined}
-                    className={`
-                      flex items-center gap-3 rounded-xl transition-all duration-200
-                      ${collapsed ? "justify-center px-2 py-2.5" : "px-3 py-2.5"}
-                      ${
-                        isActive
-                          ? "bg-indigo-50 text-indigo-700 font-semibold shadow-sm"
-                          : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
-                      }
-                    `}
-                  >
-                    <Icon
-                      className={`w-[18px] h-[18px] flex-shrink-0 ${
-                        isActive ? "text-indigo-600" : ""
-                      }`}
-                    />
-                    {!collapsed && (
-                      <span className="text-[13px]">{item.label}</span>
-                    )}
-                    {!collapsed && isActive && (
-                      <span className="ml-auto w-1.5 h-1.5 rounded-full bg-indigo-500" />
-                    )}
-                  </Link>
-                </li>
-              )
-            })}
-          </ul>
-        </nav>
-
-        {/* Collapse Toggle (desktop only) */}
-        <div className="hidden lg:flex p-3 border-t border-gray-100">
-          <button
-            type="button"
-            onClick={() => setCollapsed(!collapsed)}
-            className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-gray-400 hover:text-gray-700 hover:bg-gray-50 transition-colors text-xs"
-            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          >
-            {collapsed ? (
-              <ChevronRight className="w-4 h-4" />
-            ) : (
-              <>
-                <ChevronLeft className="w-4 h-4" />
-                <span>Collapse</span>
-              </>
-            )}
-          </button>
-        </div>
-      </aside>
-
-      {/* ─── Main Area ─── */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* Top Bar */}
-        <header className="sticky top-0 z-30 h-16 flex items-center justify-between px-4 sm:px-6 bg-white/80 backdrop-blur-xl border-b border-gray-100">
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset className="bg-[#FAFAF7]">
+        {/* Dynamic header control bar */}
+        <header className="flex h-15 shrink-0 items-center justify-between border-b border-[#E2D9CE]/40 px-4 md:px-6 bg-[#FAFAF7]/90 backdrop-blur-md sticky top-0 z-50 transition-all duration-200">
           <div className="flex items-center gap-3">
-            {/* Mobile hamburger */}
-            <button
-              type="button"
-              onClick={() => setMobileOpen(true)}
-              className="lg:hidden w-9 h-9 rounded-xl flex items-center justify-center text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-colors"
-              aria-label="Open sidebar"
-            >
-              <Menu className="w-5 h-5" />
-            </button>
-            {/* Search input */}
-            <div className="hidden sm:flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#F5F4F0] border border-gray-200/60 w-[260px] focus-within:border-indigo-300 focus-within:ring-2 focus-within:ring-indigo-100 transition-all">
-              <Search className="w-3.5 h-3.5 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search..."
-                className="bg-transparent text-xs text-gray-700 placeholder:text-gray-400 outline-none flex-1"
-              />
-              <span className="text-[9px] text-gray-400 bg-white px-1.5 py-0.5 rounded border border-gray-200">⌘K</span>
+            <SidebarTrigger className="-ml-1 hover:bg-[#E8E0D6]/40 text-[#3D5A3A] h-8 w-8 rounded-lg border border-[#E2D9CE]/50 transition-all duration-200" />
+            <div className="h-4 w-px bg-[#E2D9CE]/60 hidden sm:block" />
+            
+            {/* Elegant Breadcrumbs */}
+            <div className="hidden sm:flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-[#6E6960]/80 font-sans">
+              <span>Owner</span>
+              <span className="text-[#E2D9CE] text-xs">/</span>
+              {isDashboard ? (
+                <span className="text-[#3D5A3A]">Dashboard</span>
+              ) : (
+                <>
+                  <span className="hover:text-[#3D5A3A] transition-colors cursor-pointer">Dashboard</span>
+                  <span className="text-[#E2D9CE] text-xs">/</span>
+                  <span className="text-[#3D5A3A]">
+                    {pathParts[pathParts.length - 1].replace(/-/g, " ")}
+                  </span>
+                </>
+              )}
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            {/* Notifications */}
-            <button
-              type="button"
-              className="relative w-9 h-9 rounded-xl flex items-center justify-center text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-colors"
-              aria-label="Notifications"
-            >
-              <Bell className="w-[18px] h-[18px]" />
-              <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-indigo-500 border-2 border-white" />
-            </button>
-            {/* Avatar */}
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white text-xs font-bold shadow-md cursor-pointer hover:scale-105 transition-transform">
-              RS
+          
+          <div className="flex items-center gap-3 md:gap-4">
+            {/* Quick date widget */}
+            <div className="hidden md:flex flex-col text-right pr-1">
+              <span className="text-[9px] font-bold uppercase tracking-wider text-[#6E6960]/60 font-sans">Current Day</span>
+              <span className="text-xs font-semibold text-[#3D5A3A] font-sans">
+                {new Date().toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' })}
+              </span>
+            </div>
+
+            {/* Quick search input */}
+            <div className="relative hidden md:block">
+              <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[#E2D9CE]/60 bg-white hover:bg-[#E8E0D6]/20 text-[10px] font-sans text-[#6E6960] cursor-pointer transition-all duration-200 outline-none">
+                <IconSearch className="w-3.5 h-3.5 text-[#3D5A3A]" />
+                <span>Search...</span>
+                <kbd className="px-1.5 py-0.5 text-[8px] font-bold bg-[#E8E0D6] rounded text-[#3D5A3A] leading-none ml-1.5">⌘K</kbd>
+              </button>
+            </div>
+
+            {/* Notifications panel toggle */}
+            <div className="relative">
+              <button className="p-2 rounded-lg border border-[#E2D9CE]/50 bg-white hover:bg-[#E8E0D6]/20 text-[#3D5A3A] cursor-pointer transition-all duration-200 relative outline-none">
+                <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-[#C4A76C]" />
+                <IconBell className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            <div className="h-4 w-px bg-[#E2D9CE]/60" />
+
+            {/* Micro User widget */}
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg overflow-hidden border border-[#E2D9CE] flex items-center justify-center bg-[#3D5A3A] text-[#FAFAF7] text-xs font-bold font-serif select-none shadow-xs">
+                RS
+              </div>
+              <div className="hidden lg:flex flex-col text-left">
+                <span className="text-[11px] font-bold text-[#1A1A1A] leading-tight">Radiance Studio</span>
+                <span className="text-[9px] font-semibold text-[#6E6960]/80 leading-none">Salon Owner</span>
+              </div>
             </div>
           </div>
         </header>
 
-        {/* Page Content */}
-        <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
-          {children}
+        {/* Dashboard inner content */}
+        <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 bg-[#FAFAF7]/30 relative">
+          <div className="relative z-10">
+            {children}
+          </div>
         </main>
-      </div>
-    </div>
+      </SidebarInset>
+    </SidebarProvider>
   )
 }
