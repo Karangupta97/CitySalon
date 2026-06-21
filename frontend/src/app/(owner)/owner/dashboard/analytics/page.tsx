@@ -10,8 +10,8 @@ import {
   Search,
   ChevronLeft,
   ChevronRight,
-  UserCheck,
-  CreditCard,
+  GripVertical,
+  RotateCcw,
   Percent,
   Clock,
   Star,
@@ -19,8 +19,12 @@ import {
   CheckCircle2,
   AlertCircle,
   XCircle,
+  Maximize2,
   TrendingDown as TrendingDownIcon,
-  TrendingUp as TrendingUpIcon
+  TrendingUp as TrendingUpIcon,
+  MessageSquare,
+  Send,
+  Check
 } from "lucide-react"
 import {
   BarChart,
@@ -32,12 +36,9 @@ import {
   ResponsiveContainer,
   AreaChart,
   Area,
-  PieChart,
-  Pie,
-  Cell,
-  Legend
+  Cell
 } from "recharts"
-import { format, subDays, startOfWeek, endOfWeek, parseISO } from "date-fns"
+import { format, subDays, startOfWeek, endOfWeek } from "date-fns"
 import { DateRange } from "react-day-picker"
 
 import { getAnalyticsData, AnalyticsDataset, RecentBookingData } from "@/lib/mockAnalytics"
@@ -45,13 +46,20 @@ import { ChartCard } from "@/components/owner/ChartCard"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { cn } from "@/lib/utils"
 
 // ─── Custom Tooltip for Recharts (Linear/Stripe Dark Style) ───
 const DarkChartTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-slate-900 border border-slate-800 text-slate-100 p-3 rounded-lg shadow-xl text-xs font-mono select-none">
+      <div className="bg-slate-900 border border-slate-800 text-slate-100 p-2.5 rounded-lg shadow-xl text-xs font-mono select-none">
         <p className="font-semibold mb-1 text-slate-400 border-b border-slate-800 pb-1">{label}</p>
         <div className="space-y-1 mt-1.5">
           {payload.map((item: any, idx: number) => {
@@ -82,7 +90,7 @@ export default function AnalyticsPage() {
   const [subOption, setSubOption] = useState<string>("Q2") // For Quarter (Q1-Q4) or Festival (diwali, etc)
   const [singleDate, setSingleDate] = useState<Date>(new Date()) // For Day picker
   const [selectedWeekDate, setSelectedWeekDate] = useState<Date>(new Date()) // For Week picker
-  const [selectedMonth, setSelectedMonth] = useState<string>(format(new Date(), "yyyy-MM")) // For Month selector
+  const [selectedMonth, setSelectedMonth] = useState<string>("2026-06") // For Month selector
   const [selectedYear, setSelectedYear] = useState<string>("2026") // For Year selector
   
   // Custom Date Range State
@@ -91,21 +99,464 @@ export default function AnalyticsPage() {
     to: new Date()
   })
 
+  // ─── Canva-style Grid Coordinates and Positions ───
+  interface CardPosition {
+    x: number;
+    y: number;
+    w: number;
+    h: number;
+  }
+
+  const DEFAULT_POSITIONS: Record<string, CardPosition> = {
+    "studio-insights": { x: 0, y: 0, w: 4, h: 5 },
+    "revenue-trend": { x: 4, y: 0, w: 8, h: 5 },
+    "service-breakdown": { x: 0, y: 5, w: 4, h: 4 },
+    "heatmap": { x: 4, y: 5, w: 8, h: 4 },
+    "funnel": { x: 0, y: 9, w: 4, h: 4 },
+    "transactions": { x: 4, y: 9, w: 8, h: 5 },
+  }
+
+  const WORKSPACE_PRESETS: Record<string, { label: string; positions: Record<string, CardPosition> }> = {
+    default: {
+      label: "Default Layout",
+      positions: DEFAULT_POSITIONS
+    },
+    studio: {
+      label: "Creator Studio Focus",
+      positions: {
+        "studio-insights": { x: 0, y: 0, w: 6, h: 6 },
+        "funnel": { x: 6, y: 0, w: 6, h: 6 },
+        "revenue-trend": { x: 0, y: 6, w: 8, h: 5 },
+        "service-breakdown": { x: 8, y: 6, w: 4, h: 5 },
+        "transactions": { x: 0, y: 11, w: 12, h: 5 },
+        "heatmap": { x: 0, y: 16, w: 12, h: 4 },
+      }
+    },
+    financial: {
+      label: "Financial Audit Focus",
+      positions: {
+        "revenue-trend": { x: 0, y: 0, w: 12, h: 5 },
+        "transactions": { x: 0, y: 5, w: 8, h: 5 },
+        "service-breakdown": { x: 8, y: 5, w: 4, h: 5 },
+        "studio-insights": { x: 0, y: 10, w: 4, h: 5 },
+        "heatmap": { x: 4, y: 10, w: 8, h: 5 },
+        "funnel": { x: 0, y: 15, w: 12, h: 4 },
+      }
+    },
+    operations: {
+      label: "Operations & Traffic",
+      positions: {
+        "heatmap": { x: 0, y: 0, w: 8, h: 5 },
+        "service-breakdown": { x: 8, y: 0, w: 4, h: 5 },
+        "funnel": { x: 0, y: 5, w: 4, h: 5 },
+        "revenue-trend": { x: 4, y: 5, w: 8, h: 5 },
+        "studio-insights": { x: 0, y: 10, w: 4, h: 5 },
+        "transactions": { x: 4, y: 10, w: 8, h: 5 },
+      }
+    },
+    compact: {
+      label: "Compact Density Layout",
+      positions: {
+        "studio-insights": { x: 0, y: 0, w: 4, h: 4 },
+        "revenue-trend": { x: 4, y: 0, w: 8, h: 4 },
+        "service-breakdown": { x: 0, y: 4, w: 4, h: 4 },
+        "heatmap": { x: 4, y: 4, w: 4, h: 4 },
+        "funnel": { x: 8, y: 4, w: 4, h: 4 },
+        "transactions": { x: 0, y: 8, w: 12, h: 4 },
+      }
+    }
+  }
+
+  const [positions, setPositions] = useState<Record<string, CardPosition>>({})
+
+  // Custom Pointer Interaction State
+  interface DragState {
+    cardId: string;
+    startX: number;
+    startY: number;
+    initialX: number;
+    initialY: number;
+    currentCol: number;
+    currentRow: number;
+    offsetX: number;
+    offsetY: number;
+  }
+
+  interface ResizeState {
+    cardId: string;
+    startX: number;
+    startY: number;
+    initialW: number;
+    initialH: number;
+    currentW: number;
+    currentH: number;
+    direction: "right" | "bottom" | "corner";
+  }
+
+  const [dragState, setDragState] = useState<DragState | null>(null)
+  const [resizeState, setResizeState] = useState<ResizeState | null>(null)
+
+  // YouTube Studio Features State (Review replies)
+  const [replyInputs, setReplyInputs] = useState<Record<string, string>>({})
+  const [replies, setReplies] = useState<Record<string, string>>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("owner-studio-replies-v1")
+      return saved ? JSON.parse(saved) : {}
+    }
+    return {}
+  })
+
   // Chart Metric Mode: "both" | "revenue" | "bookings"
   const [chartMode, setChartMode] = useState<"both" | "revenue" | "bookings">("both")
-
-  // Heatmap interactive state
-  const [hoveredHeatmap, setHoveredHeatmap] = useState<{ day: string; hour: number; bookings: number } | null>(null)
 
   // Booking search & pagination
   const [bookingSearch, setBookingSearch] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 5
 
-  // Trigger mounts to prevent server-side mismatches
+  // Trigger mounts & restore positions from localStorage
   useEffect(() => {
     setMounted(true)
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("owner-analytics-canvas-positions-v6")
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved)
+          if (parsed && typeof parsed === "object" && Object.keys(parsed).length === Object.keys(DEFAULT_POSITIONS).length) {
+            setPositions(parsed)
+          } else {
+            setPositions(DEFAULT_POSITIONS)
+          }
+        } catch (e) {
+          setPositions(DEFAULT_POSITIONS)
+        }
+      } else {
+        setPositions(DEFAULT_POSITIONS)
+      }
+    }
   }, [])
+
+  // Persist replies changes
+  useEffect(() => {
+    if (mounted) {
+      localStorage.setItem("owner-studio-replies-v1", JSON.stringify(replies))
+    }
+  }, [replies, mounted])
+
+  // Drag Pointer handlers
+  const handleDragPointerDown = (e: React.PointerEvent, cardId: string) => {
+    if (e.button !== 0) return // left click only
+    e.preventDefault()
+
+    const cardPos = positions[cardId]
+    if (!cardPos) return
+
+    setDragState({
+      cardId,
+      startX: e.clientX,
+      startY: e.clientY,
+      initialX: cardPos.x,
+      initialY: cardPos.y,
+      currentCol: cardPos.x,
+      currentRow: cardPos.y,
+      offsetX: 0,
+      offsetY: 0
+    })
+
+    const targetElement = e.currentTarget as HTMLElement
+    targetElement.setPointerCapture(e.pointerId)
+  }
+
+  const handleDragPointerMove = (e: React.PointerEvent) => {
+    if (!dragState) return
+    e.preventDefault()
+
+    const canvasElement = document.getElementById("analytics-canvas")
+    if (!canvasElement) return
+
+    const rect = canvasElement.getBoundingClientRect()
+    const gap = 16
+    const colWidth = (rect.width - 11 * gap) / 12
+    const colWidthWithGap = colWidth + gap
+    const rowHeightWithGap = 100 + gap
+
+    const dx = e.clientX - dragState.startX
+    const dy = e.clientY - dragState.startY
+
+    const dCol = Math.round(dx / colWidthWithGap)
+    const dRow = Math.round(dy / rowHeightWithGap)
+
+    const cardPos = positions[dragState.cardId]
+    if (!cardPos) return
+
+    const targetX = Math.min(12 - cardPos.w, Math.max(0, dragState.initialX + dCol))
+    const targetY = Math.max(0, dragState.initialY + dRow)
+
+    setDragState(prev => prev ? {
+      ...prev,
+      offsetX: dx,
+      offsetY: dy,
+      currentCol: targetX,
+      currentRow: targetY
+    } : null)
+  }
+
+  const handleDragPointerUp = (e: React.PointerEvent) => {
+    if (!dragState) return
+    e.preventDefault()
+    
+    const targetElement = e.currentTarget as HTMLElement
+    try {
+      targetElement.releasePointerCapture(e.pointerId)
+    } catch (err) {}
+
+    const finalX = dragState.currentCol
+    const finalY = dragState.currentRow
+    const cardId = dragState.cardId
+    const cardPos = positions[cardId]
+
+    if (cardPos) {
+      const nextPositions = { ...positions }
+      let resolvedY = finalY
+      let hasOverlap = true
+
+      // Overlap Resolution Algorithm ("auto adjacent anywhere")
+      while (hasOverlap) {
+        hasOverlap = false
+        for (const [id, pos] of Object.entries(nextPositions)) {
+          if (id === cardId) continue
+          const overlapX = finalX < pos.x + pos.w && finalX + cardPos.w > pos.x
+          const overlapY = resolvedY < pos.y + pos.h && resolvedY + cardPos.h > pos.y
+          if (overlapX && overlapY) {
+            resolvedY = pos.y + pos.h
+            hasOverlap = true
+            break
+          }
+        }
+      }
+
+      nextPositions[cardId] = {
+        ...cardPos,
+        x: finalX,
+        y: resolvedY
+      }
+
+      setPositions(nextPositions)
+      localStorage.setItem("owner-analytics-canvas-positions-v6", JSON.stringify(nextPositions))
+    }
+
+    setDragState(null)
+  }
+
+  // Resize Pointer handlers
+  const handleResizePointerDown = (e: React.PointerEvent, cardId: string, direction: "right" | "bottom" | "corner") => {
+    if (e.button !== 0) return
+    e.preventDefault()
+    e.stopPropagation()
+
+    const cardPos = positions[cardId]
+    if (!cardPos) return
+
+    setResizeState({
+      cardId,
+      startX: e.clientX,
+      startY: e.clientY,
+      initialW: cardPos.w,
+      initialH: cardPos.h,
+      currentW: cardPos.w,
+      currentH: cardPos.h,
+      direction
+    })
+
+    const targetElement = e.currentTarget as HTMLElement
+    targetElement.setPointerCapture(e.pointerId)
+  }
+
+  const handleResizePointerMove = (e: React.PointerEvent) => {
+    if (!resizeState) return
+    e.preventDefault()
+
+    const canvasElement = document.getElementById("analytics-canvas")
+    if (!canvasElement) return
+
+    const rect = canvasElement.getBoundingClientRect()
+    const gap = 16
+    const colWidth = (rect.width - 11 * gap) / 12
+    const colWidthWithGap = colWidth + gap
+    const rowHeightWithGap = 100 + gap
+
+    const dx = e.clientX - resizeState.startX
+    const dy = e.clientY - resizeState.startY
+
+    let targetW = resizeState.initialW
+    let targetH = resizeState.initialH
+
+    const cardPos = positions[resizeState.cardId]
+    if (!cardPos) return
+
+    if (resizeState.direction === "right" || resizeState.direction === "corner") {
+      const dCol = Math.round(dx / colWidthWithGap)
+      targetW = Math.min(12 - cardPos.x, Math.max(2, resizeState.initialW + dCol))
+    }
+
+    if (resizeState.direction === "bottom" || resizeState.direction === "corner") {
+      const dRow = Math.round(dy / rowHeightWithGap)
+      targetH = Math.max(2, Math.min(10, resizeState.initialH + dRow))
+    }
+
+    setResizeState(prev => prev ? {
+      ...prev,
+      currentW: targetW,
+      currentH: targetH
+    } : null)
+  }
+
+  const handleResizePointerUp = (e: React.PointerEvent) => {
+    if (!resizeState) return
+    e.preventDefault()
+
+    const targetElement = e.currentTarget as HTMLElement
+    try {
+      targetElement.releasePointerCapture(e.pointerId)
+    } catch (err) {}
+
+    const finalW = resizeState.currentW
+    const finalH = resizeState.currentH
+    const cardId = resizeState.cardId
+    const cardPos = positions[cardId]
+
+    if (cardPos) {
+      const nextPositions = {
+        ...positions,
+        [cardId]: {
+          ...cardPos,
+          w: finalW,
+          h: finalH
+        }
+      }
+      setPositions(nextPositions)
+      localStorage.setItem("owner-analytics-canvas-positions-v6", JSON.stringify(nextPositions))
+    }
+
+    setResizeState(null)
+  }
+
+  const resetLayout = () => {
+    setPositions(DEFAULT_POSITIONS)
+    localStorage.setItem("owner-analytics-canvas-positions-v6", JSON.stringify(DEFAULT_POSITIONS))
+  }
+
+  const isLayoutModified = () => {
+    return JSON.stringify(positions) !== JSON.stringify(DEFAULT_POSITIONS)
+  }
+
+  const getActivePresetKey = () => {
+    for (const [key, preset] of Object.entries(WORKSPACE_PRESETS)) {
+      if (JSON.stringify(positions) === JSON.stringify(preset.positions)) {
+        return key
+      }
+    }
+    return "custom"
+  }
+
+  const getCardStyle = (cardId: string) => {
+    const cardPos = positions[cardId]
+    if (!cardPos) return {}
+
+    const isDragging = dragState && dragState.cardId === cardId
+    const isResizing = resizeState && resizeState.cardId === cardId
+
+    const x = cardPos.x
+    const y = cardPos.y
+    const w = isResizing ? resizeState.currentW : cardPos.w
+    const h = isResizing ? resizeState.currentH : cardPos.h
+
+    return {
+      position: "absolute" as const,
+      left: `calc((100% - 11 * 16px) / 12 * ${x} + ${x} * 16px)`,
+      width: `calc((100% - 11 * 16px) / 12 * ${w} + ${w - 1} * 16px)`,
+      top: `calc(${y} * 100px + ${y} * 16px)`,
+      height: `calc(${h} * 100px + ${h - 1} * 16px)`,
+      transform: isDragging ? `translate3d(${dragState.offsetX}px, ${dragState.offsetY}px, 0)` : undefined,
+      transition: isDragging || isResizing ? "none" : "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+      zIndex: isDragging ? 50 : isResizing ? 40 : 10,
+    }
+  }
+
+  const getCanvasHeight = () => {
+    let maxBottom = 0
+    Object.entries(positions).forEach(([id, pos]) => {
+      let h = pos.h
+      if (resizeState && resizeState.cardId === id) {
+        h = resizeState.currentH
+      }
+      let bottom = pos.y + h
+      if (dragState && dragState.cardId === id) {
+        bottom = dragState.currentRow + h
+      }
+      if (bottom > maxBottom) {
+        maxBottom = bottom
+      }
+    })
+    return maxBottom * (100 + 16) + 32
+  }
+
+  const renderGhostPreview = () => {
+    if (!dragState) return null
+    const cardPos = positions[dragState.cardId]
+    if (!cardPos) return null
+
+    const x = dragState.currentCol
+    const y = dragState.currentRow
+    const w = cardPos.w
+    const h = cardPos.h
+
+    return (
+      <div
+        className="absolute border-2 border-dashed border-[#3D5A3A]/40 bg-[#3D5A3A]/5 rounded-xl pointer-events-none transition-all duration-75"
+        style={{
+          left: `calc((100% - 11 * 16px) / 12 * ${x} + ${x} * 16px)`,
+          width: `calc((100% - 11 * 16px) / 12 * ${w} + ${w - 1} * 16px)`,
+          top: `calc(${y} * 100px + ${y} * 16px)`,
+          height: `calc(${h} * 100px + ${h - 1} * 16px)`,
+          zIndex: 5,
+        }}
+      />
+    )
+  }
+
+  // Send review reply
+  const sendReply = (reviewId: string) => {
+    const text = replyInputs[reviewId]
+    if (!text || !text.trim()) return
+
+    setReplies(prev => ({
+      ...prev,
+      [reviewId]: text.trim()
+    }))
+    setReplyInputs(prev => ({
+      ...prev,
+      [reviewId]: ""
+    }))
+  }
+
+  // Options lists for month
+  const getMonthOptions = () => {
+    return [
+      { value: "2026-01", label: "Jan 2026" },
+      { value: "2026-02", label: "Feb 2026" },
+      { value: "2026-03", label: "Mar 2026" },
+      { value: "2026-04", label: "Apr 2026" },
+      { value: "2026-05", label: "May 2026" },
+      { value: "2026-06", label: "Jun 2026" },
+      { value: "2026-07", label: "Jul 2026" },
+      { value: "2026-08", label: "Aug 2026" },
+      { value: "2026-09", label: "Sep 2026" },
+      { value: "2026-10", label: "Oct 2026" },
+      { value: "2026-11", label: "Nov 2026" },
+      { value: "2026-12", label: "Dec 2026" },
+    ]
+  }
 
   // Resolve dynamic subOption/range args based on selector settings
   const getSelectedParams = () => {
@@ -139,7 +590,7 @@ export default function AnalyticsPage() {
     setCurrentPage(1)
   }, [bookingSearch, period, subOption, singleDate, selectedWeekDate, selectedMonth, selectedYear, customRange])
 
-  if (!mounted) {
+  if (!mounted || Object.keys(positions).length === 0) {
     return (
       <div className="max-w-[1400px] mx-auto py-12 flex justify-center items-center">
         <div className="w-8 h-8 rounded-full border-2 border-stone-300 border-t-[#3D5A3A] animate-spin" />
@@ -163,11 +614,11 @@ export default function AnalyticsPage() {
   const totalBksNum = parseInt(totalBks) || 120
 
   const funnelSteps = [
-    { name: "1. Profile Visitors", count: Math.round(totalBksNum * 5.2), pct: 100, label: "Initial discovery" },
-    { name: "2. Checked Calendar", count: Math.round(totalBksNum * 2.8), pct: Math.round((2.8 / 5.2) * 100), label: "Intent to book" },
-    { name: "3. Initiated Booking", count: Math.round(totalBksNum * 1.4), pct: Math.round((1.4 / 5.2) * 100), label: "Checkout loaded" },
-    { name: "4. Completed Booking", count: totalBksNum, pct: Math.round((1.0 / 5.2) * 100), label: "Success rate" },
-    { name: "5. Rebooked / Loyal", count: Math.round(totalBksNum * (parseFloat(data.kpis.repeatCustomerRate.value) / 100)), pct: Math.round(((totalBksNum * (parseFloat(data.kpis.repeatCustomerRate.value) / 100)) / (totalBksNum * 5.2)) * 100), label: "LTV retention" }
+    { name: "1. Profile Visitors", count: Math.round(totalBksNum * 5.2), pct: 100, label: "Discovery" },
+    { name: "2. Checked Calendar", count: Math.round(totalBksNum * 2.8), pct: Math.round((2.8 / 5.2) * 100), label: "Intent" },
+    { name: "3. Initiated Booking", count: Math.round(totalBksNum * 1.4), pct: Math.round((1.4 / 5.2) * 100), label: "Checkout" },
+    { name: "4. Completed Booking", count: totalBksNum, pct: Math.round((1.0 / 5.2) * 100), label: "Success" },
+    { name: "5. Rebooked / Loyal", count: Math.round(totalBksNum * (parseFloat(data.kpis.repeatCustomerRate.value) / 100)), pct: Math.round(((totalBksNum * (parseFloat(data.kpis.repeatCustomerRate.value) / 100)) / (totalBksNum * 5.2)) * 100), label: "Loyalty" }
   ]
 
   // Render Status Badge helper
@@ -196,32 +647,61 @@ export default function AnalyticsPage() {
     }
   }
 
+  // Visual drag grip handle in header (pointer dragging)
+  const cardTitleWithControls = (cardId: string, titleText: string) => (
+    <div className="flex items-center gap-1.5 select-none shrink-0 font-sans">
+      
+      {/* Drag Grip Handle */}
+      <div
+        onPointerDown={(e) => handleDragPointerDown(e, cardId)}
+        onPointerMove={handleDragPointerMove}
+        onPointerUp={handleDragPointerUp}
+        className="flex items-center gap-0.5 cursor-grab active:cursor-grabbing group p-1 -m-1 touch-none"
+        title="Drag card to move"
+      >
+        <GripVertical className="w-3.5 h-3.5 text-stone-400 opacity-50 group-hover:opacity-90 transition-opacity" />
+      </div>
+
+      <span className="font-serif text-base font-bold text-[#3D5A3A] tracking-tight mr-1">
+        {titleText}
+      </span>
+
+      {/* Grid Coordinates Badge */}
+      {positions[cardId] && (
+        <span className="font-mono text-[8px] text-[#6E6960]/60 font-bold bg-[#E8E0D6]/30 px-1 py-0.5 rounded">
+          {positions[cardId].w} × {positions[cardId].h}
+        </span>
+      )}
+
+    </div>
+  )
+
   return (
-    <div className="max-w-[1400px] mx-auto space-y-6 md:space-y-8 animate-blur-in select-none">
+    <div className="max-w-[1400px] mx-auto space-y-4 md:space-y-5 animate-blur-in select-none">
       
       {/* ─── Header & Date Controls ─── */}
-      <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-5 border-b border-[#E2D9CE]/30 pb-5">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 border-b border-[#E2D9CE]/30 pb-3">
         <div>
-          <h1 className="font-serif text-3xl md:text-4xl font-extrabold text-[#3D5A3A] tracking-tight">
+          <h1 className="font-serif text-2xl md:text-3xl font-extrabold text-[#3D5A3A] tracking-tight">
             Dashboard Analytics
           </h1>
-          <p className="text-xs font-sans text-[#6E6960] mt-1.5 font-semibold leading-relaxed">
-            Industrial-grade salon operations audit. Currently displaying:{" "}
+          <p className="text-[11px] font-sans text-[#6E6960] mt-0.5 font-semibold leading-normal">
+            Operational Audit Statement:{" "}
             <span className="text-[#3D5A3A] font-bold underline font-mono">{data.periodLabel}</span>
           </p>
         </div>
 
         {/* ─── Unified Period Picker Bar ─── */}
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2">
           
-          {/* Segmented Control */}
+          {/* Segmented Preset Bar */}
           <div className="flex items-center bg-[#E8E0D6]/30 rounded-lg p-0.5 border border-[#E2D9CE]/45 shadow-xs">
             {(["day", "week", "month", "quarter", "year", "festival", "custom"] as const).map((p) => (
               <button
                 key={p}
                 type="button"
                 onClick={() => handlePeriodChange(p)}
-                className={`px-3 py-1.5 rounded-md text-[10px] font-bold font-sans uppercase tracking-wider transition-all duration-200 cursor-pointer ${
+                className={`px-2.5 py-1 rounded-md text-[9px] font-bold font-sans uppercase tracking-wider transition-all duration-200 cursor-pointer ${
                   period === p
                     ? "bg-[#3D5A3A] text-white shadow-xs"
                     : "text-[#6E6960] hover:text-[#3D5A3A]"
@@ -232,24 +712,34 @@ export default function AnalyticsPage() {
             ))}
           </div>
 
-          {/* Contextual Sub-Pickers based on selection */}
-          <div className="flex items-center">
+          {/* Sub-Option Selector */}
+          <div className="flex items-center gap-2">
             
             {/* Day Sub-picker */}
             {period === "day" && (
-              <input
-                type="date"
-                value={format(singleDate, "yyyy-MM-dd")}
-                onChange={(e) => e.target.value && setSingleDate(new Date(e.target.value))}
-                className="px-2.5 py-1.5 bg-white border border-[#E2D9CE]/40 rounded-lg text-xs font-mono font-bold text-[#3D5A3A] focus:outline-none focus:border-[#3D5A3A]/60"
-              />
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" size="sm" className="h-8 border-[#E2D9CE]/40 bg-white text-xs font-bold text-[#3D5A3A] hover:bg-[#E8E0D6]/20">
+                    <CalendarIcon className="w-3.5 h-3.5 mr-1.5" />
+                    {format(singleDate, "MMM d, yyyy")}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="end">
+                  <Calendar
+                    mode="single"
+                    selected={singleDate}
+                    onSelect={(date) => date && setSingleDate(date)}
+                    disabled={(date) => date > new Date()}
+                  />
+                </PopoverContent>
+              </Popover>
             )}
 
             {/* Week Sub-picker */}
             {period === "week" && (
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" size="sm" className="h-8 border-[#E2D9CE]/40 text-xs font-bold text-[#3D5A3A] hover:bg-[#E8E0D6]/20">
+                  <Button variant="outline" size="sm" className="h-8 border-[#E2D9CE]/40 bg-white text-xs font-bold text-[#3D5A3A] hover:bg-[#E8E0D6]/20">
                     <CalendarIcon className="w-3.5 h-3.5 mr-1.5" />
                     Week of {format(selectedWeekDate, "MMM d")}
                   </Button>
@@ -267,64 +757,69 @@ export default function AnalyticsPage() {
 
             {/* Month Sub-picker */}
             {period === "month" && (
-              <input
-                type="month"
-                value={selectedMonth}
-                onChange={(e) => e.target.value && setSelectedMonth(e.target.value)}
-                className="px-2.5 py-1.5 bg-white border border-[#E2D9CE]/40 rounded-lg text-xs font-mono font-bold text-[#3D5A3A] focus:outline-none focus:border-[#3D5A3A]/60"
-              />
+              <Select value={selectedMonth} onValueChange={setSelectedMonth}>
+                <SelectTrigger className="h-8 border-[#E2D9CE]/40 bg-white text-xs font-bold text-[#3D5A3A] w-36">
+                  <SelectValue placeholder="Select Month" />
+                </SelectTrigger>
+                <SelectContent className="bg-white border-[#E2D9CE]/40 text-stone-850">
+                  {getMonthOptions().map((opt) => (
+                    <SelectItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             )}
 
             {/* Quarter Sub-picker */}
             {period === "quarter" && (
-              <div className="flex items-center bg-[#E8E0D6]/20 rounded-lg p-0.5 border border-[#E2D9CE]/30">
-                {["Q1", "Q2", "Q3", "Q4"].map((q) => (
-                  <button
-                    key={q}
-                    type="button"
-                    onClick={() => setSubOption(q)}
-                    className={`px-2.5 py-1 rounded-md text-[9px] font-mono font-extrabold uppercase transition-all ${
-                      subOption === q ? "bg-[#3D5A3A] text-white" : "text-[#6E6960] hover:text-[#3D5A3A]"
-                    }`}
-                  >
-                    {q}
-                  </button>
-                ))}
-              </div>
+              <Select value={subOption} onValueChange={setSubOption}>
+                <SelectTrigger className="h-8 border-[#E2D9CE]/40 bg-white text-xs font-bold text-[#3D5A3A] w-24">
+                  <SelectValue placeholder="Quarter" />
+                </SelectTrigger>
+                <SelectContent className="bg-white border-[#E2D9CE]/40 text-stone-850">
+                  <SelectItem value="Q1">Q1 (Jan-Mar)</SelectItem>
+                  <SelectItem value="Q2">Q2 (Apr-Jun)</SelectItem>
+                  <SelectItem value="Q3">Q3 (Jul-Sep)</SelectItem>
+                  <SelectItem value="Q4">Q4 (Oct-Dec)</SelectItem>
+                </SelectContent>
+              </Select>
             )}
 
             {/* Year Sub-picker */}
             {period === "year" && (
-              <select
-                value={selectedYear}
-                onChange={(e) => setSelectedYear(e.target.value)}
-                className="px-2.5 py-1.5 bg-white border border-[#E2D9CE]/40 rounded-lg text-xs font-sans font-bold text-[#3D5A3A] focus:outline-none cursor-pointer"
-              >
-                <option value="2026">2026</option>
-                <option value="2025">2025</option>
-              </select>
+              <Select value={selectedYear} onValueChange={setSelectedYear}>
+                <SelectTrigger className="h-8 border-[#E2D9CE]/40 bg-white text-xs font-bold text-[#3D5A3A] w-24">
+                  <SelectValue placeholder="Year" />
+                </SelectTrigger>
+                <SelectContent className="bg-white border-[#E2D9CE]/40 text-stone-850">
+                  <SelectItem value="2026">2026</SelectItem>
+                  <SelectItem value="2025">2025</SelectItem>
+                </SelectContent>
+              </Select>
             )}
 
             {/* Festival Sub-picker */}
             {period === "festival" && (
-              <select
-                value={subOption}
-                onChange={(e) => setSubOption(e.target.value)}
-                className="px-2.5 py-1.5 bg-white border border-[#E2D9CE]/40 rounded-lg text-xs font-sans font-bold text-[#3D5A3A] focus:outline-none cursor-pointer"
-              >
-                <option value="diwali">Diwali (Oct-Nov)</option>
-                <option value="eid">Eid Festive Week</option>
-                <option value="christmas">Christmas & New Year</option>
-                <option value="wedding">Wedding Peak Season</option>
-                <option value="holi">Holi Spikes</option>
-              </select>
+              <Select value={subOption} onValueChange={setSubOption}>
+                <SelectTrigger className="h-8 border-[#E2D9CE]/40 bg-white text-xs font-bold text-[#3D5A3A] w-48">
+                  <SelectValue placeholder="Festival Preset" />
+                </SelectTrigger>
+                <SelectContent className="bg-white border-[#E2D9CE]/40 text-stone-850">
+                  <SelectItem value="diwali">Diwali (Oct 28 - Nov 03)</SelectItem>
+                  <SelectItem value="eid">Eid Festive Week</SelectItem>
+                  <SelectItem value="christmas">Christmas & New Year</SelectItem>
+                  <SelectItem value="wedding">Wedding Peak Season</SelectItem>
+                  <SelectItem value="holi">Holi Spikes</SelectItem>
+                </SelectContent>
+              </Select>
             )}
 
-            {/* Custom Sub-picker */}
+            {/* Custom Range Sub-picker */}
             {period === "custom" && (
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" size="sm" className="h-8 border-[#E2D9CE]/40 text-xs font-mono font-bold text-[#3D5A3A] hover:bg-[#E8E0D6]/20">
+                  <Button variant="outline" size="sm" className="h-8 border-[#E2D9CE]/40 bg-white text-xs font-mono font-bold text-[#3D5A3A] hover:bg-[#E8E0D6]/20">
                     <CalendarIcon className="w-3.5 h-3.5 mr-1.5" />
                     {customRange?.from ? (
                       customRange.to ? (
@@ -351,40 +846,73 @@ export default function AnalyticsPage() {
               </Popover>
             )}
 
+            {/* Workspace Preset Selector */}
+            <Select
+              value={getActivePresetKey()}
+              onValueChange={(val) => {
+                if (val !== "custom" && WORKSPACE_PRESETS[val]) {
+                  setPositions(WORKSPACE_PRESETS[val].positions)
+                  localStorage.setItem("owner-analytics-canvas-positions-v6", JSON.stringify(WORKSPACE_PRESETS[val].positions))
+                }
+              }}
+            >
+              <SelectTrigger className="h-8 border-[#E2D9CE]/40 bg-white text-xs font-bold text-[#3D5A3A] w-48 shadow-xs">
+                <SelectValue placeholder="Workspace Layout" />
+              </SelectTrigger>
+              <SelectContent className="bg-white border-[#E2D9CE]/40 text-stone-850">
+                {Object.entries(WORKSPACE_PRESETS).map(([key, p]) => (
+                  <SelectItem key={key} value={key}>
+                    {p.label}
+                  </SelectItem>
+                ))}
+                {getActivePresetKey() === "custom" && (
+                  <SelectItem value="custom" disabled>
+                    Custom Layout *
+                  </SelectItem>
+                )}
+              </SelectContent>
+            </Select>
+
+            {/* Reset Layout Button */}
+            {isLayoutModified() && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={resetLayout}
+                className="h-8 border-[#E2D9CE]/40 bg-white text-xs font-bold text-[#3D5A3A] hover:bg-[#E8E0D6]/20 px-2.5"
+                title="Reset layout and sizes"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+              </Button>
+            )}
+
           </div>
 
         </div>
       </div>
 
-      {/* ─── KPI Row (6 Cards with Sparklines) ─── */}
-      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
+      {/* ─── KPI Row (6 Cards, Tightened Layout) ─── */}
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
         {(Object.keys(data.kpis) as Array<keyof typeof data.kpis>).map((key) => {
           const kpi = data.kpis[key]
           const isUp = kpi.trend === "up"
-          
-          // Color coding logic: for cancellation rate, down is positive (Emerald), up is negative (Rose)
           const isPositiveTrend = kpi.isNegativeBetter ? !isUp : isUp
-          
-          // Sparkline color config
           const strokeColor = isPositiveTrend ? "#10b981" : "#f43f5e"
-          
-          // Sparkline dataset mapping
           const sparklineData = kpi.sparkline.map((val, idx) => ({ id: idx, value: val }))
 
           return (
             <div
               key={key}
-              className="p-4 rounded-xl bg-white border border-[#E2D9CE]/45 hover:border-[#3D5A3A]/30 transition-all duration-200 flex flex-col justify-between h-[125px] overflow-hidden"
+              className="p-3 rounded-lg bg-white border border-[#E2D9CE]/45 hover:border-[#3D5A3A]/30 transition-all duration-200 flex flex-col justify-between h-[105px] overflow-hidden"
             >
               <div className="flex items-center justify-between">
                 <span className="text-[9px] text-[#6E6960] font-bold uppercase tracking-wider font-sans truncate pr-2">
                   {kpi.label}
                 </span>
                 
-                {/* Arrow Badge */}
                 <span
                   className={cn(
-                    "text-[8px] font-mono font-extrabold px-1.5 py-0.5 rounded-md flex items-center gap-0.5",
+                    "text-[8px] font-mono font-extrabold px-1.5 py-0.5 rounded-md flex items-center gap-0.5 shrink-0",
                     isPositiveTrend ? "text-emerald-700 bg-emerald-50" : "text-rose-600 bg-rose-50"
                   )}
                 >
@@ -397,23 +925,21 @@ export default function AnalyticsPage() {
                 </span>
               </div>
 
-              {/* Stat Value */}
-              <div className="mt-1">
-                <p className="text-xl font-extrabold text-[#1A1A1A] tracking-tight font-mono tabular-nums leading-none">
+              <div className="mt-0.5">
+                <p className="text-lg font-extrabold text-[#1A1A1A] tracking-tight font-mono tabular-nums leading-none">
                   {kpi.value}
                 </p>
-                <p className="text-[8px] text-[#6E6960] font-sans font-medium mt-1">
+                <p className="text-[8px] text-[#6E6960] font-sans font-medium mt-0.5">
                   Prev: <span className="font-mono">{kpi.prevValue}</span>
                 </p>
               </div>
 
-              {/* Sparkline Visual */}
-              <div className="h-6 w-full mt-2 -mx-1 select-none">
+              <div className="h-5 w-full mt-1.5 -mx-1 select-none">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={sparklineData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
                     <defs>
                       <linearGradient id={`grad-${key}`} x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor={strokeColor} stopOpacity={0.15} />
+                        <stop offset="0%" stopColor={strokeColor} stopOpacity={0.12} />
                         <stop offset="100%" stopColor={strokeColor} stopOpacity={0} />
                       </linearGradient>
                     </defs>
@@ -421,7 +947,7 @@ export default function AnalyticsPage() {
                       type="monotone"
                       dataKey="value"
                       stroke={strokeColor}
-                      strokeWidth={1.5}
+                      strokeWidth={1.2}
                       fill={`url(#grad-${key})`}
                       dot={false}
                     />
@@ -434,446 +960,625 @@ export default function AnalyticsPage() {
         })}
       </div>
 
-      {/* ─── Primary Trend Chart (Full width, reusable Wrapper) ─── */}
-      <ChartCard
-        title="Revenue & Booking Trends"
-        subtitle="Historical financial audit and transaction metrics across the selected interval"
-        headerActions={
-          <div className="flex items-center bg-[#E8E0D6]/20 rounded-lg p-0.5 border border-[#E2D9CE]/30">
-            {(["both", "revenue", "bookings"] as const).map((m) => (
-              <button
-                key={m}
-                type="button"
-                onClick={() => setChartMode(m)}
-                className={`px-3 py-1 rounded-md text-[9px] font-bold font-sans uppercase tracking-wider transition-all cursor-pointer ${
-                  chartMode === m ? "bg-[#3D5A3A] text-white" : "text-[#6E6960] hover:text-[#3D5A3A]"
-                }`}
-              >
-                {m}
-              </button>
-            ))}
-          </div>
-        }
+      {/* ─── Custom Canva-style Free-Moving & Resizable Canvas ─── */}
+      <div
+        id="analytics-canvas"
+        className="relative w-full rounded-2xl border border-[#E2D9CE]/50 p-4 transition-all duration-300 overflow-hidden"
+        style={{
+          height: `${getCanvasHeight()}px`,
+          backgroundImage: "radial-gradient(circle, rgba(61, 90, 58, 0.08) 1.5px, transparent 1.5px)",
+          backgroundSize: "24px 24px",
+          backgroundColor: "rgba(250, 250, 247, 0.25)"
+        }}
       >
-        <div className="h-[300px] w-full mt-2 select-none">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={data.chartData} margin={{ top: 10, right: 5, left: -15, bottom: 0 }}>
-              <defs>
-                <linearGradient id="primaryRevenueGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#3D5A3A" stopOpacity={0.12} />
-                  <stop offset="100%" stopColor="#3D5A3A" stopOpacity={0} />
-                </linearGradient>
-                <linearGradient id="primaryBookingsGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#7A9A6D" stopOpacity={0.08} />
-                  <stop offset="100%" stopColor="#7A9A6D" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E2D9CE" opacity={0.3} vertical={false} />
-              <XAxis
-                dataKey="label"
-                tick={{ fontSize: 9, fill: "#6E6960", fontWeight: "bold" }}
-                axisLine={false}
-                tickLine={false}
-              />
-              {/* Dual Axes */}
-              {(chartMode === "both" || chartMode === "revenue") && (
-                <YAxis
-                  yAxisId="rev"
-                  orientation="left"
-                  tick={{ fontSize: 9, fill: "#6E6960", fontWeight: "bold" }}
-                  axisLine={false}
-                  tickLine={false}
-                  tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`}
-                />
-              )}
-              {(chartMode === "both" || chartMode === "bookings") && (
-                <YAxis
-                  yAxisId="bks"
-                  orientation={chartMode === "bookings" ? "left" : "right"}
-                  tick={{ fontSize: 9, fill: "#6E6960", fontWeight: "bold" }}
-                  axisLine={false}
-                  tickLine={false}
-                />
-              )}
-              
-              <Tooltip content={<DarkChartTooltip />} />
+        {/* snappable ghost outline box preview */}
+        {renderGhostPreview()}
 
-              {/* Revenue Area */}
-              {(chartMode === "both" || chartMode === "revenue") && (
-                <Area
-                  yAxisId="rev"
-                  type="monotone"
-                  dataKey="revenue"
-                  stroke="#3D5A3A"
-                  fill="url(#primaryRevenueGrad)"
-                  strokeWidth={2}
-                  name="Revenue (₹)"
-                />
-              )}
+        {Object.keys(positions).map((cardId) => {
+          const cardPos = positions[cardId]
+          if (!cardPos) return null
 
-              {/* Bookings Area */}
-              {(chartMode === "both" || chartMode === "bookings") && (
-                <Area
-                  yAxisId="bks"
-                  type="monotone"
-                  dataKey="bookings"
-                  stroke="#7A9A6D"
-                  fill="url(#primaryBookingsGrad)"
-                  strokeWidth={2}
-                  name="Bookings"
-                />
-              )}
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-      </ChartCard>
+          const isDragging = dragState && dragState.cardId === cardId
+          const isResizing = resizeState && resizeState.cardId === cardId
 
-      {/* ─── Secondary Widgets Rows ─── */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-12 gap-6 md:gap-8">
-        
-        {/* Service division (Bar Chart) */}
-        <div className="xl:col-span-4">
-          <ChartCard
-            title="Service Revenue Breakdown"
-            subtitle="Bookings and cash share split by catalog items"
-          >
-            <div className="h-[240px] w-full mt-4 select-none">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={data.topServices} layout="vertical" margin={{ top: 0, right: 5, left: 15, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#E2D9CE" opacity={0.3} horizontal={false} />
-                  <XAxis type="number" tick={{ fontSize: 9, fill: "#6E6960" }} axisLine={false} tickLine={false} />
-                  <YAxis
-                    dataKey="name"
-                    type="category"
-                    tick={{ fontSize: 10, fill: "#1A1A1A", fontWeight: "bold" }}
-                    axisLine={false}
-                    tickLine={false}
-                    width={70}
-                  />
-                  <Tooltip content={<DarkChartTooltip />} />
-                  <Bar dataKey="revenue" fill="#3D5A3A" radius={[0, 4, 4, 0]} name="Revenue (₹)" maxBarSize={14}>
-                    {data.topServices.map((entry, idx) => (
-                      <Cell key={idx} fill={entry.color} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
+          const cardStyle = getCardStyle(cardId)
+
+          // Border resize handle elements
+          const resizeRightHandle = (
+            <div
+              onPointerDown={(e) => handleResizePointerDown(e, cardId, "right")}
+              onPointerMove={handleResizePointerMove}
+              onPointerUp={handleResizePointerUp}
+              className="absolute top-0 right-0 w-2 h-full cursor-col-resize z-30 touch-none hover:bg-stone-300/10 transition-colors"
+              title="Drag right edge to resize width"
+            />
+          )
+
+          const resizeBottomHandle = (
+            <div
+              onPointerDown={(e) => handleResizePointerDown(e, cardId, "bottom")}
+              onPointerMove={handleResizePointerMove}
+              onPointerUp={handleResizePointerUp}
+              className="absolute bottom-0 left-0 w-full h-2 cursor-row-resize z-30 touch-none hover:bg-stone-300/10 transition-colors"
+              title="Drag bottom edge to resize height"
+            />
+          )
+
+          const resizeCornerHandle = (
+            <div
+              onPointerDown={(e) => handleResizePointerDown(e, cardId, "corner")}
+              onPointerMove={handleResizePointerMove}
+              onPointerUp={handleResizePointerUp}
+              className="absolute bottom-1 right-1 w-4 h-4 cursor-se-resize flex items-end justify-end select-none z-30 touch-none opacity-0 group-hover/card:opacity-100 transition-opacity"
+              title="Drag corner to resize card size"
+            >
+              <svg width="8" height="8" viewBox="0 0 8 8" className="text-stone-400 dark:text-stone-500">
+                <path d="M8 0L0 8M8 3L3 8M8 6L6 8" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+              </svg>
             </div>
+          )
+
+          switch (cardId) {
             
-            {/* Color indicators */}
-            <div className="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-[#E2D9CE]/30">
-              {data.topServices.slice(0, 4).map((s) => (
-                <div key={s.name} className="flex items-center gap-1.5 min-w-0">
-                  <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: s.color }} />
-                  <span className="text-[10px] font-semibold text-[#6E6960] truncate">{s.name}</span>
-                  <span className="text-[10px] font-bold text-[#1A1A1A] ml-auto font-mono">₹{(s.revenue / 1000).toFixed(1)}k</span>
-                </div>
-              ))}
-            </div>
-          </ChartCard>
-        </div>
-
-        {/* Peak Hours Heatmap (Custom CSS grid representing Mon-Sun, 9AM to 8PM) */}
-        <div className="xl:col-span-8">
-          <ChartCard
-            title="Weekly Traffic Heatmap"
-            subtitle="Hourly booking distribution audit. Peak periods fade to deep Olive"
-            headerActions={
-              <div className="h-5 flex items-center justify-end">
-                {hoveredHeatmap ? (
-                  <span className="text-[10px] text-[#3D5A3A] font-extrabold font-mono bg-[#3D5A3A]/5 border border-[#3D5A3A]/20 px-2 py-0.5 rounded">
-                    {hoveredHeatmap.day} at {hoveredHeatmap.hour > 12 ? `${hoveredHeatmap.hour - 12} PM` : hoveredHeatmap.hour === 12 ? '12 PM' : `${hoveredHeatmap.hour} AM`}: {hoveredHeatmap.bookings} Bookings
-                  </span>
-                ) : (
-                  <span className="text-[10px] text-[#6E6960] font-sans font-semibold">Hover slots for stats</span>
-                )}
-              </div>
-            }
-          >
-            <div className="mt-4 space-y-2 select-none overflow-x-auto pb-1 scrollbar-thin">
-              <div className="min-w-[600px]">
-                
-                {/* Heatmap header: Hours row */}
-                <div className="grid grid-cols-13 gap-1 mb-1 text-center font-mono text-[9px] font-bold text-[#6E6960]">
-                  <div className="text-left font-sans font-semibold">Day</div>
-                  {Array.from({ length: 12 }, (_, i) => i + 9).map((hr) => (
-                    <div key={hr}>
-                      {hr > 12 ? `${hr - 12}P` : hr === 12 ? "12P" : `${hr}A`}
-                    </div>
-                  ))}
-                </div>
-
-                {/* Heatmap rows */}
-                {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => {
-                  return (
-                    <div key={day} className="grid grid-cols-13 gap-1 items-center">
-                      {/* Row header: Day name */}
-                      <div className="text-[10px] font-bold text-[#1A1A1A] font-sans">{day}</div>
-                      
-                      {/* Hourly slots */}
-                      {Array.from({ length: 12 }, (_, i) => i + 9).map((hour) => {
-                        const cell = data.heatmap.find(h => h.day === day && h.hour === hour)
-                        const bookings = cell ? cell.bookings : 0
-                        
-                        // Decide level
-                        let cellBg = "bg-stone-50 border border-stone-200/40"
-                        if (bookings >= 8) cellBg = "bg-[#3D5A3A]"
-                        else if (bookings >= 5) cellBg = "bg-[#3D5A3A]/70 text-white"
-                        else if (bookings >= 3) cellBg = "bg-[#3D5A3A]/40 text-[#3D5A3A]"
-                        else if (bookings >= 1) cellBg = "bg-[#3D5A3A]/15 text-[#3D5A3A]"
-
-                        return (
-                          <div
-                            key={hour}
-                            onMouseEnter={() => setHoveredHeatmap({ day, hour, bookings })}
-                            onMouseLeave={() => setHoveredHeatmap(null)}
-                            className={cn(
-                              "aspect-square rounded-md transition-all duration-150 cursor-pointer flex items-center justify-center text-[9px] font-bold font-mono",
-                              cellBg,
-                              bookings >= 5 ? "hover:ring-1 hover:ring-[#1A1A1A] hover:scale-105" : "hover:bg-stone-200/50"
-                            )}
-                          >
-                            {bookings > 0 ? bookings : ""}
-                          </div>
-                        )
-                      })}
-                    </div>
-                  )
-                })}
-
-                {/* Legend indicator */}
-                <div className="flex items-center gap-3 mt-4 pt-3 border-t border-[#E2D9CE]/30 text-[9px] font-sans font-bold text-[#6E6960]">
-                  <span>Workstation Density:</span>
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded bg-stone-50 border border-stone-200" />
-                    <span>0 bookings (Idle)</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded bg-[#3D5A3A]/15" />
-                    <span>1-2 bookings</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded bg-[#3D5A3A]/40" />
-                    <span>3-4 bookings</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded bg-[#3D5A3A]/70" />
-                    <span>5-7 bookings</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded bg-[#3D5A3A]" />
-                    <span>8+ bookings (Peak)</span>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-          </ChartCard>
-        </div>
-
-      </div>
-
-      {/* ─── Staff performance + Retention Funnel ─── */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
-        
-        {/* Stylist rankings */}
-        <ChartCard
-          title="Stylist Output Comparison"
-          subtitle="Staff revenue contribution, average ratings, and scheduling occupancy"
-        >
-          <div className="mt-4 space-y-4 select-none">
-            {data.staffPerformance.map((st, idx) => {
-              const maxOcc = Math.max(...data.staffPerformance.map(s => s.occupancy))
-              const pctOcc = (st.occupancy / maxOcc) * 100
+            case "studio-insights": {
+              // YouTube Studio style reviews list
+              const studioReviews = [
+                { id: "rev-1", author: "Priya Sharma", rating: 5, text: "The facial cleanup was extremely relaxing. Will visit again!", service: "Facial" },
+                { id: "rev-2", author: "Rohit Kapoor", rating: 4, text: "Quick beard trim by Raj. Nice clean setup.", service: "Beard Trim" }
+              ]
 
               return (
-                <div key={st.name} className="flex flex-col p-3 rounded-lg border border-[#E2D9CE]/30 bg-[#FAFAF7]/40 hover:border-[#3D5A3A]/30 transition-all duration-200">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 rounded bg-[#E8E0D6]/40 flex items-center justify-center font-serif text-[10px] font-bold text-[#3D5A3A] border border-[#E2D9CE]/40">
-                        {idx + 1}
+                <ChartCard
+                  key={cardId}
+                  id={`card-wrapper-${cardId}`}
+                  style={cardStyle}
+                  className={cn(
+                    "absolute overflow-hidden group/card",
+                    isDragging && "opacity-35 shadow-xl scale-[1.01] pointer-events-none"
+                  )}
+                  title={cardTitleWithControls(cardId, "Creator Studio Insights")}
+                  subtitle="Latest checkout audit & interactive review replies"
+                >
+                  {resizeRightHandle}
+                  {resizeBottomHandle}
+                  {resizeCornerHandle}
+
+                  <div className="flex flex-col h-full justify-between overflow-y-auto pr-1 scrollbar-thin">
+                    {/* Latest Checkout Stats (YouTube Studio Video Performance style) */}
+                    <div className="space-y-2 pb-3 border-b border-[#E2D9CE]/30 select-none">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <p className="text-[10px] font-bold text-[#C4A76C] uppercase font-mono tracking-wider">Latest Session Performance</p>
+                          <h4 className="text-xs font-extrabold text-[#1A1A1A] font-sans mt-0.5">Bridal Package — Kavya Reddy</h4>
+                        </div>
+                        <span className="text-[8px] font-bold px-1.5 py-0.5 bg-[#3D5A3A]/10 text-[#3D5A3A] rounded font-sans">
+                          Completed 20m ago
+                        </span>
                       </div>
-                      <div>
-                        <span className="text-xs font-bold text-[#1A1A1A] font-sans">{st.name}</span>
-                        <div className="flex items-center gap-0.5 text-[#C4A76C] mt-0.5">
-                          <Star className="w-2.5 h-2.5 fill-current" />
-                          <span className="text-[9px] font-bold text-[#6E6960] font-mono">{st.rating}</span>
+
+                      <div className="space-y-1.5 mt-1.5 bg-stone-50/50 p-2 rounded-lg border border-[#E2D9CE]/25">
+                        <div className="flex items-center justify-between text-[10px]">
+                          <span className="text-[#6E6960] font-semibold">Revenue Rank:</span>
+                          <span className="font-mono font-extrabold text-[#3D5A3A] flex items-center gap-0.5">
+                            1 of 10 <TrendingUp className="w-2.5 h-2.5 text-emerald-700" />
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between text-[10px]">
+                          <span className="text-[#6E6960] font-semibold">Session Total Value:</span>
+                          <span className="font-mono font-extrabold text-[#1A1A1A]">₹6,500</span>
+                        </div>
+                        <div className="flex items-center justify-between text-[10px]">
+                          <span className="text-[#6E6960] font-semibold">Rating Status:</span>
+                          <span className="font-mono font-extrabold text-[#3D5A3A] flex items-center gap-0.5">
+                            5.0 ★ <Star className="w-2.5 h-2.5 fill-[#C4A76C] text-[#C4A76C]" />
+                          </span>
                         </div>
                       </div>
                     </div>
 
-                    <div className="text-right">
-                      <p className="text-xs font-mono font-bold text-[#1A1A1A]">₹{st.revenue.toLocaleString("en-IN")}</p>
-                      <p className="text-[9px] text-[#6E6960] font-mono font-semibold">{st.bookings} sessions</p>
+                    {/* Recent Customer Reviews & Interactive Replies */}
+                    <div className="mt-3 space-y-2.5">
+                      <div className="flex items-center gap-1.5">
+                        <MessageSquare className="w-3.5 h-3.5 text-[#3D5A3A]" />
+                        <h4 className="text-xs font-extrabold text-[#1A1A1A] font-sans">Recent Reviews</h4>
+                      </div>
+
+                      <div className="space-y-2">
+                        {studioReviews.map((rev) => {
+                          const hasReply = !!replies[rev.id]
+
+                          return (
+                            <div key={rev.id} className="p-2 rounded-lg border border-[#E2D9CE]/30 bg-[#FAFAF7]/45 text-[10px] space-y-1.5">
+                              <div className="flex justify-between items-center">
+                                <span className="font-bold text-[#1A1A1A]">{rev.author}</span>
+                                <div className="flex items-center gap-0.5">
+                                  {Array.from({ length: rev.rating }).map((_, i) => (
+                                    <Star key={i} className="w-2.5 h-2.5 text-[#C4A76C] fill-current" />
+                                  ))}
+                                </div>
+                              </div>
+                              <p className="text-[#6E6960] font-medium leading-relaxed italic">
+                                "{rev.text}"
+                              </p>
+
+                              {/* Render threaded conversation responses */}
+                              {hasReply ? (
+                                <div className="bg-[#3D5A3A]/5 border border-[#3D5A3A]/10 p-1.5 rounded mt-1 flex items-start gap-1">
+                                  <div className="w-3.5 h-3.5 rounded bg-[#3D5A3A]/10 border border-[#3D5A3A]/20 flex items-center justify-center text-[7px] font-bold text-[#3D5A3A] shrink-0 mt-0.5">O</div>
+                                  <div className="flex-1 min-w-0">
+                                    <p className="text-[8px] font-bold text-[#3D5A3A]">Owner Reply</p>
+                                    <p className="text-[9px] text-[#1A1A1A] font-sans mt-0.5 leading-normal">
+                                      {replies[rev.id]}
+                                    </p>
+                                  </div>
+                                  <Check className="w-2.5 h-2.5 text-[#3D5A3A] shrink-0 mt-0.5" />
+                                </div>
+                              ) : (
+                                <div className="flex items-center gap-1 mt-1.5 pt-1 border-t border-stone-200/40">
+                                  <input
+                                    type="text"
+                                    placeholder="Type response as owner..."
+                                    value={replyInputs[rev.id] || ""}
+                                    onChange={(e) => setReplyInputs(prev => ({ ...prev, [rev.id]: e.target.value }))}
+                                    className="flex-1 bg-white border border-[#E2D9CE]/35 rounded px-1.5 py-0.5 text-[9px] font-sans text-[#1A1A1A] focus:outline-none focus:border-[#3D5A3A]/60"
+                                  />
+                                  <Button
+                                    size="sm"
+                                    onClick={() => sendReply(rev.id)}
+                                    className="h-5 px-1.5 bg-[#3D5A3A] hover:bg-[#2B3F29] text-white text-[8px] font-bold uppercase rounded flex items-center gap-0.5 cursor-pointer shrink-0"
+                                  >
+                                    <Send className="w-1.5 h-1.5" />
+                                    Reply
+                                  </Button>
+                                </div>
+                              )}
+                            </div>
+                          )
+                        })}
+                      </div>
                     </div>
                   </div>
 
-                  {/* Occupancy bar */}
-                  <div className="mt-3">
-                    <div className="flex justify-between text-[9px] font-sans font-bold text-[#6E6960] mb-1">
-                      <span>Workload Occupancy</span>
-                      <span className="font-mono text-[#3D5A3A]">{st.occupancy}%</span>
+                </ChartCard>
+              )
+            }
+
+            case "revenue-trend":
+              return (
+                <ChartCard
+                  key={cardId}
+                  id={`card-wrapper-${cardId}`}
+                  style={cardStyle}
+                  className={cn(
+                    "absolute overflow-hidden group/card",
+                    isDragging && "opacity-35 shadow-xl scale-[1.01] pointer-events-none"
+                  )}
+                  title={cardTitleWithControls(cardId, "Revenue & Booking Trends")}
+                  subtitle="Financial auditing curves matching selected intervals"
+                  headerActions={
+                    <div className="flex items-center bg-[#E8E0D6]/20 rounded-lg p-0.5 border border-[#E2D9CE]/30">
+                      {(["both", "revenue", "bookings"] as const).map((m) => (
+                        <button
+                          key={m}
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setChartMode(m)
+                          }}
+                          className={`px-2 py-0.5 rounded-md text-[8px] font-bold font-sans uppercase tracking-wider transition-all cursor-pointer ${
+                            chartMode === m ? "bg-[#3D5A3A] text-white shadow-xs" : "text-[#6E6960] hover:text-[#3D5A3A]"
+                          }`}
+                        >
+                          {m}
+                        </button>
+                      ))}
                     </div>
-                    <div className="h-2 rounded-full bg-[#E8E0D6]/30 overflow-hidden border border-[#E2D9CE]/20">
-                      <div
-                        className="h-full rounded-full transition-all duration-1000"
-                        style={{ width: `${st.occupancy}%`, backgroundColor: st.color }}
+                  }
+                >
+                  {resizeRightHandle}
+                  {resizeBottomHandle}
+                  {resizeCornerHandle}
+
+                  <div className="flex-grow min-h-0 w-full select-none flex flex-col h-full">
+                    <div className="flex-1 w-full min-h-[120px]">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <AreaChart data={data.chartData} margin={{ top: 10, right: 5, left: -20, bottom: 0 }}>
+                          <defs>
+                            <linearGradient id="primaryRevenueGrad" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="0%" stopColor="#3D5A3A" stopOpacity={0.12} />
+                              <stop offset="100%" stopColor="#3D5A3A" stopOpacity={0} />
+                            </linearGradient>
+                            <linearGradient id="primaryBookingsGrad" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="0%" stopColor="#7A9A6D" stopOpacity={0.08} />
+                              <stop offset="100%" stopColor="#7A9A6D" stopOpacity={0} />
+                            </linearGradient>
+                          </defs>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#E2D9CE" opacity={0.3} vertical={false} />
+                          <XAxis
+                            dataKey="label"
+                            tick={{ fontSize: 9, fill: "#6E6960", fontWeight: "bold" }}
+                            axisLine={false}
+                            tickLine={false}
+                          />
+                          {(chartMode === "both" || chartMode === "revenue") && (
+                            <YAxis
+                              yAxisId="rev"
+                              orientation="left"
+                              tick={{ fontSize: 9, fill: "#6E6960", fontWeight: "bold" }}
+                              axisLine={false}
+                              tickLine={false}
+                              tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`}
+                            />
+                          )}
+                          {(chartMode === "both" || chartMode === "bookings") && (
+                            <YAxis
+                              yAxisId="bks"
+                              orientation={chartMode === "bookings" ? "left" : "right"}
+                              tick={{ fontSize: 9, fill: "#6E6960", fontWeight: "bold" }}
+                              axisLine={false}
+                              tickLine={false}
+                            />
+                          )}
+                          
+                          <Tooltip content={<DarkChartTooltip />} />
+
+                          {(chartMode === "both" || chartMode === "revenue") && (
+                            <Area
+                              yAxisId="rev"
+                              type="monotone"
+                              dataKey="revenue"
+                              stroke="#3D5A3A"
+                              fill="url(#primaryRevenueGrad)"
+                              strokeWidth={1.8}
+                              name="Revenue (₹)"
+                            />
+                          )}
+
+                          {(chartMode === "both" || chartMode === "bookings") && (
+                            <Area
+                              yAxisId="bks"
+                              type="monotone"
+                              dataKey="bookings"
+                              stroke="#7A9A6D"
+                              fill="url(#primaryBookingsGrad)"
+                              strokeWidth={1.8}
+                              name="Bookings"
+                            />
+                          )}
+                        </AreaChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
+                </ChartCard>
+              )
+
+            case "service-breakdown":
+              return (
+                <ChartCard
+                  key={cardId}
+                  id={`card-wrapper-${cardId}`}
+                  style={cardStyle}
+                  className={cn(
+                    "absolute overflow-hidden group/card flex flex-col justify-between",
+                    isDragging && "opacity-35 shadow-xl scale-[1.01] pointer-events-none"
+                  )}
+                  title={cardTitleWithControls(cardId, "Service Revenue Division")}
+                  subtitle="Bookings share split by catalog items"
+                >
+                  {resizeRightHandle}
+                  {resizeBottomHandle}
+                  {resizeCornerHandle}
+
+                  <div className="flex-1 flex flex-col justify-between min-h-0 w-full overflow-y-auto h-full">
+                    <div className="flex-1 min-h-[100px] w-full select-none">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={data.topServices} layout="vertical" margin={{ top: 0, right: 5, left: 10, bottom: 0 }}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#E2D9CE" opacity={0.3} horizontal={false} />
+                          <XAxis type="number" tick={{ fontSize: 8, fill: "#6E6960" }} axisLine={false} tickLine={false} />
+                          <YAxis
+                            dataKey="name"
+                            type="category"
+                            tick={{ fontSize: 9, fill: "#1A1A1A", fontWeight: "bold" }}
+                            axisLine={false}
+                            tickLine={false}
+                            width={70}
+                          />
+                          <Tooltip content={<DarkChartTooltip />} />
+                          <Bar dataKey="revenue" fill="#3D5A3A" radius={[0, 4, 4, 0]} name="Revenue (₹)" maxBarSize={12}>
+                            {data.topServices.map((entry, idx) => (
+                              <Cell key={idx} fill={entry.color} />
+                            ))}
+                          </Bar>
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-x-2 gap-y-1 mt-2 pt-2 border-t border-[#E2D9CE]/30 shrink-0">
+                      {data.topServices.slice(0, 4).map((s) => (
+                        <div key={s.name} className="flex items-center gap-1 min-w-0">
+                          <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: s.color }} />
+                          <span className="text-[9px] font-semibold text-[#6E6960] truncate">{s.name}</span>
+                          <span className="text-[9px] font-bold text-[#1A1A1A] ml-auto font-mono">₹{(s.revenue / 1000).toFixed(1)}k</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </ChartCard>
+              )
+
+            case "heatmap":
+              return (
+                <ChartCard
+                  key={cardId}
+                  id={`card-wrapper-${cardId}`}
+                  style={cardStyle}
+                  className={cn(
+                    "absolute overflow-hidden group/card",
+                    isDragging && "opacity-35 shadow-xl scale-[1.01] pointer-events-none"
+                  )}
+                  title={cardTitleWithControls(cardId, "Weekly Traffic Heatmap")}
+                  subtitle="Hourly booking distribution audit. Peak periods fade to deep Olive"
+                >
+                  {resizeRightHandle}
+                  {resizeBottomHandle}
+                  {resizeCornerHandle}
+
+                  <div className="flex-grow min-h-0 w-full overflow-y-auto pr-1 select-none h-full flex flex-col justify-between">
+                    <div className="min-w-[620px] flex-1 flex flex-col justify-between">
+                      
+                      {/* Heatmap header: Hours row */}
+                      <div className="flex items-center mb-1 text-center font-mono text-[9px] font-bold text-[#6E6960] shrink-0">
+                        <div className="w-10 text-left font-sans font-semibold shrink-0">Day</div>
+                        <div className="flex-1 grid grid-cols-12 gap-1.5">
+                          {Array.from({ length: 12 }, (_, i) => i + 9).map((hr) => (
+                            <div key={hr} className="truncate">
+                              {hr > 12 ? `${hr - 12}P` : hr === 12 ? "12P" : `${hr}A`}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Heatmap rows */}
+                      <div className="space-y-1 flex-1 flex flex-col justify-center">
+                        {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => {
+                          return (
+                            <div key={day} className="flex items-center flex-1">
+                              <div className="w-10 text-[10px] font-bold text-[#1A1A1A] font-sans shrink-0">{day}</div>
+                              
+                              <div className="flex-1 grid grid-cols-12 gap-1.5">
+                                {Array.from({ length: 12 }, (_, i) => i + 9).map((hour) => {
+                                  const cell = data.heatmap.find(h => h.day === day && h.hour === hour)
+                                  const bookings = cell ? cell.bookings : 0
+                                  
+                                  let cellBg = "bg-stone-50 border border-stone-200/40"
+                                  if (bookings >= 8) cellBg = "bg-[#3D5A3A]"
+                                  else if (bookings >= 5) cellBg = "bg-[#3D5A3A]/70"
+                                  else if (bookings >= 3) cellBg = "bg-[#3D5A3A]/40"
+                                  else if (bookings >= 1) cellBg = "bg-[#3D5A3A]/15"
+
+                                  const displayTime = hour > 12 ? `${hour - 12} PM` : hour === 12 ? "12 PM" : `${hour} AM`
+
+                                  return (
+                                    <div
+                                      key={hour}
+                                      className="relative group/cell aspect-square flex-1"
+                                    >
+                                      <div
+                                        className={cn(
+                                          "w-full h-full rounded-[4px] transition-all duration-150 cursor-pointer",
+                                          cellBg,
+                                          bookings >= 5 ? "hover:ring-1 hover:ring-[#1A1A1A] hover:scale-105" : "hover:bg-stone-200"
+                                        )}
+                                      />
+                                      
+                                      {/* Tooltip Popup (isolated to group/cell hover) */}
+                                      <div className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover/cell:block bg-slate-950 border border-slate-800 text-white text-[9px] font-mono px-2 py-1 rounded shadow-xl whitespace-nowrap z-50">
+                                        <span className="font-semibold text-slate-400">{day} at {displayTime}</span>
+                                        <div className="text-[10px] font-bold text-white mt-0.5">{bookings} bookings</div>
+                                      </div>
+                                    </div>
+                                  )
+                                })}
+                              </div>
+                            </div>
+                          )
+                        })}
+                      </div>
+
+                      {/* Legend */}
+                      <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#E2D9CE]/30 text-[9px] font-sans font-bold text-[#6E6960] shrink-0">
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          <span>Density:</span>
+                          <span className="w-2 h-2 rounded bg-stone-50 border border-stone-200" />
+                          <span className="font-medium text-[8px]">0</span>
+                          <span className="w-2 h-2 rounded bg-[#3D5A3A]/15" />
+                          <span className="font-medium text-[8px]">1-2</span>
+                          <span className="w-2 h-2 rounded bg-[#3D5A3A]/40" />
+                          <span className="font-medium text-[8px]">3-4</span>
+                          <span className="w-2 h-2 rounded bg-[#3D5A3A]/70" />
+                          <span className="font-medium text-[8px]">5-7</span>
+                          <span className="w-2 h-2 rounded bg-[#3D5A3A]" />
+                          <span className="font-medium text-[8px]">8+</span>
+                        </div>
+                        <span className="text-[8px] font-semibold text-stone-400">Hover blocks</span>
+                      </div>
+
+                    </div>
+                  </div>
+                </ChartCard>
+              )
+
+            case "funnel":
+              return (
+                <ChartCard
+                  key={cardId}
+                  id={`card-wrapper-${cardId}`}
+                  style={cardStyle}
+                  className={cn(
+                    "absolute overflow-hidden group/card",
+                    isDragging && "opacity-35 shadow-xl scale-[1.01] pointer-events-none"
+                  )}
+                  title={cardTitleWithControls(cardId, "Retention & Leakage Funnel")}
+                  subtitle="Conversion rates mapping discoverability to loyalty status"
+                >
+                  {resizeRightHandle}
+                  {resizeBottomHandle}
+                  {resizeCornerHandle}
+
+                  <div className="flex-1 flex flex-col min-h-0 w-full overflow-y-auto pr-1 space-y-2 select-none justify-between h-full">
+                    {funnelSteps.map((step, idx) => {
+                      const previousStepCount = idx > 0 ? funnelSteps[idx - 1].count : step.count
+                      const stepConversion = previousStepCount > 0 ? Math.round((step.count / previousStepCount) * 100) : 100
+
+                      return (
+                        <div key={step.name} className="space-y-0.5 flex-1 flex flex-col justify-center">
+                          <div className="flex justify-between items-center text-[9px] font-sans font-bold text-[#1A1A1A]">
+                            <div className="flex items-center gap-1 truncate">
+                              <span className="text-[#6E6960] truncate">{step.name}</span>
+                              <span className="text-[8px] font-mono text-stone-400 shrink-0">({step.label})</span>
+                            </div>
+                            <div className="flex items-center gap-1.5 shrink-0">
+                              <span className="font-mono text-[#3D5A3A] font-extrabold">{step.count.toLocaleString()}</span>
+                              {idx > 0 && (
+                                <span className="text-[7px] font-mono font-extrabold text-emerald-700 bg-emerald-50 border border-emerald-100 px-1 rounded">
+                                  {stepConversion}%
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          
+                          <div className="h-4 rounded-md bg-[#E8E0D6]/15 border border-[#E2D9CE]/30 relative overflow-hidden flex items-center px-2">
+                            <div
+                              className={cn(
+                                "absolute top-0 left-0 bottom-0 transition-all duration-1000",
+                                idx === 0 ? "bg-stone-200/40" :
+                                idx === 1 ? "bg-[#7A9A6D]/15" :
+                                idx === 2 ? "bg-[#7A9A6D]/30" :
+                                idx === 3 ? "bg-[#3D5A3A]/60" : "bg-[#3D5A3A]"
+                              )}
+                              style={{ width: `${step.pct}%` }}
+                            />
+                            
+                            <span className="relative z-10 text-[8px] font-mono font-bold text-[#1A1A1A] ml-auto">
+                              {idx === 0 ? "100%" : `${step.pct}%`}
+                            </span>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </ChartCard>
+              )
+
+            case "transactions":
+              return (
+                <ChartCard
+                  key={cardId}
+                  id={`card-wrapper-${cardId}`}
+                  style={cardStyle}
+                  className={cn(
+                    "absolute overflow-hidden group/card",
+                    isDragging && "opacity-35 shadow-xl scale-[1.01] pointer-events-none"
+                  )}
+                  title={cardTitleWithControls(cardId, "Recent Transactions Ledger")}
+                  subtitle="Audit log of client triggers and completed payments"
+                  headerActions={
+                    <div className="relative">
+                      <Search className="w-3.5 h-3.5 text-stone-400 absolute left-2 top-2" />
+                      <input
+                        type="text"
+                        placeholder="Search logs..."
+                        value={bookingSearch}
+                        onChange={(e) => setBookingSearch(e.target.value)}
+                        className="pl-7 pr-2 py-1 bg-white border border-[#E2D9CE]/40 rounded-lg text-[10px] font-sans text-[#1A1A1A] focus:outline-none focus:border-[#3D5A3A]/60 w-44"
                       />
                     </div>
-                  </div>
+                  }
+                >
+                  {resizeRightHandle}
+                  {resizeBottomHandle}
+                  {resizeCornerHandle}
 
-                </div>
-              )
-            })}
-          </div>
-        </ChartCard>
-
-        {/* Customer funnel conversion */}
-        <ChartCard
-          title="Customer Retention & Funnel Leakage"
-          subtitle="Funnel conversion rates mapping discoverability to loyalty status"
-        >
-          <div className="mt-4 space-y-3.5 select-none">
-            {funnelSteps.map((step, idx) => {
-              const previousStepCount = idx > 0 ? funnelSteps[idx - 1].count : step.count
-              const stepConversion = previousStepCount > 0 ? Math.round((step.count / previousStepCount) * 100) : 100
-
-              return (
-                <div key={step.name} className="space-y-1.5">
-                  <div className="flex justify-between items-center text-[10px] font-sans font-bold text-[#1A1A1A]">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[#6E6960]">{step.name}</span>
-                      <span className="text-[8px] font-mono text-stone-400">({step.label})</span>
+                  <div className="flex-1 flex flex-col min-h-0 w-full overflow-y-auto pr-1 justify-between h-full">
+                    <div className="overflow-x-auto select-none border border-[#E2D9CE]/40 rounded-lg">
+                      <table className="w-full text-left text-xs font-sans border-collapse">
+                        <thead>
+                          <tr className="bg-stone-50/50 border-b border-[#E2D9CE]/40 text-[#6E6960] font-bold uppercase text-[9px] tracking-wider">
+                            <th className="px-3 py-2">ID</th>
+                            <th className="px-3 py-2">Client</th>
+                            <th className="px-3 py-2">Service</th>
+                            <th className="px-3 py-2">Stylist</th>
+                            <th className="px-3 py-2">Date & Time</th>
+                            <th className="px-3 py-2 text-right">Amount</th>
+                            <th className="px-3 py-2 text-center">Status</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[#E2D9CE]/30">
+                          {paginatedBookings.length > 0 ? (
+                            paginatedBookings.map((bk) => (
+                              <tr key={bk.id} className="hover:bg-stone-50/30 transition-all duration-150 text-[#1A1A1A]">
+                                <td className="px-3 py-2.5 font-mono font-bold text-[11px]">{bk.id}</td>
+                                <td className="px-3 py-2.5 font-semibold text-[11px]">{bk.name}</td>
+                                <td className="px-3 py-2.5 text-[#6E6960] text-[11px]">{bk.service}</td>
+                                <td className="px-3 py-2.5 text-[#3D5A3A] font-semibold text-[11px]">{bk.stylist}</td>
+                                <td className="px-3 py-2.5 text-[11px]">
+                                  <span className="font-mono font-semibold">{bk.date}</span>
+                                  <span className="text-[9px] text-stone-400 ml-1 font-bold font-mono">{bk.time}</span>
+                                </td>
+                                <td className="px-3 py-2.5 text-right font-mono font-bold text-[11px]">₹{bk.amount}</td>
+                                <td className="px-3 py-2.5 text-center">{getStatusBadge(bk.status)}</td>
+                              </tr>
+                            ))
+                          ) : (
+                            <tr>
+                              <td colSpan={7} className="px-3 py-8 text-center text-[#6E6960] font-medium">
+                                No transaction entries matched search criteria
+                              </td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono text-[#3D5A3A] font-extrabold">{step.count.toLocaleString()}</span>
-                      {idx > 0 && (
-                        <span className="text-[8px] font-mono font-extrabold text-emerald-700 bg-emerald-50 border border-emerald-100 px-1 rounded">
-                          {stepConversion}% conversion
+
+                    {/* Pagination */}
+                    {totalPages > 1 && (
+                      <div className="flex items-center justify-between mt-2 border-t border-[#E2D9CE]/25 pt-2 text-[10px] font-sans text-[#6E6960] select-none font-semibold shrink-0">
+                        <span>
+                          Page <span className="font-mono text-[#3D5A3A] font-bold">{currentPage}</span> of{" "}
+                          <span className="font-mono text-[#3D5A3A] font-bold">{totalPages}</span>
                         </span>
-                      )}
-                    </div>
+
+                        <div className="flex items-center gap-1">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                            disabled={currentPage === 1}
+                            className="h-7 px-2 border-[#E2D9CE]/45 text-[#3D5A3A] hover:bg-[#E8E0D6]/10 text-[9px]"
+                          >
+                            Previous
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                            disabled={currentPage === totalPages}
+                            className="h-7 px-2 border-[#E2D9CE]/45 text-[#3D5A3A] hover:bg-[#E8E0D6]/10 text-[9px]"
+                          >
+                            Next
+                          </Button>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                  
-                  {/* Visual Bar */}
-                  <div className="h-6 rounded-md bg-[#E8E0D6]/20 border border-[#E2D9CE]/40 relative overflow-hidden flex items-center px-3">
-                    <div
-                      className={cn(
-                        "absolute top-0 left-0 bottom-0 transition-all duration-1000",
-                        idx === 0 ? "bg-stone-200/40" :
-                        idx === 1 ? "bg-[#7A9A6D]/15" :
-                        idx === 2 ? "bg-[#7A9A6D]/30" :
-                        idx === 3 ? "bg-[#3D5A3A]/60" : "bg-[#3D5A3A]"
-                      )}
-                      style={{ width: `${step.pct}%` }}
-                    />
-                    
-                    {/* Inline drop-off percentage */}
-                    <span className="relative z-10 text-[9px] font-mono font-bold text-[#1A1A1A] ml-auto">
-                      {idx === 0 ? "100%" : `${step.pct}% of visits`}
-                    </span>
-                  </div>
-                </div>
+                </ChartCard>
               )
-            })}
-          </div>
-        </ChartCard>
 
+            default:
+              return null
+          }
+        })}
       </div>
-
-      {/* ─── Recent transactions table ─── */}
-      <ChartCard
-        title="Recent Transactions & Booking Status"
-        subtitle="Audit log of client scheduler triggers and payment verification status"
-        headerActions={
-          <div className="flex items-center gap-3 w-full sm:w-auto mt-2 sm:mt-0">
-            {/* Search Input */}
-            <div className="relative flex-1 sm:flex-initial">
-              <Search className="w-3.5 h-3.5 text-stone-400 absolute left-2.5 top-2.5" />
-              <input
-                type="text"
-                placeholder="Search logs..."
-                value={bookingSearch}
-                onChange={(e) => setBookingSearch(e.target.value)}
-                className="pl-8 pr-3 py-1.5 bg-white border border-[#E2D9CE]/40 rounded-lg text-xs font-sans text-[#1A1A1A] focus:outline-none focus:border-[#3D5A3A]/60 w-full sm:w-56"
-              />
-            </div>
-          </div>
-        }
-      >
-        <div className="mt-4 overflow-x-auto select-none border border-[#E2D9CE]/40 rounded-lg">
-          <table className="w-full text-left text-xs font-sans border-collapse">
-            <thead>
-              <tr className="bg-stone-50/50 border-b border-[#E2D9CE]/40 text-[#6E6960] font-bold uppercase text-[9px] tracking-wider">
-                <th className="px-4 py-3">Booking ID</th>
-                <th className="px-4 py-3">Client</th>
-                <th className="px-4 py-3">Service</th>
-                <th className="px-4 py-3">Stylist</th>
-                <th className="px-4 py-3">Date & Time</th>
-                <th className="px-4 py-3 text-right">Amount</th>
-                <th className="px-4 py-3 text-center">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#E2D9CE]/30">
-              {paginatedBookings.length > 0 ? (
-                paginatedBookings.map((bk) => (
-                  <tr key={bk.id} className="hover:bg-stone-50/30 transition-all duration-150 text-[#1A1A1A]">
-                    <td className="px-4 py-3.5 font-mono font-bold">{bk.id}</td>
-                    <td className="px-4 py-3.5 font-semibold">{bk.name}</td>
-                    <td className="px-4 py-3.5 text-[#6E6960] font-medium">{bk.service}</td>
-                    <td className="px-4 py-3.5 text-[#3D5A3A] font-semibold">{bk.stylist}</td>
-                    <td className="px-4 py-3.5">
-                      <span className="font-mono font-semibold">{bk.date}</span>
-                      <span className="text-[10px] text-stone-400 ml-1.5 font-bold font-mono">{bk.time}</span>
-                    </td>
-                    <td className="px-4 py-3.5 text-right font-mono font-bold">₹{bk.amount}</td>
-                    <td className="px-4 py-3.5 text-center">{getStatusBadge(bk.status)}</td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={7} className="px-4 py-10 text-center text-[#6E6960] font-medium">
-                    No transaction entries matched search criteria
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Pagination controls */}
-        {totalPages > 1 && (
-          <div className="flex items-center justify-between mt-4 border-t border-[#E2D9CE]/25 pt-4 text-xs font-sans text-[#6E6960] select-none font-semibold">
-            <span>
-              Showing Page <span className="font-mono text-[#3D5A3A] font-bold">{currentPage}</span> of{" "}
-              <span className="font-mono text-[#3D5A3A] font-bold">{totalPages}</span>
-            </span>
-
-            <div className="flex items-center gap-1">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                disabled={currentPage === 1}
-                className="h-8 px-2.5 border-[#E2D9CE]/45 text-[#3D5A3A] hover:bg-[#E8E0D6]/10"
-              >
-                <ChevronLeft className="w-4 h-4 mr-0.5" />
-                Previous
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                disabled={currentPage === totalPages}
-                className="h-8 px-2.5 border-[#E2D9CE]/45 text-[#3D5A3A] hover:bg-[#E8E0D6]/10"
-              >
-                Next
-                <ChevronRight className="w-4 h-4 ml-0.5" />
-              </Button>
-            </div>
-          </div>
-        )}
-      </ChartCard>
 
     </div>
   )

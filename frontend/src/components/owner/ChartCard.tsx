@@ -21,7 +21,7 @@ export function ChartCard({
   return (
     <div
       className={cn(
-        "p-5 sm:p-6 rounded-xl bg-white border border-[#E2D9CE]/45 shadow-xs hover:border-[#3D5A3A]/30 transition-all duration-200 flex flex-col justify-between",
+        "p-4 sm:p-5 rounded-xl bg-white border border-[#E2D9CE]/45 shadow-xs hover:border-[#3D5A3A]/30 transition-all duration-200 flex flex-col justify-start gap-3",
         className
       )}
       {...props}
