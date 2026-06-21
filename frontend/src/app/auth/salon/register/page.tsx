@@ -97,7 +97,7 @@ export default function SalonRegisterPage() {
       })
 
       // Redirect to verify email, then they'll proceed to dashboard
-      router.push(`/auth/verify-email?email=${encodeURIComponent(email)}&redirect=salon`)
+      router.push(`/auth/salon/verify-email?email=${encodeURIComponent(email)}`)
     } catch (err: any) {
       setErrorMsg(err.message || "Something went wrong. Please try again.")
     } finally {
