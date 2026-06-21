@@ -170,54 +170,46 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="space-y-6 animate-blur-in">
+    <div className="space-y-4 animate-blur-in">
       <Script src="https://accounts.google.com/gsi/client" strategy="lazyOnload" />
 
       {/* Icon */}
       <div className="flex justify-center">
-        <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center animate-float shadow-sm">
-          <LogIn className="w-5 h-5 text-primary" />
+        <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center shadow-sm">
+          <LogIn className="w-4.5 h-4.5 text-primary" />
         </div>
       </div>
 
       {/* Header */}
-      <div className="text-center space-y-1.5">
-        <h1 className="font-serif text-2xl font-semibold tracking-tight">
+      <div className="text-center space-y-1">
+        <h1 className="font-serif text-xl font-semibold tracking-tight">
           Sign in with email
         </h1>
-        <p className="text-muted-foreground text-sm">
-          Welcome back to CitySalon. Your beauty journey continues.
+        <p className="text-muted-foreground text-xs">
+          Welcome back to CitySalon.
         </p>
       </div>
 
       {/* Demo Credentials Card */}
-      <div className="relative overflow-hidden p-4 rounded-xl bg-accent/10 border border-accent/30 space-y-3 transition-all duration-300 hover:border-accent/50 shadow-sm">
-        {/* Shimmer effect */}
+      <div className="relative overflow-hidden p-3 rounded-xl bg-accent/10 border border-accent/30 space-y-2 transition-all duration-300 hover:border-accent/50 shadow-sm">
         <div className="absolute inset-0 shimmer-border pointer-events-none opacity-30" />
         
-        <div className="flex justify-between items-start">
-          <div className="flex gap-2.5">
-            <Key className="w-4 h-4 text-accent shrink-0 mt-0.5 animate-pulse" />
-            <div className="space-y-0.5">
-              <h4 className="text-xs font-semibold text-foreground/90">
-                Demo Access for Judges
-              </h4>
-              <p className="text-[11px] text-muted-foreground leading-relaxed">
-                Skip registration and test the authentication system instantly.
-              </p>
-            </div>
+        <div className="flex justify-between items-center">
+          <div className="flex gap-2">
+            <Key className="w-3.5 h-3.5 text-accent shrink-0 animate-pulse" />
+            <h4 className="text-[11px] font-semibold text-foreground/90">Demo Access for Judges</h4>
           </div>
-          <span className="text-[9px] font-bold bg-accent/20 text-accent px-2 py-0.5 rounded-full uppercase tracking-wider shrink-0 animate-pulse">
+          <span className="text-[8px] font-bold bg-accent/20 text-accent px-1.5 py-0.5 rounded-full uppercase tracking-wider shrink-0">
             Fast Pass
           </span>
         </div>
-        <div className="grid grid-cols-2 gap-2 text-[11px] bg-background/60 dark:bg-background/20 p-2.5 rounded-lg border border-border/40 font-mono">
+        <div className="grid grid-cols-2 gap-2 text-[11px] bg-background/60 dark:bg-background/20 p-2 rounded-lg border border-border/40 font-mono">
           <div>
-            <span className="text-muted-foreground block text-[9px] uppercase tracking-wider">Email</span>
+            <span className="text-muted-foreground block text-[8px] uppercase tracking-wider">Email</span>
             <span className="text-foreground font-medium select-all">judge@citysalon.com</span>
           </div>
           <div>
-            <span className="text-muted-foreground block text-[9px] uppercase tracking-wider">Password</span>
+            <span className="text-muted-foreground block text-[8px] uppercase tracking-wider">Password</span>
             <span className="text-foreground font-medium select-all">Password123!</span>
           </div>
         </div>
@@ -225,7 +217,7 @@ export default function LoginPage() {
           type="button"
           onClick={handleDemoLogin}
           variant="outline"
-          className="w-full h-8.5 rounded-lg border-accent/40 text-foreground hover:bg-accent/20 hover:text-foreground hover:scale-[1.01] active:scale-[0.99] text-xs font-medium transition-all duration-300"
+          className="w-full h-8 rounded-lg border-accent/40 text-foreground hover:bg-accent/20 hover:text-foreground text-xs font-medium transition-all duration-300"
           disabled={isLoading}
         >
           Autofill & Sign In
@@ -241,7 +233,7 @@ export default function LoginPage() {
       )}
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-3.5">
+      <form onSubmit={handleSubmit} className="space-y-3">
         <div className="relative group">
           <Mail className={`absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors duration-300 ${
             focusedField === "email" ? "text-primary" : "text-muted-foreground/60"
@@ -249,7 +241,7 @@ export default function LoginPage() {
           <Input
             type="email"
             placeholder="Email"
-            className="h-11 pl-10 rounded-xl bg-muted/30 border-border/40 focus:border-primary/60 focus:bg-background/80 focus:ring-2 focus:ring-primary/10 placeholder:text-muted-foreground/45 text-foreground transition-all duration-300 shadow-sm"
+            className="h-10 pl-10 rounded-xl bg-muted/30 border-border/40 focus:border-primary/60 focus:bg-background/80 focus:ring-2 focus:ring-primary/10 placeholder:text-muted-foreground/45 text-foreground transition-all duration-300 shadow-sm text-sm"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             onFocus={() => setFocusedField("email")}
@@ -265,7 +257,7 @@ export default function LoginPage() {
           <Input
             type={showPassword ? "text" : "password"}
             placeholder="Password"
-            className="h-11 pl-10 pr-10 rounded-xl bg-muted/30 border-border/40 focus:border-primary/60 focus:bg-background/80 focus:ring-2 focus:ring-primary/10 placeholder:text-muted-foreground/45 text-foreground transition-all duration-300 shadow-sm"
+            className="h-10 pl-10 pr-10 rounded-xl bg-muted/30 border-border/40 focus:border-primary/60 focus:bg-background/80 focus:ring-2 focus:ring-primary/10 placeholder:text-muted-foreground/45 text-foreground transition-all duration-300 shadow-sm text-sm"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             onFocus={() => setFocusedField("password")}
@@ -293,7 +285,7 @@ export default function LoginPage() {
 
         <Button
           type="submit"
-          className="w-full h-11 rounded-xl text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/95 hover:scale-[1.01] active:scale-[0.99] transition-all duration-300 shadow-md hover:shadow-primary/15"
+          className="w-full h-10 rounded-xl text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/95 transition-all duration-300 shadow-md"
           disabled={isLoading}
         >
           {isLoading ? (
@@ -309,10 +301,8 @@ export default function LoginPage() {
         <div className="absolute inset-0 flex items-center">
           <div className="w-full border-t border-dashed border-border/60" />
         </div>
-        <div className="relative flex justify-center text-xs">
-          <span className="bg-background px-3 text-muted-foreground/70">
-            Or sign in with
-          </span>
+        <div className="relative flex justify-center text-[11px]">
+          <span className="bg-background px-3 text-muted-foreground/70">Or</span>
         </div>
       </div>
 
@@ -321,7 +311,7 @@ export default function LoginPage() {
         <button
           type="button"
           onClick={handleGoogleLogin}
-          className="w-full h-10.5 px-4 rounded-xl border border-border/60 bg-background/50 dark:bg-muted/10 hover:bg-muted/30 flex items-center justify-center gap-2 hover:scale-[1.01] active:scale-[0.99] hover:border-primary/30 transition-all duration-300 shadow-sm cursor-pointer"
+          className="w-full h-10 px-4 rounded-xl border border-border/60 bg-background/50 dark:bg-muted/10 hover:bg-muted/30 flex items-center justify-center gap-2 hover:border-primary/30 transition-all duration-300 shadow-sm cursor-pointer"
           aria-label="Sign in with Google"
         >
           <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
@@ -335,7 +325,7 @@ export default function LoginPage() {
       </div>
 
       {/* Footer */}
-      <p className="text-center text-sm text-muted-foreground">
+      <p className="text-center text-xs text-muted-foreground">
         Don&apos;t have an account?{" "}
         <Link
           href="/auth/register"

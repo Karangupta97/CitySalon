@@ -8,16 +8,13 @@ import { useScrollReveal } from "@/hooks/use-scroll-reveal"
 const footerLinks = {
   discover: [
     { name: "Browse Salons", href: "/salons" },
-    { name: "Popular Services", href: "/services" },
-    { name: "Top Rated", href: "/top-rated" },
-    { name: "Deals & Offers", href: "/deals" },
-    { name: "New Salons", href: "/new" },
+    { name: "Shop Products", href: "/shop" },
+    { name: "AI Beauty Advisor", href: "/advisor" },
   ],
   forBusiness: [
-    { name: "List Your Salon", href: "/register-salon" },
-    { name: "Partner Dashboard", href: "/dashboard" },
-    { name: "Pricing Plans", href: "/pricing" },
-    { name: "Success Stories", href: "/stories" },
+    { name: "List Your Salon", href: "/auth/salon/register" },
+    { name: "Salon Owner Login", href: "/auth/salon/login" },
+    { name: "Owner Dashboard", href: "/owner/dashboard" },
   ],
   company: [
     { name: "About Us", href: "/about" },

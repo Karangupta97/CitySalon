@@ -71,7 +71,7 @@ export const salons: Record<string, SalonData> = {
   "akshita-shoanak": {
     name: "Akshita Shoanak Studio Salon",
     tagline: "Where luxury meets comfort",
-    heroImage: "/images/hero-model.jpg",
+    heroImage: "/images/salons/akshita-shoanak.jpg",
     rating: 4.9,
     reviews: 856,
     location: "Ulwe, Navi Mumbai",
@@ -169,7 +169,7 @@ export const salons: Record<string, SalonData> = {
   "akreations": {
     name: "Akreations Salon & Academy",
     tagline: "Art meets precision in every cut",
-    heroImage: "/images/bento-skin-model.jpg",
+    heroImage: "/images/salons/akreations.jpg",
     rating: 4.8,
     reviews: 1200,
     location: "Bandra West, Mumbai",
@@ -251,7 +251,7 @@ export const salons: Record<string, SalonData> = {
   "hair-masters": {
     name: "Hair Masters Studio",
     tagline: "Masters of color and transformation",
-    heroImage: "/images/natural-leaf.jpg",
+    heroImage: "/images/salons/hair-masters.jpg",
     rating: 4.7,
     reviews: 980,
     location: "Andheri West, Mumbai",
@@ -330,7 +330,7 @@ export const salons: Record<string, SalonData> = {
   "the-salon-co": {
     name: "The Salon Co.",
     tagline: "Contemporary beauty, timeless elegance",
-    heroImage: "/images/products/moisturizer.jpg",
+    heroImage: "/images/salons/the-salon-co.jpg",
     rating: 4.6,
     reviews: 756,
     location: "Lower Parel, Mumbai",
@@ -407,7 +407,7 @@ export const salons: Record<string, SalonData> = {
   "dessange-paris": {
     name: "Dessange Paris",
     tagline: "Parisian luxury in the heart of Mumbai",
-    heroImage: "/images/products/serum.jpg",
+    heroImage: "/images/salons/dessange-paris.jpg",
     rating: 4.7,
     reviews: 542,
     location: "Juhu, Mumbai",
@@ -488,7 +488,7 @@ export const salons: Record<string, SalonData> = {
   "enrich-salon": {
     name: "Enrich Salon",
     tagline: "Your neighbourhood beauty destination",
-    heroImage: "/images/products/cleanser.jpg",
+    heroImage: "/images/salons/enrich-salon.jpg",
     rating: 4.5,
     reviews: 1840,
     location: "Powai, Mumbai",
@@ -567,7 +567,7 @@ export const salons: Record<string, SalonData> = {
   "looks-salon": {
     name: "Looks Salon",
     tagline: "Express yourself with confidence",
-    heroImage: "/images/products/oil.jpg",
+    heroImage: "/images/salons/looks-salon.jpg",
     rating: 4.6,
     reviews: 920,
     location: "Vashi, Navi Mumbai",
@@ -645,7 +645,7 @@ export const salons: Record<string, SalonData> = {
   "jean-claude-biguine": {
     name: "Jean-Claude Biguine",
     tagline: "French expertise, Indian soul",
-    heroImage: "/images/products/toner.jpg",
+    heroImage: "/images/salons/jean-claude-biguine.jpg",
     rating: 4.8,
     reviews: 678,
     location: "Khar West, Mumbai",
@@ -726,7 +726,7 @@ export const salons: Record<string, SalonData> = {
   "bounce-salon": {
     name: "Bounce Salon & Spa",
     tagline: "Bounce into a better you",
-    heroImage: "/images/products/mask.jpg",
+    heroImage: "/images/salons/bounce-salon.jpg",
     rating: 4.5,
     reviews: 432,
     location: "Kharghar, Navi Mumbai",

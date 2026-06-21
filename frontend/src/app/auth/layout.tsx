@@ -8,7 +8,7 @@ export default function AuthLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="min-h-[100svh] relative flex flex-col items-center justify-center overflow-hidden px-4 py-12 sm:px-6">
+    <div className="h-[100svh] relative flex flex-col items-center justify-center overflow-hidden px-4 sm:px-6">
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-primary/8 via-background to-secondary/20" />
       <div className="absolute inset-0 overflow-hidden">
@@ -27,9 +27,9 @@ export default function AuthLayout({
         </Link>
       </div>
 
-      {/* Card */}
+      {/* Card — no scroll anywhere */}
       <div className="relative z-10 w-full max-w-md mx-auto">
-        <div className="backdrop-blur-xl bg-background/60 border border-border/50 rounded-2xl p-6 sm:p-8 shadow-lg">
+        <div className="backdrop-blur-xl bg-background/60 border border-border/50 rounded-2xl shadow-lg p-5 sm:p-7">
           {children}
         </div>
       </div>

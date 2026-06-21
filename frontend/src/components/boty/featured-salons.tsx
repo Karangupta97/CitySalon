@@ -9,7 +9,7 @@ const salons = [
   {
     id: "akshita-shoanak",
     name: "Akshita Shoanak Studio Salon",
-    image: "/images/hero-model.jpg",
+    image: "/images/salons/akshita-shoanak.jpg",
     rating: 4.9,
     reviews: 856,
     location: "Ulwe, Navi Mumbai",
@@ -18,64 +18,64 @@ const salons = [
     badgeColor: "bg-primary text-primary-foreground",
   },
   {
-    id: 1,
-    name: "Akreations",
-    image: "/images/hero-model.jpg",
+    id: "akreations",
+    name: "Akreations Salon & Academy",
+    image: "/images/salons/akreations.jpg",
     rating: 4.8,
     reviews: 1200,
-    location: "Bandra West",
+    location: "Bandra West, Mumbai",
     services: ["Hair", "Skin", "Makeup"],
     badge: "Top Rated",
     badgeColor: "bg-primary text-primary-foreground",
   },
   {
-    id: 2,
-    name: "Hair Masters",
-    image: "/images/bento-skin-model.jpg",
+    id: "hair-masters",
+    name: "Hair Masters Studio",
+    image: "/images/salons/hair-masters.jpg",
     rating: 4.7,
     reviews: 980,
-    location: "Andheri West",
+    location: "Andheri West, Mumbai",
     services: ["Hair", "Color", "Treatments"],
     badge: "Popular",
     badgeColor: "bg-foreground text-background",
   },
   {
-    id: 3,
+    id: "the-salon-co",
     name: "The Salon Co.",
-    image: "/images/skincare-ritual.jpg",
+    image: "/images/salons/the-salon-co.jpg",
     rating: 4.6,
     reviews: 756,
-    location: "Lower Parel",
+    location: "Lower Parel, Mumbai",
     services: ["Hair", "Skin", "Nails"],
     badge: "Trending",
     badgeColor: "bg-accent text-accent-foreground",
   },
   {
-    id: 4,
+    id: "dessange-paris",
     name: "Dessange Paris",
-    image: "/images/natural-leaf.jpg",
+    image: "/images/salons/dessange-paris.jpg",
     rating: 4.7,
     reviews: 542,
-    location: "Juhu",
+    location: "Juhu, Mumbai",
     services: ["Hair", "Color", "Spa"],
-    badge: "New",
-    badgeColor: "bg-destructive/90 text-destructive-foreground",
+    badge: "Premium",
+    badgeColor: "bg-accent text-accent-foreground",
   },
   {
-    id: 5,
+    id: "enrich-salon",
     name: "Enrich Salon",
-    image: "/images/products/cleanser.jpg",
+    image: "/images/salons/enrich-salon.jpg",
     rating: 4.5,
     reviews: 1840,
-    location: "Powai",
+    location: "Powai, Mumbai",
     services: ["Hair", "Skin", "Nails"],
-    badge: "Popular",
-    badgeColor: "bg-foreground text-background",
+    badge: null,
+    badgeColor: "",
   },
   {
-    id: 6,
+    id: "looks-salon",
     name: "Looks Salon",
-    image: "/images/products/moisturizer.jpg",
+    image: "/images/salons/looks-salon.jpg",
     rating: 4.6,
     reviews: 920,
     location: "Vashi, Navi Mumbai",
@@ -84,20 +84,20 @@ const salons = [
     badgeColor: "bg-primary text-primary-foreground",
   },
   {
-    id: 7,
+    id: "jean-claude-biguine",
     name: "Jean-Claude Biguine",
-    image: "/images/products/serum.jpg",
+    image: "/images/salons/jean-claude-biguine.jpg",
     rating: 4.8,
     reviews: 678,
-    location: "Khar West",
+    location: "Khar West, Mumbai",
     services: ["Hair", "Color", "Treatments"],
     badge: "Premium",
     badgeColor: "bg-accent text-accent-foreground",
   },
   {
-    id: 8,
-    name: "Bounce Salon",
-    image: "/images/products/toner.jpg",
+    id: "bounce-salon",
+    name: "Bounce Salon & Spa",
+    image: "/images/salons/bounce-salon.jpg",
     rating: 4.5,
     reviews: 432,
     location: "Kharghar, Navi Mumbai",
@@ -147,11 +147,13 @@ export function FeaturedSalons() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 boty-transition" />
                 {/* Badge */}
-                <div className="absolute top-3 left-3">
-                  <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] sm:text-[11px] font-semibold uppercase tracking-wide backdrop-blur-sm ${salon.badgeColor}`}>
-                    {salon.badge}
-                  </span>
-                </div>
+                {salon.badge && (
+                  <div className="absolute top-3 left-3">
+                    <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] sm:text-[11px] font-semibold uppercase tracking-wide backdrop-blur-sm ${salon.badgeColor}`}>
+                      {salon.badge}
+                    </span>
+                  </div>
+                )}
                 {/* Favorite */}
                 <button
                   type="button"
