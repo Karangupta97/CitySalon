@@ -971,15 +971,15 @@ export default function AnalyticsPage() {
           backgroundColor: "rgba(250, 250, 247, 0.25)"
         }}
       >
-        {/* snappable ghost outline box preview */}
-        {renderGhostPreview()}
-
-        {Object.keys(positions).map((cardId) => {
+               {Object.keys(positions).map((cardId) => {
           const cardPos = positions[cardId]
           if (!cardPos) return null
 
           const isDragging = dragState && dragState.cardId === cardId
           const isResizing = resizeState && resizeState.cardId === cardId
+
+          const w = isResizing ? resizeState.currentW : cardPos.w
+          const h = isResizing ? resizeState.currentH : cardPos.h
 
           const cardStyle = getCardStyle(cardId)
 
@@ -1037,108 +1037,119 @@ export default function AnalyticsPage() {
                     isDragging && "opacity-35 shadow-xl scale-[1.01] pointer-events-none"
                   )}
                   title={cardTitleWithControls(cardId, "Creator Studio Insights")}
-                  subtitle="Latest checkout audit & interactive review replies"
+                  subtitle={h < 4 ? undefined : "Latest checkout audit & interactive review replies"}
+                  w={w}
+                  h={h}
                 >
                   {resizeRightHandle}
                   {resizeBottomHandle}
                   {resizeCornerHandle}
 
-                  <div className="flex flex-col h-full justify-between overflow-y-auto pr-1 scrollbar-thin">
+                  <div className="flex flex-col w-full h-full justify-between">
                     {/* Latest Checkout Stats (YouTube Studio Video Performance style) */}
-                    <div className="space-y-2 pb-3 border-b border-[#E2D9CE]/30 select-none">
+                    <div className={cn("pb-2 select-none", h <= 2 ? "" : "border-b border-[#E2D9CE]/30")}>
                       <div className="flex justify-between items-start">
-                        <div>
-                          <p className="text-[10px] font-bold text-[#C4A76C] uppercase font-mono tracking-wider">Latest Session Performance</p>
-                          <h4 className="text-xs font-extrabold text-[#1A1A1A] font-sans mt-0.5">Bridal Package — Kavya Reddy</h4>
+                        <div className="min-w-0">
+                          <p className="text-[8px] font-bold text-[#C4A76C] uppercase font-mono tracking-wider">Latest Session Performance</p>
+                          <h4 className="text-[10px] font-extrabold text-[#1A1A1A] font-sans mt-0.5 truncate">Bridal Package — Kavya Reddy</h4>
                         </div>
-                        <span className="text-[8px] font-bold px-1.5 py-0.5 bg-[#3D5A3A]/10 text-[#3D5A3A] rounded font-sans">
-                          Completed 20m ago
-                        </span>
+                        {w >= 5 && (
+                          <span className="text-[7px] font-bold px-1.5 py-0.5 bg-[#3D5A3A]/10 text-[#3D5A3A] rounded font-sans shrink-0">
+                            20m ago
+                          </span>
+                        )}
                       </div>
 
-                      <div className="space-y-1.5 mt-1.5 bg-stone-50/50 p-2 rounded-lg border border-[#E2D9CE]/25">
-                        <div className="flex items-center justify-between text-[10px]">
-                          <span className="text-[#6E6960] font-semibold">Revenue Rank:</span>
-                          <span className="font-mono font-extrabold text-[#3D5A3A] flex items-center gap-0.5">
-                            1 of 10 <TrendingUp className="w-2.5 h-2.5 text-emerald-700" />
-                          </span>
+                      {h >= 2 && (
+                        <div className={cn("grid gap-1 mt-1.5 bg-stone-50/50 rounded-lg border border-[#E2D9CE]/25", h <= 2 ? "grid-cols-2 p-1.5" : "grid-cols-1 p-2")}>
+                          <div className="flex items-center justify-between text-[9px]">
+                            <span className="text-[#6E6960] font-semibold">Revenue Rank:</span>
+                            <span className="font-mono font-extrabold text-[#3D5A3A] flex items-center gap-0.5">
+                              1 of 10 <TrendingUp className="w-2.5 h-2.5 text-emerald-700" />
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between text-[9px]">
+                            <span className="text-[#6E6960] font-semibold">Total Value:</span>
+                            <span className="font-mono font-extrabold text-[#1A1A1A]">₹6,500</span>
+                          </div>
+                          {h >= 3 && (
+                            <div className="flex items-center justify-between text-[9px] col-span-full border-t border-[#E2D9CE]/20 pt-1 mt-1">
+                              <span className="text-[#6E6960] font-semibold">Rating Status:</span>
+                              <span className="font-mono font-extrabold text-[#3D5A3A] flex items-center gap-0.5">
+                                5.0 ★ <Star className="w-2.5 h-2.5 fill-[#C4A76C] text-[#C4A76C]" />
+                              </span>
+                            </div>
+                          )}
                         </div>
-                        <div className="flex items-center justify-between text-[10px]">
-                          <span className="text-[#6E6960] font-semibold">Session Total Value:</span>
-                          <span className="font-mono font-extrabold text-[#1A1A1A]">₹6,500</span>
-                        </div>
-                        <div className="flex items-center justify-between text-[10px]">
-                          <span className="text-[#6E6960] font-semibold">Rating Status:</span>
-                          <span className="font-mono font-extrabold text-[#3D5A3A] flex items-center gap-0.5">
-                            5.0 ★ <Star className="w-2.5 h-2.5 fill-[#C4A76C] text-[#C4A76C]" />
-                          </span>
-                        </div>
-                      </div>
+                      )}
                     </div>
 
                     {/* Recent Customer Reviews & Interactive Replies */}
-                    <div className="mt-3 space-y-2.5">
-                      <div className="flex items-center gap-1.5">
-                        <MessageSquare className="w-3.5 h-3.5 text-[#3D5A3A]" />
-                        <h4 className="text-xs font-extrabold text-[#1A1A1A] font-sans">Recent Reviews</h4>
-                      </div>
+                    {h >= 3 && (
+                      <div className="mt-2 space-y-2">
+                        <div className="flex items-center gap-1.5">
+                          <MessageSquare className="w-3.5 h-3.5 text-[#3D5A3A]" />
+                          <h4 className="text-[10px] font-extrabold text-[#1A1A1A] font-sans">Recent Reviews</h4>
+                        </div>
 
-                      <div className="space-y-2">
-                        {studioReviews.map((rev) => {
-                          const hasReply = !!replies[rev.id]
+                        <div className="space-y-1.5">
+                          {studioReviews.slice(0, h <= 3 ? 1 : 2).map((rev) => {
+                            const hasReply = !!replies[rev.id]
 
-                          return (
-                            <div key={rev.id} className="p-2 rounded-lg border border-[#E2D9CE]/30 bg-[#FAFAF7]/45 text-[10px] space-y-1.5">
-                              <div className="flex justify-between items-center">
-                                <span className="font-bold text-[#1A1A1A]">{rev.author}</span>
-                                <div className="flex items-center gap-0.5">
-                                  {Array.from({ length: rev.rating }).map((_, i) => (
-                                    <Star key={i} className="w-2.5 h-2.5 text-[#C4A76C] fill-current" />
-                                  ))}
+                            return (
+                              <div key={rev.id} className="p-1.5 rounded-lg border border-[#E2D9CE]/30 bg-[#FAFAF7]/45 text-[9px] space-y-1">
+                                <div className="flex justify-between items-center">
+                                  <span className="font-bold text-[#1A1A1A]">{rev.author}</span>
+                                  {w >= 5 && (
+                                    <div className="flex items-center gap-0.5">
+                                      {Array.from({ length: rev.rating }).map((_, i) => (
+                                        <Star key={i} className="w-2 h-2 text-[#C4A76C] fill-current" />
+                                      ))}
+                                    </div>
+                                  )}
                                 </div>
-                              </div>
-                              <p className="text-[#6E6960] font-medium leading-relaxed italic">
-                                "{rev.text}"
-                              </p>
+                                <p className="text-[#6E6960] font-medium leading-relaxed italic truncate">
+                                  "{rev.text}"
+                                </p>
 
-                              {/* Render threaded conversation responses */}
-                              {hasReply ? (
-                                <div className="bg-[#3D5A3A]/5 border border-[#3D5A3A]/10 p-1.5 rounded mt-1 flex items-start gap-1">
-                                  <div className="w-3.5 h-3.5 rounded bg-[#3D5A3A]/10 border border-[#3D5A3A]/20 flex items-center justify-center text-[7px] font-bold text-[#3D5A3A] shrink-0 mt-0.5">O</div>
-                                  <div className="flex-1 min-w-0">
-                                    <p className="text-[8px] font-bold text-[#3D5A3A]">Owner Reply</p>
-                                    <p className="text-[9px] text-[#1A1A1A] font-sans mt-0.5 leading-normal">
-                                      {replies[rev.id]}
-                                    </p>
+                                {/* Render threaded conversation responses */}
+                                {hasReply ? (
+                                  <div className="bg-[#3D5A3A]/5 border border-[#3D5A3A]/10 p-1 rounded mt-1 flex items-start gap-1">
+                                    <div className="w-3 h-3 rounded bg-[#3D5A3A]/10 border border-[#3D5A3A]/20 flex items-center justify-center text-[7px] font-bold text-[#3D5A3A] shrink-0 mt-0.5">O</div>
+                                    <div className="flex-1 min-w-0">
+                                      <p className="text-[7px] font-bold text-[#3D5A3A]">Owner Reply</p>
+                                      <p className="text-[8px] text-[#1A1A1A] font-sans mt-0.5 leading-normal truncate">
+                                        {replies[rev.id]}
+                                      </p>
+                                    </div>
+                                    <Check className="w-2 h-2 text-[#3D5A3A] shrink-0 mt-0.5" />
                                   </div>
-                                  <Check className="w-2.5 h-2.5 text-[#3D5A3A] shrink-0 mt-0.5" />
-                                </div>
-                              ) : (
-                                <div className="flex items-center gap-1 mt-1.5 pt-1 border-t border-stone-200/40">
-                                  <input
-                                    type="text"
-                                    placeholder="Type response as owner..."
-                                    value={replyInputs[rev.id] || ""}
-                                    onChange={(e) => setReplyInputs(prev => ({ ...prev, [rev.id]: e.target.value }))}
-                                    className="flex-1 bg-white border border-[#E2D9CE]/35 rounded px-1.5 py-0.5 text-[9px] font-sans text-[#1A1A1A] focus:outline-none focus:border-[#3D5A3A]/60"
-                                  />
-                                  <Button
-                                    size="sm"
-                                    onClick={() => sendReply(rev.id)}
-                                    className="h-5 px-1.5 bg-[#3D5A3A] hover:bg-[#2B3F29] text-white text-[8px] font-bold uppercase rounded flex items-center gap-0.5 cursor-pointer shrink-0"
-                                  >
-                                    <Send className="w-1.5 h-1.5" />
-                                    Reply
-                                  </Button>
-                                </div>
-                              )}
-                            </div>
-                          )
-                        })}
+                                ) : (
+                                  <div className="flex items-center gap-1 mt-1 pt-1 border-t border-stone-200/40">
+                                    <input
+                                      type="text"
+                                      placeholder="Reply..."
+                                      value={replyInputs[rev.id] || ""}
+                                      onChange={(e) => setReplyInputs(prev => ({ ...prev, [rev.id]: e.target.value }))}
+                                      className="flex-1 bg-white border border-[#E2D9CE]/35 rounded px-1.5 py-0.5 text-[8px] font-sans text-[#1A1A1A] focus:outline-none focus:border-[#3D5A3A]/60"
+                                    />
+                                    <Button
+                                      size="sm"
+                                      onClick={() => sendReply(rev.id)}
+                                      className="h-4.5 px-1 bg-[#3D5A3A] hover:bg-[#2B3F29] text-white text-[7px] font-bold uppercase rounded flex items-center gap-0.5 cursor-pointer shrink-0"
+                                    >
+                                      <Send className="w-1.5 h-1.5" />
+                                      Reply
+                                    </Button>
+                                  </div>
+                                )}
+                              </div>
+                            )
+                          })}
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
-
                 </ChartCard>
               )
             }
@@ -1154,35 +1165,43 @@ export default function AnalyticsPage() {
                     isDragging && "opacity-35 shadow-xl scale-[1.01] pointer-events-none"
                   )}
                   title={cardTitleWithControls(cardId, "Revenue & Booking Trends")}
-                  subtitle="Financial auditing curves matching selected intervals"
+                  subtitle={h < 4 ? undefined : "Financial auditing curves matching selected intervals"}
+                  w={w}
+                  h={h}
                   headerActions={
-                    <div className="flex items-center bg-[#E8E0D6]/20 rounded-lg p-0.5 border border-[#E2D9CE]/30">
-                      {(["both", "revenue", "bookings"] as const).map((m) => (
-                        <button
-                          key={m}
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            setChartMode(m)
-                          }}
-                          className={`px-2 py-0.5 rounded-md text-[8px] font-bold font-sans uppercase tracking-wider transition-all cursor-pointer ${
-                            chartMode === m ? "bg-[#3D5A3A] text-white shadow-xs" : "text-[#6E6960] hover:text-[#3D5A3A]"
-                          }`}
-                        >
-                          {m}
-                        </button>
-                      ))}
-                    </div>
+                    w < 5 ? (
+                      <span className="text-[9px] font-bold text-[#3D5A3A] bg-[#3D5A3A]/10 px-2 py-0.5 rounded font-mono uppercase">
+                        {chartMode}
+                      </span>
+                    ) : (
+                      <div className="flex items-center bg-[#E8E0D6]/20 rounded-lg p-0.5 border border-[#E2D9CE]/30">
+                        {(["both", "revenue", "bookings"] as const).map((m) => (
+                          <button
+                            key={m}
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              setChartMode(m)
+                            }}
+                            className={`px-2 py-0.5 rounded-md text-[8px] font-bold font-sans uppercase tracking-wider transition-all cursor-pointer ${
+                              chartMode === m ? "bg-[#3D5A3A] text-white shadow-xs" : "text-[#6E6960] hover:text-[#3D5A3A]"
+                            }`}
+                          >
+                            {m}
+                          </button>
+                        ))}
+                      </div>
+                    )
                   }
                 >
                   {resizeRightHandle}
                   {resizeBottomHandle}
                   {resizeCornerHandle}
 
-                  <div className="flex-grow min-h-0 w-full select-none flex flex-col h-full">
-                    <div className="flex-1 w-full min-h-[120px]">
+                  <div className="w-full h-full flex flex-col justify-between">
+                    <div className={cn("flex-1 w-full", h <= 2 ? "min-h-[50px]" : "min-h-[100px]")}>
                       <ResponsiveContainer width="100%" height="100%">
-                        <AreaChart data={data.chartData} margin={{ top: 10, right: 5, left: -20, bottom: 0 }}>
+                        <AreaChart data={data.chartData} margin={{ top: 10, right: 5, left: h <= 2 ? -40 : -20, bottom: 0 }}>
                           <defs>
                             <linearGradient id="primaryRevenueGrad" x1="0" y1="0" x2="0" y2="1">
                               <stop offset="0%" stopColor="#3D5A3A" stopOpacity={0.12} />
@@ -1193,10 +1212,10 @@ export default function AnalyticsPage() {
                               <stop offset="100%" stopColor="#7A9A6D" stopOpacity={0} />
                             </linearGradient>
                           </defs>
-                          <CartesianGrid strokeDasharray="3 3" stroke="#E2D9CE" opacity={0.3} vertical={false} />
+                          <CartesianGrid strokeDasharray="3 3" stroke="#E2D9CE" opacity={h <= 2 ? 0.05 : 0.3} vertical={false} />
                           <XAxis
                             dataKey="label"
-                            tick={{ fontSize: 9, fill: "#6E6960", fontWeight: "bold" }}
+                            tick={h <= 2 ? false : { fontSize: 8, fill: "#6E6960", fontWeight: "bold" }}
                             axisLine={false}
                             tickLine={false}
                           />
@@ -1204,19 +1223,21 @@ export default function AnalyticsPage() {
                             <YAxis
                               yAxisId="rev"
                               orientation="left"
-                              tick={{ fontSize: 9, fill: "#6E6960", fontWeight: "bold" }}
+                              tick={h <= 2 ? false : { fontSize: 8, fill: "#6E6960", fontWeight: "bold" }}
                               axisLine={false}
                               tickLine={false}
                               tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`}
+                              width={h <= 2 ? 0 : 25}
                             />
                           )}
                           {(chartMode === "both" || chartMode === "bookings") && (
                             <YAxis
                               yAxisId="bks"
                               orientation={chartMode === "bookings" ? "left" : "right"}
-                              tick={{ fontSize: 9, fill: "#6E6960", fontWeight: "bold" }}
+                              tick={h <= 2 ? false : { fontSize: 8, fill: "#6E6960", fontWeight: "bold" }}
                               axisLine={false}
                               tickLine={false}
+                              width={h <= 2 ? 0 : 20}
                             />
                           )}
                           
@@ -1262,26 +1283,28 @@ export default function AnalyticsPage() {
                     "absolute overflow-hidden group/card flex flex-col justify-between",
                     isDragging && "opacity-35 shadow-xl scale-[1.01] pointer-events-none"
                   )}
-                  title={cardTitleWithControls(cardId, "Service Revenue Division")}
-                  subtitle="Bookings share split by catalog items"
+                  title={cardTitleWithControls(cardId, "Service Division")}
+                  subtitle={h < 4 ? undefined : "Bookings share split by catalog items"}
+                  w={w}
+                  h={h}
                 >
                   {resizeRightHandle}
                   {resizeBottomHandle}
                   {resizeCornerHandle}
 
-                  <div className="flex-1 flex flex-col justify-between min-h-0 w-full overflow-y-auto h-full">
-                    <div className="flex-1 min-h-[100px] w-full select-none">
+                  <div className="w-full h-full flex flex-col justify-between">
+                    <div className={cn("flex-1 w-full select-none", h <= 2 ? "min-h-[50px]" : "min-h-[100px]")}>
                       <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={data.topServices} layout="vertical" margin={{ top: 0, right: 5, left: 10, bottom: 0 }}>
-                          <CartesianGrid strokeDasharray="3 3" stroke="#E2D9CE" opacity={0.3} horizontal={false} />
-                          <XAxis type="number" tick={{ fontSize: 8, fill: "#6E6960" }} axisLine={false} tickLine={false} />
+                        <BarChart data={data.topServices} layout="vertical" margin={{ top: 0, right: 5, left: h <= 2 ? -5 : 10, bottom: 0 }}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#E2D9CE" opacity={h <= 2 ? 0.05 : 0.3} horizontal={false} />
+                          <XAxis type="number" tick={h <= 2 ? false : { fontSize: 8, fill: "#6E6960" }} axisLine={false} tickLine={false} />
                           <YAxis
                             dataKey="name"
                             type="category"
-                            tick={{ fontSize: 9, fill: "#1A1A1A", fontWeight: "bold" }}
+                            tick={{ fontSize: h <= 2 ? 7 : 9, fill: "#1A1A1A", fontWeight: "bold" }}
                             axisLine={false}
                             tickLine={false}
-                            width={70}
+                            width={h <= 2 ? 40 : 70}
                           />
                           <Tooltip content={<DarkChartTooltip />} />
                           <Bar dataKey="revenue" fill="#3D5A3A" radius={[0, 4, 4, 0]} name="Revenue (₹)" maxBarSize={12}>
@@ -1293,15 +1316,17 @@ export default function AnalyticsPage() {
                       </ResponsiveContainer>
                     </div>
                     
-                    <div className="grid grid-cols-2 gap-x-2 gap-y-1 mt-2 pt-2 border-t border-[#E2D9CE]/30 shrink-0">
-                      {data.topServices.slice(0, 4).map((s) => (
-                        <div key={s.name} className="flex items-center gap-1 min-w-0">
-                          <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: s.color }} />
-                          <span className="text-[9px] font-semibold text-[#6E6960] truncate">{s.name}</span>
-                          <span className="text-[9px] font-bold text-[#1A1A1A] ml-auto font-mono">₹{(s.revenue / 1000).toFixed(1)}k</span>
-                        </div>
-                      ))}
-                    </div>
+                    {h >= 4 && (
+                      <div className="grid grid-cols-2 gap-x-2 gap-y-1 mt-2 pt-2 border-t border-[#E2D9CE]/30 shrink-0">
+                        {data.topServices.slice(0, 4).map((s) => (
+                          <div key={s.name} className="flex items-center gap-1 min-w-0">
+                            <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: s.color }} />
+                            <span className="text-[9px] font-semibold text-[#6E6960] truncate">{s.name}</span>
+                            <span className="text-[9px] font-bold text-[#1A1A1A] ml-auto font-mono">₹{(s.revenue / 1000).toFixed(1)}k</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </ChartCard>
               )
@@ -1317,35 +1342,39 @@ export default function AnalyticsPage() {
                     isDragging && "opacity-35 shadow-xl scale-[1.01] pointer-events-none"
                   )}
                   title={cardTitleWithControls(cardId, "Weekly Traffic Heatmap")}
-                  subtitle="Hourly booking distribution audit. Peak periods fade to deep Olive"
+                  subtitle={h < 4 ? undefined : "Hourly booking distribution audit. Peak periods fade to deep Olive"}
+                  w={w}
+                  h={h}
                 >
                   {resizeRightHandle}
                   {resizeBottomHandle}
                   {resizeCornerHandle}
 
-                  <div className="flex-grow min-h-0 w-full overflow-y-auto pr-1 select-none h-full flex flex-col justify-between">
-                    <div className="min-w-[620px] flex-1 flex flex-col justify-between">
+                  <div className="w-full h-full flex flex-col justify-between">
+                    <div className={cn("flex-grow flex flex-col justify-between select-none", w <= 5 ? "min-w-[300px]" : "min-w-[620px]")}>
                       
                       {/* Heatmap header: Hours row */}
-                      <div className="flex items-center mb-1 text-center font-mono text-[9px] font-bold text-[#6E6960] shrink-0">
-                        <div className="w-10 text-left font-sans font-semibold shrink-0">Day</div>
-                        <div className="flex-1 grid grid-cols-12 gap-1.5">
-                          {Array.from({ length: 12 }, (_, i) => i + 9).map((hr) => (
-                            <div key={hr} className="truncate">
-                              {hr > 12 ? `${hr - 12}P` : hr === 12 ? "12P" : `${hr}A`}
-                            </div>
-                          ))}
+                      {h >= 3 && (
+                        <div className="flex items-center mb-1 text-center font-mono text-[9px] font-bold text-[#6E6960] shrink-0">
+                          <div className={cn("text-left font-sans font-semibold shrink-0", w <= 5 ? "w-5" : "w-10")}>Day</div>
+                          <div className={cn("flex-1 grid grid-cols-12", w <= 5 ? "gap-1" : "gap-1.5")}>
+                            {Array.from({ length: 12 }, (_, i) => i + 9).map((hr, idx) => (
+                              <div key={hr} className="truncate">
+                                {w <= 5 && idx % 2 === 1 ? "" : (hr > 12 ? `${hr - 12}P` : hr === 12 ? "12P" : `${hr}A`)}
+                              </div>
+                            ))}
+                          </div>
                         </div>
-                      </div>
+                      )}
 
                       {/* Heatmap rows */}
-                      <div className="space-y-1 flex-1 flex flex-col justify-center">
+                      <div className="space-y-1 flex-grow flex flex-col justify-center">
                         {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => {
                           return (
                             <div key={day} className="flex items-center flex-1">
-                              <div className="w-10 text-[10px] font-bold text-[#1A1A1A] font-sans shrink-0">{day}</div>
+                              <div className={cn("text-[9px] font-bold text-[#1A1A1A] font-sans shrink-0", w <= 5 ? "w-5" : "w-10")}>{w <= 5 ? day[0] : day}</div>
                               
-                              <div className="flex-1 grid grid-cols-12 gap-1.5">
+                              <div className={cn("flex-1 grid grid-cols-12", w <= 5 ? "gap-1" : "gap-1.5")}>
                                 {Array.from({ length: 12 }, (_, i) => i + 9).map((hour) => {
                                   const cell = data.heatmap.find(h => h.day === day && h.hour === hour)
                                   const bookings = cell ? cell.bookings : 0
@@ -1386,22 +1415,24 @@ export default function AnalyticsPage() {
                       </div>
 
                       {/* Legend */}
-                      <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#E2D9CE]/30 text-[9px] font-sans font-bold text-[#6E6960] shrink-0">
-                        <div className="flex flex-wrap items-center gap-1.5">
-                          <span>Density:</span>
-                          <span className="w-2 h-2 rounded bg-stone-50 border border-stone-200" />
-                          <span className="font-medium text-[8px]">0</span>
-                          <span className="w-2 h-2 rounded bg-[#3D5A3A]/15" />
-                          <span className="font-medium text-[8px]">1-2</span>
-                          <span className="w-2 h-2 rounded bg-[#3D5A3A]/40" />
-                          <span className="font-medium text-[8px]">3-4</span>
-                          <span className="w-2 h-2 rounded bg-[#3D5A3A]/70" />
-                          <span className="font-medium text-[8px]">5-7</span>
-                          <span className="w-2 h-2 rounded bg-[#3D5A3A]" />
-                          <span className="font-medium text-[8px]">8+</span>
+                      {h >= 4 && w >= 6 && (
+                        <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#E2D9CE]/30 text-[9px] font-sans font-bold text-[#6E6960] shrink-0">
+                          <div className="flex flex-wrap items-center gap-1.5">
+                            <span>Density:</span>
+                            <span className="w-2 h-2 rounded bg-stone-50 border border-stone-200" />
+                            <span className="font-medium text-[8px]">0</span>
+                            <span className="w-2 h-2 rounded bg-[#3D5A3A]/15" />
+                            <span className="font-medium text-[8px]">1-2</span>
+                            <span className="w-2 h-2 rounded bg-[#3D5A3A]/40" />
+                            <span className="font-medium text-[8px]">3-4</span>
+                            <span className="w-2 h-2 rounded bg-[#3D5A3A]/70" />
+                            <span className="font-medium text-[8px]">5-7</span>
+                            <span className="w-2 h-2 rounded bg-[#3D5A3A]" />
+                            <span className="font-medium text-[8px]">8+</span>
+                          </div>
+                          <span className="text-[8px] font-semibold text-stone-400">Hover blocks</span>
                         </div>
-                        <span className="text-[8px] font-semibold text-stone-400">Hover blocks</span>
-                      </div>
+                      )}
 
                     </div>
                   </div>
@@ -1419,27 +1450,29 @@ export default function AnalyticsPage() {
                     isDragging && "opacity-35 shadow-xl scale-[1.01] pointer-events-none"
                   )}
                   title={cardTitleWithControls(cardId, "Retention & Leakage Funnel")}
-                  subtitle="Conversion rates mapping discoverability to loyalty status"
+                  subtitle={h < 4 ? undefined : "Conversion rates mapping discoverability to loyalty status"}
+                  w={w}
+                  h={h}
                 >
                   {resizeRightHandle}
                   {resizeBottomHandle}
                   {resizeCornerHandle}
 
-                  <div className="flex-1 flex flex-col min-h-0 w-full overflow-y-auto pr-1 space-y-2 select-none justify-between h-full">
+                  <div className={cn("w-full h-full flex flex-col justify-between select-none", h < 4 ? "gap-1" : "gap-3")}>
                     {funnelSteps.map((step, idx) => {
                       const previousStepCount = idx > 0 ? funnelSteps[idx - 1].count : step.count
                       const stepConversion = previousStepCount > 0 ? Math.round((step.count / previousStepCount) * 100) : 100
 
                       return (
-                        <div key={step.name} className="space-y-0.5 flex-1 flex flex-col justify-center">
-                          <div className="flex justify-between items-center text-[9px] font-sans font-bold text-[#1A1A1A]">
+                        <div key={step.name} className="flex-1 flex flex-col justify-center gap-0.5">
+                          <div className={cn("flex justify-between items-center font-sans font-bold text-[#1A1A1A]", h < 3 ? "text-[8px]" : "text-[9px]")}>
                             <div className="flex items-center gap-1 truncate">
                               <span className="text-[#6E6960] truncate">{step.name}</span>
-                              <span className="text-[8px] font-mono text-stone-400 shrink-0">({step.label})</span>
+                              {h >= 3 && <span className="text-[8px] font-mono text-stone-400 shrink-0">({step.label})</span>}
                             </div>
                             <div className="flex items-center gap-1.5 shrink-0">
                               <span className="font-mono text-[#3D5A3A] font-extrabold">{step.count.toLocaleString()}</span>
-                              {idx > 0 && (
+                              {idx > 0 && h >= 3 && (
                                 <span className="text-[7px] font-mono font-extrabold text-emerald-700 bg-emerald-50 border border-emerald-100 px-1 rounded">
                                   {stepConversion}%
                                 </span>
@@ -1447,7 +1480,7 @@ export default function AnalyticsPage() {
                             </div>
                           </div>
                           
-                          <div className="h-4 rounded-md bg-[#E8E0D6]/15 border border-[#E2D9CE]/30 relative overflow-hidden flex items-center px-2">
+                          <div className={cn("rounded-md bg-[#E8E0D6]/15 border border-[#E2D9CE]/30 relative overflow-hidden flex items-center px-2", h < 3 ? "h-2.5" : "h-4")}>
                             <div
                               className={cn(
                                 "absolute top-0 left-0 bottom-0 transition-all duration-1000",
@@ -1459,9 +1492,11 @@ export default function AnalyticsPage() {
                               style={{ width: `${step.pct}%` }}
                             />
                             
-                            <span className="relative z-10 text-[8px] font-mono font-bold text-[#1A1A1A] ml-auto">
-                              {idx === 0 ? "100%" : `${step.pct}%`}
-                            </span>
+                            {h >= 3 && (
+                              <span className="relative z-10 text-[8px] font-mono font-bold text-[#1A1A1A] ml-auto">
+                                {idx === 0 ? "100%" : `${step.pct}%`}
+                              </span>
+                            )}
                           </div>
                         </div>
                       )
@@ -1470,7 +1505,13 @@ export default function AnalyticsPage() {
                 </ChartCard>
               )
 
-            case "transactions":
+            case "transactions": {
+              const transactionsH = h
+              const dynamicItemsPerPage = transactionsH <= 3 ? 2 : transactionsH === 4 ? 3 : 5
+              const localTotalPages = Math.max(1, Math.ceil(filteredBookings.length / dynamicItemsPerPage))
+              const localPaginatedBookings = filteredBookings.slice((currentPage - 1) * dynamicItemsPerPage, currentPage * dynamicItemsPerPage)
+              const isCompactTable = w < 6
+
               return (
                 <ChartCard
                   key={cardId}
@@ -1481,52 +1522,58 @@ export default function AnalyticsPage() {
                     isDragging && "opacity-35 shadow-xl scale-[1.01] pointer-events-none"
                   )}
                   title={cardTitleWithControls(cardId, "Recent Transactions Ledger")}
-                  subtitle="Audit log of client triggers and completed payments"
+                  subtitle={h < 4 ? undefined : "Audit log of client triggers and completed payments"}
+                  w={w}
+                  h={h}
                   headerActions={
-                    <div className="relative">
-                      <Search className="w-3.5 h-3.5 text-stone-400 absolute left-2 top-2" />
-                      <input
-                        type="text"
-                        placeholder="Search logs..."
-                        value={bookingSearch}
-                        onChange={(e) => setBookingSearch(e.target.value)}
-                        className="pl-7 pr-2 py-1 bg-white border border-[#E2D9CE]/40 rounded-lg text-[10px] font-sans text-[#1A1A1A] focus:outline-none focus:border-[#3D5A3A]/60 w-44"
-                      />
-                    </div>
+                    w >= 6 && (
+                      <div className="relative">
+                        <Search className="w-3.5 h-3.5 text-stone-400 absolute left-2 top-2" />
+                        <input
+                          type="text"
+                          placeholder="Search logs..."
+                          value={bookingSearch}
+                          onChange={(e) => setBookingSearch(e.target.value)}
+                          className="pl-7 pr-2 py-1 bg-white border border-[#E2D9CE]/40 rounded-lg text-[10px] font-sans text-[#1A1A1A] focus:outline-none focus:border-[#3D5A3A]/60 w-44"
+                        />
+                      </div>
+                    )
                   }
                 >
                   {resizeRightHandle}
                   {resizeBottomHandle}
                   {resizeCornerHandle}
 
-                  <div className="flex-1 flex flex-col min-h-0 w-full overflow-y-auto pr-1 justify-between h-full">
-                    <div className="overflow-x-auto select-none border border-[#E2D9CE]/40 rounded-lg">
+                  <div className="w-full h-full flex flex-col justify-between">
+                    <div className="overflow-x-auto select-none border border-[#E2D9CE]/40 rounded-lg w-full">
                       <table className="w-full text-left text-xs font-sans border-collapse">
                         <thead>
-                          <tr className="bg-stone-50/50 border-b border-[#E2D9CE]/40 text-[#6E6960] font-bold uppercase text-[9px] tracking-wider">
-                            <th className="px-3 py-2">ID</th>
-                            <th className="px-3 py-2">Client</th>
-                            <th className="px-3 py-2">Service</th>
-                            <th className="px-3 py-2">Stylist</th>
-                            <th className="px-3 py-2">Date & Time</th>
-                            <th className="px-3 py-2 text-right">Amount</th>
-                            <th className="px-3 py-2 text-center">Status</th>
+                          <tr className="bg-stone-50/50 border-b border-[#E2D9CE]/40 text-[#6E6960] font-bold uppercase text-[8px] tracking-wider">
+                            {w >= 8 && <th className={isCompactTable ? "px-1.5 py-1" : "px-3 py-2"}>ID</th>}
+                            <th className={isCompactTable ? "px-1.5 py-1" : "px-3 py-2"}>Client</th>
+                            <th className={isCompactTable ? "px-1.5 py-1" : "px-3 py-2"}>Service</th>
+                            {w >= 6 && <th className={isCompactTable ? "px-1.5 py-1" : "px-3 py-2"}>Stylist</th>}
+                            {w >= 7 && <th className={isCompactTable ? "px-1.5 py-1" : "px-3 py-2"}>Date & Time</th>}
+                            <th className={isCompactTable ? "px-1.5 py-1 text-right" : "px-3 py-2 text-right"}>Amount</th>
+                            <th className={isCompactTable ? "px-1.5 py-1 text-center" : "px-3 py-2 text-center"}>Status</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-[#E2D9CE]/30">
-                          {paginatedBookings.length > 0 ? (
-                            paginatedBookings.map((bk) => (
+                          {localPaginatedBookings.length > 0 ? (
+                            localPaginatedBookings.map((bk) => (
                               <tr key={bk.id} className="hover:bg-stone-50/30 transition-all duration-150 text-[#1A1A1A]">
-                                <td className="px-3 py-2.5 font-mono font-bold text-[11px]">{bk.id}</td>
-                                <td className="px-3 py-2.5 font-semibold text-[11px]">{bk.name}</td>
-                                <td className="px-3 py-2.5 text-[#6E6960] text-[11px]">{bk.service}</td>
-                                <td className="px-3 py-2.5 text-[#3D5A3A] font-semibold text-[11px]">{bk.stylist}</td>
-                                <td className="px-3 py-2.5 text-[11px]">
-                                  <span className="font-mono font-semibold">{bk.date}</span>
-                                  <span className="text-[9px] text-stone-400 ml-1 font-bold font-mono">{bk.time}</span>
-                                </td>
-                                <td className="px-3 py-2.5 text-right font-mono font-bold text-[11px]">₹{bk.amount}</td>
-                                <td className="px-3 py-2.5 text-center">{getStatusBadge(bk.status)}</td>
+                                {w >= 8 && <td className={cn("font-mono font-bold", isCompactTable ? "px-1.5 py-1 text-[9px]" : "px-3 py-2.5 text-[11px]")}>{bk.id}</td>}
+                                <td className={cn("font-semibold", isCompactTable ? "px-1.5 py-1 text-[9px]" : "px-3 py-2.5 text-[11px]")}>{bk.name}</td>
+                                <td className={cn("text-[#6E6960]", isCompactTable ? "px-1.5 py-1 text-[9px]" : "px-3 py-2.5 text-[11px]")}>{bk.service}</td>
+                                {w >= 6 && <td className={cn("font-semibold text-[#3D5A3A]", isCompactTable ? "px-1.5 py-1 text-[9px]" : "px-3 py-2.5 text-[11px]")}>{bk.stylist}</td>}
+                                {w >= 7 && (
+                                  <td className={isCompactTable ? "px-1.5 py-1 text-[9px]" : "px-3 py-2.5 text-[11px]"}>
+                                    <span className="font-mono font-semibold">{bk.date}</span>
+                                    <span className="text-[8px] text-stone-400 ml-1 font-bold font-mono">{bk.time}</span>
+                                  </td>
+                                )}
+                                <td className={cn("text-right font-mono font-bold", isCompactTable ? "px-1.5 py-1 text-[9px]" : "px-3 py-2.5 text-[11px]")}>₹{bk.amount}</td>
+                                <td className={isCompactTable ? "px-1.5 py-1 text-center" : "px-3 py-2.5 text-center"}>{getStatusBadge(bk.status)}</td>
                               </tr>
                             ))
                           ) : (
@@ -1541,11 +1588,11 @@ export default function AnalyticsPage() {
                     </div>
 
                     {/* Pagination */}
-                    {totalPages > 1 && (
+                    {localTotalPages > 1 && (
                       <div className="flex items-center justify-between mt-2 border-t border-[#E2D9CE]/25 pt-2 text-[10px] font-sans text-[#6E6960] select-none font-semibold shrink-0">
                         <span>
                           Page <span className="font-mono text-[#3D5A3A] font-bold">{currentPage}</span> of{" "}
-                          <span className="font-mono text-[#3D5A3A] font-bold">{totalPages}</span>
+                          <span className="font-mono text-[#3D5A3A] font-bold">{localTotalPages}</span>
                         </span>
 
                         <div className="flex items-center gap-1">
@@ -1561,8 +1608,8 @@ export default function AnalyticsPage() {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                            disabled={currentPage === totalPages}
+                            onClick={() => setCurrentPage(prev => Math.min(localTotalPages, prev + 1))}
+                            disabled={currentPage === localTotalPages}
                             className="h-7 px-2 border-[#E2D9CE]/45 text-[#3D5A3A] hover:bg-[#E8E0D6]/10 text-[9px]"
                           >
                             Next
@@ -1573,6 +1620,7 @@ export default function AnalyticsPage() {
                   </div>
                 </ChartCard>
               )
+            }
 
             default:
               return null
