@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from "react"
 import { useAuth } from "@/components/boty/auth-context"
 import { apiFetch } from "@/lib/api"
-import Image from "next/image"
 import {
   Store, Check, ShieldCheck, Plus, X, Phone, Mail, Globe, MapPin,
   Sparkles, Wifi, Coffee, Clock, Instagram, Star, Camera, Upload,
@@ -605,7 +604,8 @@ export default function SalonProfilePage() {
                 <input ref={heroInputRef} type="file" accept="image/*" className="hidden" onChange={handleHeroUpload} />
                 {profile.heroImage ? (
                   <div className="relative rounded-xl overflow-hidden aspect-[16/7] border border-[#E2D9CE]/40">
-                    <Image src={profile.heroImage} alt="Hero" fill className="object-cover" />
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={profile.heroImage} alt="Hero" className="absolute inset-0 w-full h-full object-cover" />
                     <div className="absolute inset-0 bg-black/0 hover:bg-black/30 transition-all flex items-center justify-center opacity-0 hover:opacity-100">
                       <div className="flex gap-2">
                         <button type="button" onClick={() => heroInputRef.current?.click()}
@@ -645,7 +645,8 @@ export default function SalonProfilePage() {
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                     {profile.gallery.map((img) => (
                       <div key={img.id} className="relative group rounded-xl overflow-hidden aspect-square border border-[#E2D9CE]/30">
-                        <Image src={img.src} alt={img.alt} fill className="object-cover" />
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={img.src} alt={img.alt} className="absolute inset-0 w-full h-full object-cover" />
                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
                           <button type="button" onClick={() => removeGalleryImage(img.id)}
                             className="p-2 bg-red-500/90 rounded-lg text-white">
@@ -921,7 +922,8 @@ export default function SalonProfilePage() {
                 {/* Hero Banner */}
                 <div className="relative h-24 overflow-hidden">
                   {profile.heroImage ? (
-                    <Image src={profile.heroImage} alt="Hero" fill className="object-cover" />
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={profile.heroImage} alt="Hero" className="absolute inset-0 w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-[#3D5A3A] to-[#2B3F29] flex items-center justify-center">
                       <Store className="w-10 h-10 text-[#C4A76C]/30" />
@@ -965,7 +967,8 @@ export default function SalonProfilePage() {
                       <div className="flex gap-1 mt-1 overflow-hidden">
                         {profile.gallery.slice(0, 3).map((img) => (
                           <div key={img.id} className="w-14 h-14 rounded-lg overflow-hidden relative shrink-0">
-                            <Image src={img.src} alt={img.alt} fill className="object-cover" />
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={img.src} alt={img.alt} className="absolute inset-0 w-full h-full object-cover" />
                           </div>
                         ))}
                         {profile.gallery.length > 3 && (
