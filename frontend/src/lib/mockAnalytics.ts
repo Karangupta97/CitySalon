@@ -1,4 +1,5 @@
 import { format, differenceInDays, addDays, isSameDay, startOfWeek, endOfWeek, subDays, eachDayOfInterval } from "date-fns"
+import analyticsData from "@/data/mock-analytics.json"
 
 export interface ChartDataPoint {
   label: string;
@@ -106,60 +107,21 @@ function createRandom(seedString: string) {
 
 // ─── Base Reference Datasets ───
 
-const STYLISTS = [
-  { name: "Meena", rating: 4.9, color: "#3D5A3A" },
-  { name: "Priya", rating: 4.8, color: "#7A9A6D" },
-  { name: "Raj", rating: 4.7, color: "#C4A76C" },
-  { name: "Anita", rating: 4.6, color: "#6E6960" }
-]
+const STYLISTS = analyticsData.stylists
+const SERVICES = analyticsData.services
+const CLIENTS = analyticsData.clients
 
-const SERVICES = [
-  { name: "Hair Colour", avgPrice: 1800, weight: 0.25, color: "#3D5A3A" },
-  { name: "Haircut", avgPrice: 600, weight: 0.30, color: "#7A9A6D" },
-  { name: "Facial", avgPrice: 1500, weight: 0.18, color: "#C4A76C" },
-  { name: "Bridal", avgPrice: 6500, weight: 0.08, color: "#E8E0D6" },
-  { name: "Manicure", avgPrice: 800, weight: 0.12, color: "#A3906B" },
-  { name: "Beard Trim", avgPrice: 350, weight: 0.07, color: "#6E6960" }
-]
-
-const CLIENTS = [
-  "Priya Sharma", "Rohit Kapoor", "Ananya Mehta", "Vikram Singh", "Deepa Nair", 
-  "Kavya Reddy", "Sanjay Dutt", "Aisha Gupta", "Karan Malhotra", "Riya Sen", 
-  "Rahul Bose", "Neha Dhupia", "Amit Patel", "Sneha Rao", "Divya Teja"
-]
-
-const FESTIVAL_PRESETS: Record<string, { label: string; start: Date; end: Date; multiplier: number }> = {
-  diwali: {
-    label: "Diwali Season (Oct 28 - Nov 03)",
-    start: new Date(2026, 9, 28),
-    end: new Date(2026, 10, 3),
-    multiplier: 2.8
-  },
-  eid: {
-    label: "Eid Festive Week (Apr 10 - Apr 15)",
-    start: new Date(2026, 3, 10),
-    end: new Date(2026, 3, 15),
-    multiplier: 2.1
-  },
-  christmas: {
-    label: "Christmas & New Year (Dec 24 - Jan 01)",
-    start: new Date(2026, 11, 24),
-    end: new Date(2027, 0, 1),
-    multiplier: 2.4
-  },
-  wedding: {
-    label: "Wedding Peak Season (Nov 15 - Nov 30)",
-    start: new Date(2026, 10, 15),
-    end: new Date(2026, 10, 30),
-    multiplier: 2.5
-  },
-  holi: {
-    label: "Holi Celebrations (Mar 10 - Mar 14)",
-    start: new Date(2026, 2, 10),
-    end: new Date(2026, 2, 14),
-    multiplier: 1.8
-  }
-}
+const FESTIVAL_PRESETS: Record<string, { label: string; start: Date; end: Date; multiplier: number }> = Object.fromEntries(
+  Object.entries(analyticsData.festivalPresets).map(([key, val]) => [
+    key,
+    {
+      label: val.label,
+      start: new Date(2026, val.startMonth, val.startDay),
+      end: new Date(key === "christmas" ? 2027 : 2026, val.endMonth, val.endDay),
+      multiplier: val.multiplier,
+    },
+  ])
+)
 
 // ─── Hourly Traffic Curve Generator ───
 // Returns multiplier of traffic for each hour of day

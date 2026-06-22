@@ -206,7 +206,7 @@ export default function SalonProfilePage() {
               amenities: Array.isArray(s.amenities) ? s.amenities : [],
               openingHours: s.opening_hours || defaultProfile.openingHours,
               gallery: Array.isArray(s.gallery) && s.gallery.length > 0
-                ? s.gallery.map(img => {
+                ? s.gallery.map((img: GalleryImage) => {
                     if (img.src === "/hero/salon-interior.svg") {
                       return { ...img, src: "/images/salons/akreations.jpg" };
                     }

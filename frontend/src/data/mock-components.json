@@ -1,0 +1,60 @@
+{
+  "popularServices": [
+    { "name": "Haircut & Styling", "price": "₹299", "tag": "Popular" },
+    { "name": "Hair Coloring", "price": "₹999", "tag": "Popular" },
+    { "name": "Bridal Makeup", "price": "₹4,999", "tag": "Premium" },
+    { "name": "Facial Treatment", "price": "₹499", "tag": null },
+    { "name": "Keratin Treatment", "price": "₹2,499", "tag": null },
+    { "name": "Manicure & Pedicure", "price": "₹399", "tag": null }
+  ],
+  "testimonials": [
+    {
+      "name": "Priya S.",
+      "text": "Found my perfect stylist. The booking was seamless and the salon was exactly as described.",
+      "rating": 5,
+      "salon": "Akreations, Bandra"
+    },
+    {
+      "name": "Ananya R.",
+      "text": "I love how easy it is to compare prices and read real reviews. No more guessing about quality.",
+      "rating": 5,
+      "salon": "Hair Masters, Andheri"
+    },
+    {
+      "name": "Meera P.",
+      "text": "Booked bridal makeup stress-free. The artist was incredible and everything was transparent.",
+      "rating": 5,
+      "salon": "The Bridal Room, Khar"
+    }
+  ],
+  "aiDiscovery": {
+    "suggestions": [
+      "Bridal makeup in Bandra, budget ₹8000",
+      "Best keratin near Vashi under ₹3000",
+      "Hair color + spa in Andheri this weekend"
+    ],
+    "mockResults": [
+      {
+        "name": "Glamour Studio",
+        "area": "Bandra West",
+        "rating": 4.9,
+        "match": 98,
+        "reason": "Offers bridal trial packages from ₹2,500. 3 slots available on your date."
+      },
+      {
+        "name": "The Bridal Room",
+        "area": "Khar West",
+        "rating": 4.8,
+        "match": 94,
+        "reason": "Free trial session included in bridal packages. Available Dec 14–16."
+      },
+      {
+        "name": "Radiance Makeovers",
+        "area": "Bandra East",
+        "rating": 4.7,
+        "match": 89,
+        "reason": "Budget-friendly at ₹6,800 with trial. 2 km from preferred area."
+      }
+    ]
+  }
+}

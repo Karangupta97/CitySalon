@@ -3,36 +3,10 @@
 import { useState } from "react"
 import { Sparkles, Send, MapPin, Star, ArrowRight } from "lucide-react"
 import { useScrollReveal } from "@/hooks/use-scroll-reveal"
+import componentData from "@/data/mock-components.json"
 
-const suggestions = [
-  "Bridal makeup in Bandra, budget ₹8000",
-  "Best keratin near Vashi under ₹3000",
-  "Hair color + spa in Andheri this weekend",
-]
-
-const mockResults = [
-  {
-    name: "Glamour Studio",
-    area: "Bandra West",
-    rating: 4.9,
-    match: 98,
-    reason: "Offers bridal trial packages from ₹2,500. 3 slots available on your date.",
-  },
-  {
-    name: "The Bridal Room",
-    area: "Khar West",
-    rating: 4.8,
-    match: 94,
-    reason: "Free trial session included in bridal packages. Available Dec 14–16.",
-  },
-  {
-    name: "Radiance Makeovers",
-    area: "Bandra East",
-    rating: 4.7,
-    match: 89,
-    reason: "Budget-friendly at ₹6,800 with trial. 2 km from preferred area.",
-  },
-]
+const suggestions = componentData.aiDiscovery.suggestions
+const mockResults = componentData.aiDiscovery.mockResults
 
 export function AIDiscovery() {
   const [query, setQuery] = useState("")

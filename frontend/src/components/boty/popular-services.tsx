@@ -3,15 +3,9 @@
 import { ArrowRight } from "lucide-react"
 import Link from "next/link"
 import { useScrollReveal } from "@/hooks/use-scroll-reveal"
+import componentData from "@/data/mock-components.json"
 
-const services = [
-  { name: "Haircut & Styling", price: "₹299", tag: "Popular" },
-  { name: "Hair Coloring", price: "₹999", tag: "Popular" },
-  { name: "Bridal Makeup", price: "₹4,999", tag: "Premium" },
-  { name: "Facial Treatment", price: "₹499", tag: null },
-  { name: "Keratin Treatment", price: "₹2,499", tag: null },
-  { name: "Manicure & Pedicure", price: "₹399", tag: null },
-]
+const services = componentData.popularServices
 
 export function PopularServices() {
   const { ref, isVisible } = useScrollReveal()

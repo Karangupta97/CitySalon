@@ -1,0 +1,46 @@
+{
+  "owner@citysalon.demo": {
+    "id": "demo-owner-00000000-0000-0000-0000-000000000001",
+    "full_name": "Demo Salon Owner",
+    "email": "owner@citysalon.demo",
+    "password": "DemoOwner@123",
+    "role": "owner",
+    "phone_number": "+911234567890",
+    "is_verified": true,
+    "salon": {
+      "id": "demo-salon-00000000-0000-0000-0000-000000000001",
+      "name": "CitySalon Demo",
+      "city": "Mumbai",
+      "location": "Andheri West",
+      "rating": 4.8,
+      "review_count": 127
+    }
+  },
+  "admin@citysalon.demo": {
+    "id": "demo-admin-00000000-0000-0000-0000-000000000002",
+    "full_name": "Demo Admin",
+    "email": "admin@citysalon.demo",
+    "password": "DemoAdmin@123",
+    "role": "admin",
+    "phone_number": "+919876543210",
+    "is_verified": true,
+    "salon": null
+  },
+  "judge@citysalon.com": {
+    "id": "demo-judge-00000000-0000-0000-0000-000000000003",
+    "full_name": "Hackathon Judge",
+    "email": "judge@citysalon.com",
+    "password": "Password123!",
+    "role": "owner",
+    "phone_number": "+910000000000",
+    "is_verified": true,
+    "salon": {
+      "id": "demo-salon-00000000-0000-0000-0000-000000000002",
+      "name": "Judge's Premium Salon",
+      "city": "Delhi",
+      "location": "Connaught Place",
+      "rating": 4.9,
+      "review_count": 256
+    }
+  }
+}

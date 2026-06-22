@@ -1,0 +1,47 @@
+{
+  "weeklyRevenue": [
+    { "day": "Mon", "current": 4900, "previous": 4200 },
+    { "day": "Tue", "current": 6400, "previous": 5800 },
+    { "day": "Wed", "current": 4100, "previous": 4600 },
+    { "day": "Thu", "current": 7200, "previous": 6100 },
+    { "day": "Fri", "current": 9100, "previous": 7800 },
+    { "day": "Sat", "current": 10200, "previous": 9400 },
+    { "day": "Sun", "current": 3200, "previous": 2900 }
+  ],
+  "todaySchedule": [
+    { "time": "10:00 AM", "name": "Priya Sharma", "service": "Haircut + Colour", "stylist": "Meena", "amount": 1800, "status": "confirmed" },
+    { "time": "11:30 AM", "name": "Rohit Kapoor", "service": "Beard Trim", "stylist": "Raj", "amount": 350, "status": "in-progress" },
+    { "time": "01:00 PM", "name": "Ananya Mehta", "service": "Facial + Cleanup", "stylist": "Priya", "amount": 1200, "status": "completed" },
+    { "time": "02:30 PM", "name": "Vikram Singh", "service": "Hair Wash + Style", "stylist": "Meena", "amount": 750, "status": "pending" },
+    { "time": "04:00 PM", "name": "Deepa Nair", "service": "Manicure + Pedicure", "stylist": "Anita", "amount": 900, "status": "confirmed" },
+    { "time": "05:30 PM", "name": "Kavya Reddy", "service": "Bridal Package", "stylist": "Meena", "amount": 3500, "status": "confirmed" }
+  ],
+  "topServices": [
+    { "name": "Hair Colour", "value": 14, "fill": "#3D5A3A" },
+    { "name": "Haircut", "value": 11, "fill": "#7A9A6D" },
+    { "name": "Facial", "value": 9, "fill": "#C4A76C" },
+    { "name": "Bridal", "value": 5, "fill": "#E8E0D6" },
+    { "name": "Beard Trim", "value": 4, "fill": "#A3906B" },
+    { "name": "Others", "value": 4, "fill": "#6E6960" }
+  ],
+  "stylistLeaderboard": [
+    { "name": "Meena", "bookings": 22, "revenue": 18200, "color": "#3D5A3A", "initial": "M", "rank": 1 },
+    { "name": "Priya", "bookings": 12, "revenue": 9600, "color": "#C4A76C", "initial": "P", "rank": 2 },
+    { "name": "Raj", "bookings": 15, "revenue": 7500, "color": "#7A9A6D", "initial": "R", "rank": 3 },
+    { "name": "Anita", "bookings": 8, "revenue": 5100, "color": "#6E6960", "initial": "A", "rank": 4 }
+  ],
+  "kpis": {
+    "totalBookings": "184",
+    "bookingsChange": "+12%",
+    "bookingsTrend": "up",
+    "revenue": "₹1,59,900",
+    "revenueChange": "+8.2%",
+    "revenueTrend": "up",
+    "avgBookingValue": "₹817",
+    "avgChange": "-0.2%",
+    "avgTrend": "down",
+    "newCustomers": "112",
+    "customersChange": "+14%",
+    "customersTrend": "up"
+  }
+}

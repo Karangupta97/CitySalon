@@ -22,6 +22,7 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import appointmentData from "@/data/mock-appointments.json"
 
 type AppointmentStatus = "pending" | "confirmed" | "completed" | "cancelled" | "no-show" | "open" | "in-progress"
 
@@ -40,17 +41,9 @@ interface Appointment {
   notes?: string
 }
 
-const initialAppointments: Appointment[] = [
-  { id: "1", time: "10:00 AM", endTime: "11:30 AM", customer: "Priya Sharma", phone: "+91 98765 43210", service: "Haircut + Colour", serviceList: ["Haircut", "Hair Colour"], stylist: "Meena", status: "confirmed", price: 1800 },
-  { id: "2", time: "11:30 AM", endTime: "12:00 PM", customer: "Rohit Kapoor", phone: "+91 87654 32109", service: "Beard Trim", serviceList: ["Beard Trim"], stylist: "Raj", status: "in-progress", price: 350 },
-  { id: "3", time: "01:00 PM", endTime: "02:00 PM", customer: null, phone: null, service: null, serviceList: [], stylist: null, status: "open", price: 0 },
-  { id: "4", time: "02:00 PM", endTime: "03:30 PM", customer: "Ananya Mehta", phone: "+91 76543 21098", service: "Facial + Cleanup", serviceList: ["Facial", "Cleanup"], stylist: "Priya", status: "pending", price: 1200 },
-  { id: "5", time: "03:30 PM", endTime: "04:30 PM", customer: "Vikram Singh", phone: "+91 65432 10987", service: "Hair Wash + Style", serviceList: ["Hair Wash", "Styling"], stylist: "Meena", status: "confirmed", price: 750 },
-  { id: "6", time: "05:00 PM", endTime: "06:00 PM", customer: "Deepa Nair", phone: "+91 54321 09876", service: "Manicure + Pedicure", serviceList: ["Manicure", "Pedicure"], stylist: "Anita", status: "confirmed", price: 900 },
-]
-
-const stylists = ["Any Available", "Meena", "Raj", "Priya", "Anita", "Vikram"]
-const services = ["Haircut", "Hair Colour", "Beard Trim", "Facial", "Cleanup", "Manicure", "Pedicure", "Hair Wash", "Styling", "Blowout", "Bridal Makeup"]
+const initialAppointments: Appointment[] = appointmentData.appointments as Appointment[]
+const stylists = appointmentData.stylists
+const services = appointmentData.services
 
 const statusConfig: Record<AppointmentStatus, { label: string; color: string; indicator: string }> = {
   confirmed: { label: "Confirmed", color: "text-[#3D5A3A] bg-[#3D5A3A]/5 border border-[#3D5A3A]/10", indicator: "bg-[#3D5A3A]" },

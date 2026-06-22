@@ -1,0 +1,2286 @@
+{
+  "akshita-shoanak": {
+    "name": "Akshita Shoanak Studio Salon",
+    "tagline": "Where luxury meets comfort",
+    "heroImage": "/images/salons/akshita-shoanak.jpg",
+    "rating": 4.9,
+    "reviews": 856,
+    "location": "Ulwe, Navi Mumbai",
+    "fullAddress": "Shop 12, Ground Floor, Saraswati Complex, Sector 19, Ulwe, Navi Mumbai, Maharashtra 410206",
+    "liveStatus": "short-wait",
+    "waitTime": "~15 min",
+    "priceGuarantee": true,
+    "hygieneScore": 96,
+    "description": "Akshita Shoanak Studio Salon is a premium unisex salon nestled in the heart of Ulwe, Navi Mumbai. Founded with a vision to bring international-standard beauty services to the neighbourhood, we combine expertise with warmth. Our team of certified professionals uses only top-tier products to deliver results that exceed expectations — whether it's a quick trim or a complete bridal transformation.",
+    "aiReviewSummary": "Customers rave about the luxurious ambience, attentive staff, and consistently excellent service quality. The salon is praised for its hygiene standards and the personalised attention each client receives. Bridal packages and keratin treatments are frequently highlighted as standout offerings.",
+    "hygieneChecklist": {
+      "autoclaveSterlization": true,
+      "freshTowels": true,
+      "licensedStaff": true,
+      "disposableKits": true,
+      "regularSanitization": true,
+      "airPurification": true
+    },
+    "services": [
+      {
+        "name": "Women's Haircut & Styling",
+        "price": "₹599",
+        "duration": "45 min",
+        "category": "Hair"
+      },
+      {
+        "name": "Men's Haircut",
+        "price": "₹299",
+        "duration": "30 min",
+        "category": "Hair"
+      },
+      {
+        "name": "Keratin Treatment",
+        "price": "₹4,999",
+        "duration": "2.5 hrs",
+        "category": "Hair"
+      },
+      {
+        "name": "Global Hair Color",
+        "price": "₹3,499",
+        "duration": "2 hrs",
+        "category": "Hair"
+      },
+      {
+        "name": "Balayage / Highlights",
+        "price": "₹5,999",
+        "duration": "3 hrs",
+        "category": "Hair"
+      },
+      {
+        "name": "Hair Spa",
+        "price": "₹1,199",
+        "duration": "45 min",
+        "category": "Hair"
+      },
+      {
+        "name": "Hydra Facial",
+        "price": "₹2,499",
+        "duration": "1 hr",
+        "category": "Skin"
+      },
+      {
+        "name": "Gold Facial",
+        "price": "₹1,799",
+        "duration": "1 hr",
+        "category": "Skin"
+      },
+      {
+        "name": "De-Tan Treatment",
+        "price": "₹999",
+        "duration": "45 min",
+        "category": "Skin"
+      },
+      {
+        "name": "Bridal Makeup",
+        "price": "₹15,999",
+        "duration": "2.5 hrs",
+        "category": "Makeup"
+      },
+      {
+        "name": "Party Makeup",
+        "price": "₹3,999",
+        "duration": "1 hr",
+        "category": "Makeup"
+      },
+      {
+        "name": "Engagement Makeup",
+        "price": "₹8,999",
+        "duration": "2 hrs",
+        "category": "Makeup"
+      },
+      {
+        "name": "Spa Pedicure",
+        "price": "₹799",
+        "duration": "45 min",
+        "category": "Nails"
+      },
+      {
+        "name": "Gel Nail Extensions",
+        "price": "₹2,499",
+        "duration": "1.5 hrs",
+        "category": "Nails"
+      },
+      {
+        "name": "Classic Manicure",
+        "price": "₹499",
+        "duration": "30 min",
+        "category": "Nails"
+      },
+      {
+        "name": "Full Body Wax",
+        "price": "₹1,999",
+        "duration": "1 hr",
+        "category": "Waxing"
+      },
+      {
+        "name": "Threading & Shaping",
+        "price": "₹199",
+        "duration": "15 min",
+        "category": "Waxing"
+      }
+    ],
+    "stylists": [
+      {
+        "id": "s1",
+        "name": "Priya Sharma",
+        "role": "Senior Hair Stylist",
+        "rating": 4.9,
+        "reviewCount": 312,
+        "experience": "8 yrs",
+        "clients": "2.4k+",
+        "speciality": "Color & Balayage",
+        "availability": "available"
+      },
+      {
+        "id": "s2",
+        "name": "Rahul Mehta",
+        "role": "Creative Director",
+        "rating": 4.9,
+        "reviewCount": 245,
+        "experience": "12 yrs",
+        "clients": "3.8k+",
+        "speciality": "Precision Cuts",
+        "availability": "busy"
+      },
+      {
+        "id": "s3",
+        "name": "Ananya Iyer",
+        "role": "Bridal Makeup Artist",
+        "rating": 5,
+        "reviewCount": 189,
+        "experience": "6 yrs",
+        "clients": "1.6k+",
+        "speciality": "Bridal & HD Makeup",
+        "availability": "available"
+      },
+      {
+        "id": "s4",
+        "name": "Vikram Patel",
+        "role": "Hair Treatment Specialist",
+        "rating": 4.8,
+        "reviewCount": 156,
+        "experience": "5 yrs",
+        "clients": "1.2k+",
+        "speciality": "Keratin & Smoothing",
+        "availability": "off"
+      },
+      {
+        "id": "s5",
+        "name": "Sneha Desai",
+        "role": "Skin Care Expert",
+        "rating": 4.8,
+        "reviewCount": 198,
+        "experience": "7 yrs",
+        "clients": "2.0k+",
+        "speciality": "Advanced Facials",
+        "availability": "available"
+      },
+      {
+        "id": "s6",
+        "name": "Amit Kapoor",
+        "role": "Men's Grooming Specialist",
+        "rating": 4.7,
+        "reviewCount": 134,
+        "experience": "4 yrs",
+        "clients": "900+",
+        "speciality": "Beard & Styling",
+        "availability": "available"
+      }
+    ],
+    "galleryImages": [
+      {
+        "src": "/images/hero-model.jpg",
+        "alt": "Salon Interior",
+        "caption": "Our luxurious salon interiors designed for comfort"
+      },
+      {
+        "src": "/images/bento-skin-model.jpg",
+        "alt": "Skin Treatment",
+        "caption": "Professional skin care treatments"
+      },
+      {
+        "src": "/images/natural-leaf.jpg",
+        "alt": "Natural Products",
+        "caption": "We use only premium natural products"
+      },
+      {
+        "src": "/images/hero-model.jpg",
+        "alt": "Hair Styling",
+        "caption": "Expert hair styling and cuts"
+      },
+      {
+        "src": "/images/bento-skin-model.jpg",
+        "alt": "Bridal Prep",
+        "caption": "Bridal preparation room"
+      },
+      {
+        "src": "/images/natural-leaf.jpg",
+        "alt": "Product Display",
+        "caption": "Our curated product collection"
+      },
+      {
+        "src": "/images/hero-model.jpg",
+        "alt": "Nail Art Station",
+        "caption": "Dedicated nail art and care station"
+      },
+      {
+        "src": "/images/bento-skin-model.jpg",
+        "alt": "Waiting Lounge",
+        "caption": "Comfortable client waiting area"
+      }
+    ],
+    "beforeAfterGallery": [
+      {
+        "before": "/images/hero-model.jpg",
+        "after": "/images/bento-skin-model.jpg",
+        "service": "Balayage Highlights",
+        "stylist": "Priya Sharma"
+      },
+      {
+        "before": "/images/natural-leaf.jpg",
+        "after": "/images/hero-model.jpg",
+        "service": "Keratin Smoothing",
+        "stylist": "Vikram Patel"
+      },
+      {
+        "before": "/images/bento-skin-model.jpg",
+        "after": "/images/natural-leaf.jpg",
+        "service": "Bridal Makeup",
+        "stylist": "Ananya Iyer"
+      }
+    ],
+    "highlights": [
+      "Award-winning bridal makeup artist on team",
+      "Only salon in Ulwe with autoclave sterilization",
+      "Complimentary hair spa with every color service",
+      "Private bridal suite for wedding prep",
+      "Organic and cruelty-free product options available",
+      "AC seating with complimentary beverages"
+    ],
+    "amenities": [
+      "Free WiFi",
+      "Complimentary Beverages",
+      "Dedicated Parking",
+      "Air Conditioned",
+      "Wheelchair Accessible",
+      "Online Booking",
+      "Card Payment Accepted",
+      "Sanitized Equipment"
+    ],
+    "phone": "+91 98765 43210",
+    "email": "hello@akshitashoanak.com",
+    "website": "https://akshitashoanak.com",
+    "instagram": "https://instagram.com/akshitashoanakstudio",
+    "openingHours": {
+      "Monday": "10:00 AM – 8:00 PM",
+      "Tuesday": "10:00 AM – 8:00 PM",
+      "Wednesday": "10:00 AM – 8:00 PM",
+      "Thursday": "10:00 AM – 8:00 PM",
+      "Friday": "10:00 AM – 9:00 PM",
+      "Saturday": "9:00 AM – 9:00 PM",
+      "Sunday": "9:00 AM – 7:00 PM"
+    }
+  },
+  "akreations": {
+    "name": "Akreations Salon & Academy",
+    "tagline": "Art meets precision in every cut",
+    "heroImage": "/images/salons/akreations.jpg",
+    "rating": 4.8,
+    "reviews": 1200,
+    "location": "Bandra West, Mumbai",
+    "fullAddress": "2nd Floor, Crystal Plaza, Linking Road, Bandra West, Mumbai, Maharashtra 400050",
+    "liveStatus": "available",
+    "waitTime": "Walk-in",
+    "priceGuarantee": true,
+    "hygieneScore": 94,
+    "description": "Akreations is where artistry meets technical precision. As both a salon and academy, we bring cutting-edge techniques to every service. Our stylists are trained by international experts and continually updated on global trends. From runway-ready looks to everyday elegance, Akreations delivers with flair.",
+    "aiReviewSummary": "Reviewers love the creative energy and expertise of the stylists. The academy-trained team delivers consistently trendy and precise results. Hair color transformations and avant-garde cuts receive the most praise.",
+    "hygieneChecklist": {
+      "autoclaveSterlization": true,
+      "freshTowels": true,
+      "licensedStaff": true,
+      "disposableKits": true,
+      "regularSanitization": true,
+      "airPurification": false
+    },
+    "services": [
+      {
+        "name": "Designer Haircut - Women",
+        "price": "₹999",
+        "duration": "45 min",
+        "category": "Hair"
+      },
+      {
+        "name": "Designer Haircut - Men",
+        "price": "₹599",
+        "duration": "30 min",
+        "category": "Hair"
+      },
+      {
+        "name": "Creative Color",
+        "price": "₹4,499",
+        "duration": "2.5 hrs",
+        "category": "Hair"
+      },
+      {
+        "name": "Olaplex Treatment",
+        "price": "₹3,999",
+        "duration": "1.5 hrs",
+        "category": "Hair"
+      },
+      {
+        "name": "Smoothening",
+        "price": "₹5,499",
+        "duration": "3 hrs",
+        "category": "Hair"
+      },
+      {
+        "name": "Bridal Package",
+        "price": "₹12,999",
+        "duration": "3 hrs",
+        "category": "Makeup"
+      },
+      {
+        "name": "Airbrush Makeup",
+        "price": "₹5,999",
+        "duration": "1.5 hrs",
+        "category": "Makeup"
+      },
+      {
+        "name": "Derma Facial",
+        "price": "₹2,999",
+        "duration": "1 hr",
+        "category": "Skin"
+      },
+      {
+        "name": "Chemical Peel",
+        "price": "₹3,499",
+        "duration": "45 min",
+        "category": "Skin"
+      },
+      {
+        "name": "Nail Art",
+        "price": "₹1,499",
+        "duration": "1 hr",
+        "category": "Nails"
+      }
+    ],
+    "stylists": [
+      {
+        "id": "s1",
+        "name": "Akash Reddy",
+        "role": "Founder & Creative Head",
+        "rating": 4.9,
+        "reviewCount": 420,
+        "experience": "15 yrs",
+        "clients": "5k+",
+        "speciality": "Avant-garde Cuts",
+        "availability": "busy"
+      },
+      {
+        "id": "s2",
+        "name": "Nisha Kaur",
+        "role": "Color Specialist",
+        "rating": 4.8,
+        "reviewCount": 310,
+        "experience": "9 yrs",
+        "clients": "2.8k+",
+        "speciality": "Fantasy Colors",
+        "availability": "available"
+      },
+      {
+        "id": "s3",
+        "name": "Deepak Joshi",
+        "role": "Senior Stylist",
+        "rating": 4.7,
+        "reviewCount": 245,
+        "experience": "7 yrs",
+        "clients": "2.1k+",
+        "speciality": "Textured Cuts",
+        "availability": "available"
+      },
+      {
+        "id": "s4",
+        "name": "Meghna Suri",
+        "role": "Makeup Director",
+        "rating": 4.9,
+        "reviewCount": 189,
+        "experience": "8 yrs",
+        "clients": "1.5k+",
+        "speciality": "Bridal & Editorial",
+        "availability": "available"
+      }
+    ],
+    "galleryImages": [
+      {
+        "src": "/images/bento-skin-model.jpg",
+        "alt": "Salon Studio",
+        "caption": "Our creative studio space"
+      },
+      {
+        "src": "/images/hero-model.jpg",
+        "alt": "Color Work",
+        "caption": "Vibrant color transformations"
+      },
+      {
+        "src": "/images/natural-leaf.jpg",
+        "alt": "Academy",
+        "caption": "Training the next generation"
+      },
+      {
+        "src": "/images/bento-skin-model.jpg",
+        "alt": "Interior",
+        "caption": "Modern industrial interiors"
+      },
+      {
+        "src": "/images/hero-model.jpg",
+        "alt": "Styling",
+        "caption": "Runway-ready styling"
+      },
+      {
+        "src": "/images/natural-leaf.jpg",
+        "alt": "Products",
+        "caption": "Premium product line"
+      }
+    ],
+    "beforeAfterGallery": [
+      {
+        "before": "/images/natural-leaf.jpg",
+        "after": "/images/bento-skin-model.jpg",
+        "service": "Fantasy Color",
+        "stylist": "Nisha Kaur"
+      },
+      {
+        "before": "/images/hero-model.jpg",
+        "after": "/images/natural-leaf.jpg",
+        "service": "Textured Bob",
+        "stylist": "Deepak Joshi"
+      }
+    ],
+    "highlights": [
+      "Academy-trained stylists with international certifications",
+      "Pioneers of creative color in Mumbai",
+      "Editorial and fashion week collaborations",
+      "Private consultation rooms available"
+    ],
+    "amenities": [
+      "Free WiFi",
+      "Complimentary Beverages",
+      "Air Conditioned",
+      "Online Booking",
+      "Card Payment Accepted",
+      "Sanitized Equipment"
+    ],
+    "phone": "+91 98210 55678",
+    "email": "book@akreations.com",
+    "website": "https://akreations.com",
+    "instagram": "https://instagram.com/akreations",
+    "openingHours": {
+      "Monday": "11:00 AM – 8:00 PM",
+      "Tuesday": "11:00 AM – 8:00 PM",
+      "Wednesday": "11:00 AM – 8:00 PM",
+      "Thursday": "11:00 AM – 8:00 PM",
+      "Friday": "11:00 AM – 9:00 PM",
+      "Saturday": "10:00 AM – 9:00 PM",
+      "Sunday": "10:00 AM – 7:00 PM"
+    }
+  },
+  "hair-masters": {
+    "name": "Hair Masters Studio",
+    "tagline": "Masters of color and transformation",
+    "heroImage": "/images/salons/hair-masters.jpg",
+    "rating": 4.7,
+    "reviews": 980,
+    "location": "Andheri West, Mumbai",
+    "fullAddress": "101, Oshiwara Link Road, Andheri West, Mumbai, Maharashtra 400053",
+    "liveStatus": "short-wait",
+    "waitTime": "~10 min",
+    "priceGuarantee": false,
+    "hygieneScore": 91,
+    "description": "Hair Masters Studio is a dedicated hair-focused salon known for exceptional color work and transformative treatments. Our colour specialists undergo annual training in London and Paris to bring the latest global trends to Mumbai.",
+    "aiReviewSummary": "Customers highlight the exceptional color work and transformative hair treatments. The team's expertise in balayage and creative coloring is frequently praised. Wait times can be slightly long on weekends.",
+    "hygieneChecklist": {
+      "autoclaveSterlization": true,
+      "freshTowels": true,
+      "licensedStaff": true,
+      "disposableKits": false,
+      "regularSanitization": true,
+      "airPurification": false
+    },
+    "services": [
+      {
+        "name": "Precision Haircut",
+        "price": "₹799",
+        "duration": "40 min",
+        "category": "Hair"
+      },
+      {
+        "name": "Global Color",
+        "price": "₹3,999",
+        "duration": "2 hrs",
+        "category": "Hair"
+      },
+      {
+        "name": "Balayage",
+        "price": "₹6,499",
+        "duration": "3 hrs",
+        "category": "Hair"
+      },
+      {
+        "name": "Keratin Treatment",
+        "price": "₹4,499",
+        "duration": "2.5 hrs",
+        "category": "Hair"
+      },
+      {
+        "name": "Hair Botox",
+        "price": "₹5,999",
+        "duration": "2.5 hrs",
+        "category": "Hair"
+      },
+      {
+        "name": "Scalp Treatment",
+        "price": "₹1,499",
+        "duration": "45 min",
+        "category": "Treatments"
+      },
+      {
+        "name": "Deep Conditioning",
+        "price": "₹999",
+        "duration": "30 min",
+        "category": "Treatments"
+      },
+      {
+        "name": "Hair Extensions",
+        "price": "₹8,999",
+        "duration": "3 hrs",
+        "category": "Hair"
+      }
+    ],
+    "stylists": [
+      {
+        "id": "s1",
+        "name": "Ravi Kumar",
+        "role": "Master Colorist",
+        "rating": 4.9,
+        "reviewCount": 380,
+        "experience": "14 yrs",
+        "clients": "4.5k+",
+        "speciality": "Color Correction",
+        "availability": "available"
+      },
+      {
+        "id": "s2",
+        "name": "Sanya Jain",
+        "role": "Senior Stylist",
+        "rating": 4.7,
+        "reviewCount": 220,
+        "experience": "8 yrs",
+        "clients": "2.2k+",
+        "speciality": "Balayage & Ombre",
+        "availability": "busy"
+      },
+      {
+        "id": "s3",
+        "name": "Karan Thakur",
+        "role": "Hair Transformation Expert",
+        "rating": 4.8,
+        "reviewCount": 195,
+        "experience": "10 yrs",
+        "clients": "3k+",
+        "speciality": "Smoothening & Keratin",
+        "availability": "available"
+      }
+    ],
+    "galleryImages": [
+      {
+        "src": "/images/natural-leaf.jpg",
+        "alt": "Color Work",
+        "caption": "Stunning color transformations"
+      },
+      {
+        "src": "/images/hero-model.jpg",
+        "alt": "Studio",
+        "caption": "Our modern studio"
+      },
+      {
+        "src": "/images/bento-skin-model.jpg",
+        "alt": "Styling",
+        "caption": "Creative styling in progress"
+      },
+      {
+        "src": "/images/natural-leaf.jpg",
+        "alt": "Products",
+        "caption": "Professional color products"
+      },
+      {
+        "src": "/images/hero-model.jpg",
+        "alt": "Before After",
+        "caption": "Dramatic transformations"
+      },
+      {
+        "src": "/images/bento-skin-model.jpg",
+        "alt": "Interior",
+        "caption": "Cozy salon interiors"
+      }
+    ],
+    "beforeAfterGallery": [
+      {
+        "before": "/images/natural-leaf.jpg",
+        "after": "/images/hero-model.jpg",
+        "service": "Color Correction",
+        "stylist": "Ravi Kumar"
+      },
+      {
+        "before": "/images/bento-skin-model.jpg",
+        "after": "/images/natural-leaf.jpg",
+        "service": "Balayage",
+        "stylist": "Sanya Jain"
+      }
+    ],
+    "highlights": [
+      "Internationally trained color specialists",
+      "Olaplex certified salon",
+      "Specialised in hair damage repair",
+      "Annual training in London & Paris"
+    ],
+    "amenities": [
+      "Free WiFi",
+      "Complimentary Beverages",
+      "Air Conditioned",
+      "Card Payment Accepted",
+      "Sanitized Equipment",
+      "Online Booking"
+    ],
+    "phone": "+91 98333 12456",
+    "email": "info@hairmasters.in",
+    "website": "https://hairmasters.in",
+    "instagram": "https://instagram.com/hairmastersmumbai",
+    "openingHours": {
+      "Monday": "10:00 AM – 8:00 PM",
+      "Tuesday": "10:00 AM – 8:00 PM",
+      "Wednesday": "10:00 AM – 8:00 PM",
+      "Thursday": "10:00 AM – 8:00 PM",
+      "Friday": "10:00 AM – 9:00 PM",
+      "Saturday": "9:30 AM – 9:00 PM",
+      "Sunday": "10:00 AM – 6:00 PM"
+    }
+  },
+  "the-salon-co": {
+    "name": "The Salon Co.",
+    "tagline": "Contemporary beauty, timeless elegance",
+    "heroImage": "/images/salons/the-salon-co.jpg",
+    "rating": 4.6,
+    "reviews": 756,
+    "location": "Lower Parel, Mumbai",
+    "fullAddress": "Unit 5, Trade Tower, Kamala Mills Compound, Lower Parel, Mumbai, Maharashtra 400013",
+    "liveStatus": "available",
+    "waitTime": "Walk-in",
+    "priceGuarantee": false,
+    "hygieneScore": 89,
+    "description": "The Salon Co. blends contemporary aesthetics with timeless beauty techniques. Located in the vibrant Lower Parel business district, we cater to professionals seeking quick yet quality beauty services during their busy schedules.",
+    "aiReviewSummary": "Clients appreciate the convenient location and efficient service. Quick turnaround times and professional results make it a favourite for working professionals. The nail art and express facials are top sellers.",
+    "hygieneChecklist": {
+      "autoclaveSterlization": true,
+      "freshTowels": true,
+      "licensedStaff": true,
+      "disposableKits": false,
+      "regularSanitization": true,
+      "airPurification": false
+    },
+    "services": [
+      {
+        "name": "Express Haircut",
+        "price": "₹699",
+        "duration": "30 min",
+        "category": "Hair"
+      },
+      {
+        "name": "Blow Dry & Styling",
+        "price": "₹599",
+        "duration": "30 min",
+        "category": "Hair"
+      },
+      {
+        "name": "Express Facial",
+        "price": "₹1,499",
+        "duration": "30 min",
+        "category": "Skin"
+      },
+      {
+        "name": "Gel Nails",
+        "price": "₹1,799",
+        "duration": "1 hr",
+        "category": "Nails"
+      },
+      {
+        "name": "Nail Art",
+        "price": "₹999",
+        "duration": "45 min",
+        "category": "Nails"
+      },
+      {
+        "name": "Threading",
+        "price": "₹349",
+        "duration": "15 min",
+        "category": "Waxing"
+      },
+      {
+        "name": "Waxing - Full Arms",
+        "price": "₹599",
+        "duration": "30 min",
+        "category": "Waxing"
+      }
+    ],
+    "stylists": [
+      {
+        "id": "s1",
+        "name": "Tanya Singh",
+        "role": "Salon Manager & Stylist",
+        "rating": 4.7,
+        "reviewCount": 280,
+        "experience": "9 yrs",
+        "clients": "3k+",
+        "speciality": "Quick Styling",
+        "availability": "available"
+      },
+      {
+        "id": "s2",
+        "name": "Pooja Nair",
+        "role": "Nail Artist",
+        "rating": 4.8,
+        "reviewCount": 190,
+        "experience": "5 yrs",
+        "clients": "1.5k+",
+        "speciality": "Nail Art & Extensions",
+        "availability": "available"
+      },
+      {
+        "id": "s3",
+        "name": "Farah Khan",
+        "role": "Skin Specialist",
+        "rating": 4.6,
+        "reviewCount": 165,
+        "experience": "6 yrs",
+        "clients": "1.8k+",
+        "speciality": "Express Treatments",
+        "availability": "busy"
+      }
+    ],
+    "galleryImages": [
+      {
+        "src": "/images/products/moisturizer.jpg",
+        "alt": "Salon",
+        "caption": "Chic salon interiors"
+      },
+      {
+        "src": "/images/hero-model.jpg",
+        "alt": "Styling",
+        "caption": "Quick professional styling"
+      },
+      {
+        "src": "/images/bento-skin-model.jpg",
+        "alt": "Nails",
+        "caption": "Creative nail art"
+      },
+      {
+        "src": "/images/natural-leaf.jpg",
+        "alt": "Products",
+        "caption": "Premium products"
+      },
+      {
+        "src": "/images/products/moisturizer.jpg",
+        "alt": "Facials",
+        "caption": "Express facial treatments"
+      },
+      {
+        "src": "/images/hero-model.jpg",
+        "alt": "Lounge",
+        "caption": "Client lounge area"
+      }
+    ],
+    "beforeAfterGallery": [
+      {
+        "before": "/images/hero-model.jpg",
+        "after": "/images/bento-skin-model.jpg",
+        "service": "Gel Nail Extensions",
+        "stylist": "Pooja Nair"
+      }
+    ],
+    "highlights": [
+      "Express services for busy professionals",
+      "Walk-in friendly with minimal wait times",
+      "Located in premium business district",
+      "Curated nail art collections updated monthly"
+    ],
+    "amenities": [
+      "Free WiFi",
+      "Complimentary Beverages",
+      "Air Conditioned",
+      "Card Payment Accepted",
+      "Online Booking",
+      "Sanitized Equipment"
+    ],
+    "phone": "+91 22 4567 8901",
+    "email": "appointments@thesalonco.in",
+    "website": "https://thesalonco.in",
+    "instagram": "https://instagram.com/thesalonco",
+    "openingHours": {
+      "Monday": "9:00 AM – 8:00 PM",
+      "Tuesday": "9:00 AM – 8:00 PM",
+      "Wednesday": "9:00 AM – 8:00 PM",
+      "Thursday": "9:00 AM – 8:00 PM",
+      "Friday": "9:00 AM – 9:00 PM",
+      "Saturday": "9:00 AM – 9:00 PM",
+      "Sunday": "10:00 AM – 6:00 PM"
+    }
+  },
+  "dessange-paris": {
+    "name": "Dessange Paris",
+    "tagline": "Parisian luxury in the heart of Mumbai",
+    "heroImage": "/images/salons/dessange-paris.jpg",
+    "rating": 4.7,
+    "reviews": 542,
+    "location": "Juhu, Mumbai",
+    "fullAddress": "Sea Princess Hotel, Juhu Beach, Juhu, Mumbai, Maharashtra 400049",
+    "liveStatus": "busy",
+    "waitTime": "~30 min",
+    "priceGuarantee": true,
+    "hygieneScore": 97,
+    "description": "Dessange Paris brings the elegance of French haute coiffure to Mumbai. As part of the renowned international chain, we offer luxurious hair care, spa treatments, and colour services using exclusive Dessange Paris products developed in our French laboratories.",
+    "aiReviewSummary": "Clients love the premium French experience and the exclusive products. The spa treatments and colour services are considered best-in-class. High price point is offset by exceptional quality and ambience.",
+    "hygieneChecklist": {
+      "autoclaveSterlization": true,
+      "freshTowels": true,
+      "licensedStaff": true,
+      "disposableKits": true,
+      "regularSanitization": true,
+      "airPurification": true
+    },
+    "services": [
+      {
+        "name": "French Cut - Women",
+        "price": "₹2,499",
+        "duration": "1 hr",
+        "category": "Hair"
+      },
+      {
+        "name": "French Cut - Men",
+        "price": "₹1,499",
+        "duration": "45 min",
+        "category": "Hair"
+      },
+      {
+        "name": "Dessange Color",
+        "price": "₹7,999",
+        "duration": "2.5 hrs",
+        "category": "Hair"
+      },
+      {
+        "name": "French Spa Ritual",
+        "price": "₹4,999",
+        "duration": "1.5 hrs",
+        "category": "Spa"
+      },
+      {
+        "name": "Luxury Facial",
+        "price": "₹5,499",
+        "duration": "1.5 hrs",
+        "category": "Skin"
+      },
+      {
+        "name": "Hair Restructuring",
+        "price": "₹6,999",
+        "duration": "2 hrs",
+        "category": "Hair"
+      },
+      {
+        "name": "Parisian Blow Dry",
+        "price": "₹1,999",
+        "duration": "45 min",
+        "category": "Hair"
+      }
+    ],
+    "stylists": [
+      {
+        "id": "s1",
+        "name": "Marie Laurent",
+        "role": "French Master Stylist",
+        "rating": 4.9,
+        "reviewCount": 210,
+        "experience": "18 yrs",
+        "clients": "4k+",
+        "speciality": "French Cutting",
+        "availability": "busy"
+      },
+      {
+        "id": "s2",
+        "name": "Sameer Sheikh",
+        "role": "Color Director",
+        "rating": 4.8,
+        "reviewCount": 178,
+        "experience": "11 yrs",
+        "clients": "2.5k+",
+        "speciality": "French Coloring",
+        "availability": "available"
+      },
+      {
+        "id": "s3",
+        "name": "Aditi Rawat",
+        "role": "Spa Therapist",
+        "rating": 4.7,
+        "reviewCount": 145,
+        "experience": "6 yrs",
+        "clients": "1.2k+",
+        "speciality": "French Rituals",
+        "availability": "available"
+      }
+    ],
+    "galleryImages": [
+      {
+        "src": "/images/products/serum.jpg",
+        "alt": "Luxury Interior",
+        "caption": "French-inspired luxury interiors"
+      },
+      {
+        "src": "/images/hero-model.jpg",
+        "alt": "Styling",
+        "caption": "Parisian styling excellence"
+      },
+      {
+        "src": "/images/bento-skin-model.jpg",
+        "alt": "Spa",
+        "caption": "Exclusive spa treatments"
+      },
+      {
+        "src": "/images/natural-leaf.jpg",
+        "alt": "Products",
+        "caption": "Dessange Paris exclusive products"
+      },
+      {
+        "src": "/images/products/serum.jpg",
+        "alt": "Color",
+        "caption": "Premium color services"
+      },
+      {
+        "src": "/images/hero-model.jpg",
+        "alt": "Lounge",
+        "caption": "VIP client lounge"
+      }
+    ],
+    "beforeAfterGallery": [
+      {
+        "before": "/images/natural-leaf.jpg",
+        "after": "/images/hero-model.jpg",
+        "service": "French Color",
+        "stylist": "Sameer Sheikh"
+      },
+      {
+        "before": "/images/bento-skin-model.jpg",
+        "after": "/images/products/serum.jpg",
+        "service": "Hair Restructuring",
+        "stylist": "Marie Laurent"
+      }
+    ],
+    "highlights": [
+      "International luxury brand with presence in 45 countries",
+      "Exclusive Dessange Paris product line",
+      "French-trained master stylists",
+      "VIP private suites for celebrities and weddings",
+      "Sea-facing salon with stunning views"
+    ],
+    "amenities": [
+      "Free WiFi",
+      "Complimentary Beverages",
+      "Dedicated Parking",
+      "Air Conditioned",
+      "Card Payment Accepted",
+      "Sanitized Equipment",
+      "Online Booking",
+      "Wheelchair Accessible"
+    ],
+    "phone": "+91 22 6789 0123",
+    "email": "mumbai@dessange.in",
+    "website": "https://dessange.in",
+    "instagram": "https://instagram.com/dessangemumbai",
+    "openingHours": {
+      "Monday": "10:00 AM – 8:00 PM",
+      "Tuesday": "10:00 AM – 8:00 PM",
+      "Wednesday": "10:00 AM – 8:00 PM",
+      "Thursday": "10:00 AM – 8:00 PM",
+      "Friday": "10:00 AM – 9:00 PM",
+      "Saturday": "9:00 AM – 9:00 PM",
+      "Sunday": "9:00 AM – 7:00 PM"
+    }
+  },
+  "enrich-salon": {
+    "name": "Enrich Salon",
+    "tagline": "Your neighbourhood beauty destination",
+    "heroImage": "/images/salons/enrich-salon.jpg",
+    "rating": 4.5,
+    "reviews": 1840,
+    "location": "Powai, Mumbai",
+    "fullAddress": "Shop 7-8, Hiranandani Gardens, Powai, Mumbai, Maharashtra 400076",
+    "liveStatus": "available",
+    "waitTime": "Walk-in",
+    "priceGuarantee": false,
+    "hygieneScore": 88,
+    "description": "Enrich is one of India's leading salon chains, known for making quality beauty services accessible to everyone. Our Powai outlet offers the full range of hair, skin, and nail services with trained professionals and standardised quality.",
+    "aiReviewSummary": "Reliable and consistent quality at affordable prices. Customers appreciate the trained staff and wide range of services. Great for regular maintenance and everyday beauty needs.",
+    "hygieneChecklist": {
+      "autoclaveSterlization": true,
+      "freshTowels": true,
+      "licensedStaff": true,
+      "disposableKits": false,
+      "regularSanitization": true,
+      "airPurification": false
+    },
+    "services": [
+      {
+        "name": "Haircut - Women",
+        "price": "₹499",
+        "duration": "30 min",
+        "category": "Hair"
+      },
+      {
+        "name": "Haircut - Men",
+        "price": "₹249",
+        "duration": "20 min",
+        "category": "Hair"
+      },
+      {
+        "name": "Hair Color",
+        "price": "₹2,499",
+        "duration": "1.5 hrs",
+        "category": "Hair"
+      },
+      {
+        "name": "Hair Spa",
+        "price": "₹899",
+        "duration": "45 min",
+        "category": "Hair"
+      },
+      {
+        "name": "Basic Facial",
+        "price": "₹999",
+        "duration": "45 min",
+        "category": "Skin"
+      },
+      {
+        "name": "Cleanup",
+        "price": "₹599",
+        "duration": "30 min",
+        "category": "Skin"
+      },
+      {
+        "name": "Manicure",
+        "price": "₹399",
+        "duration": "30 min",
+        "category": "Nails"
+      },
+      {
+        "name": "Pedicure",
+        "price": "₹499",
+        "duration": "30 min",
+        "category": "Nails"
+      },
+      {
+        "name": "Full Body Wax",
+        "price": "₹1,499",
+        "duration": "1 hr",
+        "category": "Waxing"
+      },
+      {
+        "name": "Body Massage",
+        "price": "₹1,799",
+        "duration": "1 hr",
+        "category": "Spa"
+      }
+    ],
+    "stylists": [
+      {
+        "id": "s1",
+        "name": "Rekha Mohan",
+        "role": "Branch Manager",
+        "rating": 4.6,
+        "reviewCount": 320,
+        "experience": "10 yrs",
+        "clients": "4k+",
+        "speciality": "All-round Services",
+        "availability": "available"
+      },
+      {
+        "id": "s2",
+        "name": "Santosh Yadav",
+        "role": "Senior Stylist",
+        "rating": 4.5,
+        "reviewCount": 245,
+        "experience": "7 yrs",
+        "clients": "2.5k+",
+        "speciality": "Haircuts & Styling",
+        "availability": "available"
+      },
+      {
+        "id": "s3",
+        "name": "Preethi Das",
+        "role": "Beauty Therapist",
+        "rating": 4.5,
+        "reviewCount": 198,
+        "experience": "5 yrs",
+        "clients": "1.8k+",
+        "speciality": "Facials & Waxing",
+        "availability": "available"
+      },
+      {
+        "id": "s4",
+        "name": "Ajay Patil",
+        "role": "Men's Stylist",
+        "rating": 4.4,
+        "reviewCount": 156,
+        "experience": "4 yrs",
+        "clients": "1.2k+",
+        "speciality": "Men's Grooming",
+        "availability": "busy"
+      }
+    ],
+    "galleryImages": [
+      {
+        "src": "/images/products/cleanser.jpg",
+        "alt": "Interior",
+        "caption": "Clean modern interiors"
+      },
+      {
+        "src": "/images/hero-model.jpg",
+        "alt": "Styling",
+        "caption": "Professional styling"
+      },
+      {
+        "src": "/images/bento-skin-model.jpg",
+        "alt": "Facial",
+        "caption": "Skin care treatments"
+      },
+      {
+        "src": "/images/natural-leaf.jpg",
+        "alt": "Products",
+        "caption": "Quality products used"
+      },
+      {
+        "src": "/images/products/cleanser.jpg",
+        "alt": "Nails",
+        "caption": "Nail care services"
+      },
+      {
+        "src": "/images/hero-model.jpg",
+        "alt": "Hair",
+        "caption": "Hair transformations"
+      }
+    ],
+    "beforeAfterGallery": [],
+    "highlights": [
+      "Part of India's trusted salon chain",
+      "Standardised quality across all services",
+      "Membership discounts and loyalty points",
+      "Affordable pricing for everyday services"
+    ],
+    "amenities": [
+      "Free WiFi",
+      "Air Conditioned",
+      "Card Payment Accepted",
+      "Online Booking",
+      "Sanitized Equipment",
+      "Complimentary Beverages"
+    ],
+    "phone": "+91 22 2570 1234",
+    "email": "powai@enrichsalon.com",
+    "website": "https://enrichsalon.com",
+    "instagram": "https://instagram.com/enrichsalonindia",
+    "openingHours": {
+      "Monday": "10:00 AM – 8:30 PM",
+      "Tuesday": "10:00 AM – 8:30 PM",
+      "Wednesday": "10:00 AM – 8:30 PM",
+      "Thursday": "10:00 AM – 8:30 PM",
+      "Friday": "10:00 AM – 9:00 PM",
+      "Saturday": "9:30 AM – 9:00 PM",
+      "Sunday": "9:30 AM – 7:30 PM"
+    }
+  },
+  "looks-salon": {
+    "name": "Looks Salon",
+    "tagline": "Express yourself with confidence",
+    "heroImage": "/images/salons/looks-salon.jpg",
+    "rating": 4.6,
+    "reviews": 920,
+    "location": "Vashi, Navi Mumbai",
+    "fullAddress": "Shop 22, Inorbit Mall, Vashi, Navi Mumbai, Maharashtra 400703",
+    "liveStatus": "short-wait",
+    "waitTime": "~20 min",
+    "priceGuarantee": true,
+    "hygieneScore": 92,
+    "description": "Looks Salon is your go-to destination for trendy haircuts, party makeup, and relaxing spa services. Located inside Inorbit Mall Vashi, we offer convenience, quality, and the latest beauty trends under one roof.",
+    "aiReviewSummary": "Customers love the mall-adjacent convenience and trendy services. The party makeup and haircut services get top marks. Slightly busy on weekends but worth the wait.",
+    "hygieneChecklist": {
+      "autoclaveSterlization": true,
+      "freshTowels": true,
+      "licensedStaff": true,
+      "disposableKits": true,
+      "regularSanitization": true,
+      "airPurification": false
+    },
+    "services": [
+      {
+        "name": "Trendy Haircut - Women",
+        "price": "₹699",
+        "duration": "40 min",
+        "category": "Hair"
+      },
+      {
+        "name": "Haircut - Men",
+        "price": "₹349",
+        "duration": "25 min",
+        "category": "Hair"
+      },
+      {
+        "name": "Party Makeup",
+        "price": "₹3,499",
+        "duration": "1 hr",
+        "category": "Makeup"
+      },
+      {
+        "name": "Hair Color",
+        "price": "₹2,999",
+        "duration": "2 hrs",
+        "category": "Hair"
+      },
+      {
+        "name": "Smoothening",
+        "price": "₹4,999",
+        "duration": "2.5 hrs",
+        "category": "Hair"
+      },
+      {
+        "name": "Body Massage",
+        "price": "₹2,199",
+        "duration": "1 hr",
+        "category": "Spa"
+      },
+      {
+        "name": "Gold Facial",
+        "price": "₹1,599",
+        "duration": "1 hr",
+        "category": "Skin"
+      },
+      {
+        "name": "Mani + Pedi Combo",
+        "price": "₹899",
+        "duration": "1 hr",
+        "category": "Nails"
+      }
+    ],
+    "stylists": [
+      {
+        "id": "s1",
+        "name": "Ritika Chawla",
+        "role": "Lead Stylist",
+        "rating": 4.7,
+        "reviewCount": 265,
+        "experience": "8 yrs",
+        "clients": "2.8k+",
+        "speciality": "Trendy Cuts & Styling",
+        "availability": "available"
+      },
+      {
+        "id": "s2",
+        "name": "Mohit Verma",
+        "role": "Makeup Artist",
+        "rating": 4.6,
+        "reviewCount": 190,
+        "experience": "6 yrs",
+        "clients": "1.5k+",
+        "speciality": "Party & Event Makeup",
+        "availability": "busy"
+      },
+      {
+        "id": "s3",
+        "name": "Swati Kulkarni",
+        "role": "Spa Therapist",
+        "rating": 4.5,
+        "reviewCount": 145,
+        "experience": "5 yrs",
+        "clients": "1.1k+",
+        "speciality": "Relaxation Therapies",
+        "availability": "available"
+      }
+    ],
+    "galleryImages": [
+      {
+        "src": "/images/products/oil.jpg",
+        "alt": "Interior",
+        "caption": "Stylish mall-outlet interiors"
+      },
+      {
+        "src": "/images/hero-model.jpg",
+        "alt": "Makeup",
+        "caption": "Party-ready looks"
+      },
+      {
+        "src": "/images/bento-skin-model.jpg",
+        "alt": "Hair",
+        "caption": "Trendy hair transformations"
+      },
+      {
+        "src": "/images/natural-leaf.jpg",
+        "alt": "Spa",
+        "caption": "Relaxing spa zone"
+      },
+      {
+        "src": "/images/products/oil.jpg",
+        "alt": "Nails",
+        "caption": "Mani-pedi services"
+      },
+      {
+        "src": "/images/hero-model.jpg",
+        "alt": "Products",
+        "caption": "Professional products"
+      }
+    ],
+    "beforeAfterGallery": [
+      {
+        "before": "/images/hero-model.jpg",
+        "after": "/images/bento-skin-model.jpg",
+        "service": "Smoothening",
+        "stylist": "Ritika Chawla"
+      }
+    ],
+    "highlights": [
+      "Conveniently located inside Inorbit Mall",
+      "Trendy and youth-focused services",
+      "Express services for last-minute events",
+      "Loyalty program with exclusive perks"
+    ],
+    "amenities": [
+      "Free WiFi",
+      "Complimentary Beverages",
+      "Air Conditioned",
+      "Card Payment Accepted",
+      "Online Booking",
+      "Sanitized Equipment"
+    ],
+    "phone": "+91 98765 11222",
+    "email": "vashi@lookssalon.in",
+    "website": "https://lookssalon.in",
+    "instagram": "https://instagram.com/lookssalonvashi",
+    "openingHours": {
+      "Monday": "11:00 AM – 9:00 PM",
+      "Tuesday": "11:00 AM – 9:00 PM",
+      "Wednesday": "11:00 AM – 9:00 PM",
+      "Thursday": "11:00 AM – 9:00 PM",
+      "Friday": "11:00 AM – 9:30 PM",
+      "Saturday": "10:00 AM – 9:30 PM",
+      "Sunday": "10:00 AM – 9:00 PM"
+    }
+  },
+  "jean-claude-biguine": {
+    "name": "Jean-Claude Biguine",
+    "tagline": "French expertise, Indian soul",
+    "heroImage": "/images/salons/jean-claude-biguine.jpg",
+    "rating": 4.8,
+    "reviews": 678,
+    "location": "Khar West, Mumbai",
+    "fullAddress": "Ground Floor, Khar Gymkhana Road, Khar West, Mumbai, Maharashtra 400052",
+    "liveStatus": "available",
+    "waitTime": "Walk-in",
+    "priceGuarantee": true,
+    "hygieneScore": 95,
+    "description": "Jean-Claude Biguine is a French luxury salon brand with a strong Indian presence. We combine time-honoured French beauty traditions with modern Indian aesthetics. Our products are formulated in France and our stylists undergo rigorous training programmes.",
+    "aiReviewSummary": "Clients love the French finesse and attention to detail. The hair treatments and spa rituals receive glowing reviews. Premium pricing is justified by the exceptional experience and results.",
+    "hygieneChecklist": {
+      "autoclaveSterlization": true,
+      "freshTowels": true,
+      "licensedStaff": true,
+      "disposableKits": true,
+      "regularSanitization": true,
+      "airPurification": true
+    },
+    "services": [
+      {
+        "name": "Signature Haircut - Women",
+        "price": "₹1,999",
+        "duration": "1 hr",
+        "category": "Hair"
+      },
+      {
+        "name": "Signature Haircut - Men",
+        "price": "₹999",
+        "duration": "40 min",
+        "category": "Hair"
+      },
+      {
+        "name": "French Color Technique",
+        "price": "₹5,999",
+        "duration": "2 hrs",
+        "category": "Hair"
+      },
+      {
+        "name": "Spa Ritual - Relaxing",
+        "price": "₹3,999",
+        "duration": "1.5 hrs",
+        "category": "Spa"
+      },
+      {
+        "name": "Anti-Aging Facial",
+        "price": "₹4,499",
+        "duration": "1.5 hrs",
+        "category": "Skin"
+      },
+      {
+        "name": "Keratin Infusion",
+        "price": "₹6,499",
+        "duration": "2.5 hrs",
+        "category": "Hair"
+      },
+      {
+        "name": "Luxury Mani-Pedi",
+        "price": "₹2,499",
+        "duration": "1.5 hrs",
+        "category": "Nails"
+      }
+    ],
+    "stylists": [
+      {
+        "id": "s1",
+        "name": "Antoine Dubois",
+        "role": "French Master Stylist",
+        "rating": 4.9,
+        "reviewCount": 230,
+        "experience": "20 yrs",
+        "clients": "5k+",
+        "speciality": "French Techniques",
+        "availability": "available"
+      },
+      {
+        "id": "s2",
+        "name": "Kavita Menon",
+        "role": "Color Expert",
+        "rating": 4.8,
+        "reviewCount": 195,
+        "experience": "10 yrs",
+        "clients": "2.8k+",
+        "speciality": "Color & Highlights",
+        "availability": "available"
+      },
+      {
+        "id": "s3",
+        "name": "Rohan Bhatia",
+        "role": "Spa Director",
+        "rating": 4.7,
+        "reviewCount": 165,
+        "experience": "8 yrs",
+        "clients": "1.8k+",
+        "speciality": "French Spa Rituals",
+        "availability": "busy"
+      }
+    ],
+    "galleryImages": [
+      {
+        "src": "/images/products/toner.jpg",
+        "alt": "Salon",
+        "caption": "French elegance in Mumbai"
+      },
+      {
+        "src": "/images/hero-model.jpg",
+        "alt": "Styling",
+        "caption": "Signature styling"
+      },
+      {
+        "src": "/images/bento-skin-model.jpg",
+        "alt": "Spa",
+        "caption": "Luxurious spa treatments"
+      },
+      {
+        "src": "/images/natural-leaf.jpg",
+        "alt": "Products",
+        "caption": "Exclusive French products"
+      },
+      {
+        "src": "/images/products/toner.jpg",
+        "alt": "Interior",
+        "caption": "Parisian-inspired decor"
+      },
+      {
+        "src": "/images/hero-model.jpg",
+        "alt": "Color",
+        "caption": "French color techniques"
+      }
+    ],
+    "beforeAfterGallery": [
+      {
+        "before": "/images/natural-leaf.jpg",
+        "after": "/images/hero-model.jpg",
+        "service": "French Color",
+        "stylist": "Kavita Menon"
+      },
+      {
+        "before": "/images/bento-skin-model.jpg",
+        "after": "/images/products/toner.jpg",
+        "service": "Keratin Infusion",
+        "stylist": "Antoine Dubois"
+      }
+    ],
+    "highlights": [
+      "French luxury brand with global presence",
+      "Exclusive products formulated in France",
+      "Rigorous stylist training programme",
+      "VIP private treatment rooms",
+      "Complimentary French tea service"
+    ],
+    "amenities": [
+      "Free WiFi",
+      "Complimentary Beverages",
+      "Dedicated Parking",
+      "Air Conditioned",
+      "Wheelchair Accessible",
+      "Card Payment Accepted",
+      "Online Booking",
+      "Sanitized Equipment"
+    ],
+    "phone": "+91 22 2648 9900",
+    "email": "khar@jcbiguine.in",
+    "website": "https://jcbiguine.in",
+    "instagram": "https://instagram.com/jcbiguine_india",
+    "openingHours": {
+      "Monday": "10:00 AM – 8:00 PM",
+      "Tuesday": "10:00 AM – 8:00 PM",
+      "Wednesday": "10:00 AM – 8:00 PM",
+      "Thursday": "10:00 AM – 8:00 PM",
+      "Friday": "10:00 AM – 9:00 PM",
+      "Saturday": "9:00 AM – 9:00 PM",
+      "Sunday": "9:00 AM – 7:00 PM"
+    }
+  },
+  "bounce-salon": {
+    "name": "Bounce Salon & Spa",
+    "tagline": "Bounce into a better you",
+    "heroImage": "/images/salons/bounce-salon.jpg",
+    "rating": 4.5,
+    "reviews": 432,
+    "location": "Kharghar, Navi Mumbai",
+    "fullAddress": "Sector 12, Plot 45, Kharghar, Navi Mumbai, Maharashtra 410210",
+    "liveStatus": "available",
+    "waitTime": "Walk-in",
+    "priceGuarantee": false,
+    "hygieneScore": 86,
+    "description": "Bounce Salon & Spa is a fresh, energetic salon in Kharghar offering affordable hair, nail, and waxing services. We believe great beauty services shouldn't break the bank. Perfect for students and young professionals.",
+    "aiReviewSummary": "Affordable pricing and friendly staff are the top positives. Good for basic services and maintenance. Young and vibrant atmosphere appeals to the college crowd.",
+    "hygieneChecklist": {
+      "autoclaveSterlization": false,
+      "freshTowels": true,
+      "licensedStaff": true,
+      "disposableKits": false,
+      "regularSanitization": true,
+      "airPurification": false
+    },
+    "services": [
+      {
+        "name": "Haircut - Women",
+        "price": "₹399",
+        "duration": "30 min",
+        "category": "Hair"
+      },
+      {
+        "name": "Haircut - Men",
+        "price": "₹199",
+        "duration": "20 min",
+        "category": "Hair"
+      },
+      {
+        "name": "Hair Color",
+        "price": "₹1,999",
+        "duration": "1.5 hrs",
+        "category": "Hair"
+      },
+      {
+        "name": "Basic Facial",
+        "price": "₹799",
+        "duration": "45 min",
+        "category": "Skin"
+      },
+      {
+        "name": "Nail Polish",
+        "price": "₹299",
+        "duration": "20 min",
+        "category": "Nails"
+      },
+      {
+        "name": "Waxing - Full Arms",
+        "price": "₹399",
+        "duration": "30 min",
+        "category": "Waxing"
+      },
+      {
+        "name": "Waxing - Full Legs",
+        "price": "₹499",
+        "duration": "30 min",
+        "category": "Waxing"
+      },
+      {
+        "name": "Threading",
+        "price": "₹99",
+        "duration": "10 min",
+        "category": "Waxing"
+      }
+    ],
+    "stylists": [
+      {
+        "id": "s1",
+        "name": "Neha Gupta",
+        "role": "Salon Owner & Stylist",
+        "rating": 4.6,
+        "reviewCount": 180,
+        "experience": "6 yrs",
+        "clients": "2k+",
+        "speciality": "Trendy Cuts",
+        "availability": "available"
+      },
+      {
+        "id": "s2",
+        "name": "Komal Shetty",
+        "role": "Beauty Therapist",
+        "rating": 4.5,
+        "reviewCount": 125,
+        "experience": "4 yrs",
+        "clients": "1k+",
+        "speciality": "Facials & Waxing",
+        "availability": "available"
+      }
+    ],
+    "galleryImages": [
+      {
+        "src": "/images/products/mask.jpg",
+        "alt": "Interior",
+        "caption": "Vibrant and energetic interiors"
+      },
+      {
+        "src": "/images/hero-model.jpg",
+        "alt": "Styling",
+        "caption": "Trendy styling"
+      },
+      {
+        "src": "/images/bento-skin-model.jpg",
+        "alt": "Nails",
+        "caption": "Nail services"
+      },
+      {
+        "src": "/images/natural-leaf.jpg",
+        "alt": "Products",
+        "caption": "Quality products"
+      },
+      {
+        "src": "/images/products/mask.jpg",
+        "alt": "Waxing",
+        "caption": "Clean waxing stations"
+      },
+      {
+        "src": "/images/hero-model.jpg",
+        "alt": "Team",
+        "caption": "Our friendly team"
+      }
+    ],
+    "beforeAfterGallery": [],
+    "highlights": [
+      "Most affordable salon in Kharghar",
+      "Student discounts available",
+      "Quick service turnaround",
+      "Walk-in friendly, no appointments needed"
+    ],
+    "amenities": [
+      "Free WiFi",
+      "Air Conditioned",
+      "Card Payment Accepted",
+      "Sanitized Equipment"
+    ],
+    "phone": "+91 88888 55555",
+    "email": "hello@bouncesalon.in",
+    "website": "https://bouncesalon.in",
+    "instagram": "https://instagram.com/bouncesalonkharghar",
+    "openingHours": {
+      "Monday": "10:00 AM – 8:00 PM",
+      "Tuesday": "10:00 AM – 8:00 PM",
+      "Wednesday": "10:00 AM – 8:00 PM",
+      "Thursday": "10:00 AM – 8:00 PM",
+      "Friday": "10:00 AM – 8:30 PM",
+      "Saturday": "9:30 AM – 8:30 PM",
+      "Sunday": "9:30 AM – 7:00 PM"
+    }
+  },
+  "toni-and-guy": {
+    "name": "Toni & Guy",
+    "tagline": "Born in London, loved worldwide",
+    "heroImage": "/images/hero-model.jpg",
+    "rating": 4.7,
+    "reviews": 1120,
+    "location": "Worli, Mumbai",
+    "fullAddress": "Phoenix Mills, Senapati Bapat Marg, Lower Parel, Mumbai, Maharashtra 400013",
+    "liveStatus": "short-wait",
+    "waitTime": "~10 min",
+    "priceGuarantee": true,
+    "hygieneScore": 93,
+    "description": "Toni & Guy is a world-renowned hairdressing brand born in London. Our Mumbai salon brings British precision and creativity to every service. Known for cutting-edge haircuts, bold colour work, and editorial-quality styling.",
+    "aiReviewSummary": "Consistently praised for precision haircuts and professional service. The brand's reputation for quality holds true at this outlet. Good value for premium international brand services.",
+    "hygieneChecklist": {
+      "autoclaveSterlization": true,
+      "freshTowels": true,
+      "licensedStaff": true,
+      "disposableKits": true,
+      "regularSanitization": true,
+      "airPurification": false
+    },
+    "services": [
+      {
+        "name": "Classic Cut - Women",
+        "price": "₹1,499",
+        "duration": "45 min",
+        "category": "Hair"
+      },
+      {
+        "name": "Classic Cut - Men",
+        "price": "₹799",
+        "duration": "30 min",
+        "category": "Hair"
+      },
+      {
+        "name": "Fashion Color",
+        "price": "₹4,999",
+        "duration": "2 hrs",
+        "category": "Hair"
+      },
+      {
+        "name": "Olaplex Treatment",
+        "price": "₹3,999",
+        "duration": "1.5 hrs",
+        "category": "Treatments"
+      },
+      {
+        "name": "Keratin Smoothing",
+        "price": "₹5,499",
+        "duration": "2.5 hrs",
+        "category": "Treatments"
+      },
+      {
+        "name": "Head Massage",
+        "price": "₹799",
+        "duration": "30 min",
+        "category": "Spa"
+      },
+      {
+        "name": "Scalp Analysis",
+        "price": "₹499",
+        "duration": "20 min",
+        "category": "Treatments"
+      }
+    ],
+    "stylists": [
+      {
+        "id": "s1",
+        "name": "James Wilson",
+        "role": "International Art Director",
+        "rating": 4.9,
+        "reviewCount": 340,
+        "experience": "16 yrs",
+        "clients": "6k+",
+        "speciality": "Precision Cutting",
+        "availability": "busy"
+      },
+      {
+        "id": "s2",
+        "name": "Shruti Mehra",
+        "role": "Senior Stylist",
+        "rating": 4.7,
+        "reviewCount": 275,
+        "experience": "9 yrs",
+        "clients": "3k+",
+        "speciality": "Creative Color",
+        "availability": "available"
+      },
+      {
+        "id": "s3",
+        "name": "Aryan Saxena",
+        "role": "Style Director",
+        "rating": 4.8,
+        "reviewCount": 210,
+        "experience": "11 yrs",
+        "clients": "3.5k+",
+        "speciality": "Men's Styling",
+        "availability": "available"
+      },
+      {
+        "id": "s4",
+        "name": "Divya Chopra",
+        "role": "Color Technician",
+        "rating": 4.6,
+        "reviewCount": 168,
+        "experience": "6 yrs",
+        "clients": "1.8k+",
+        "speciality": "Fashion Color",
+        "availability": "available"
+      }
+    ],
+    "galleryImages": [
+      {
+        "src": "/images/hero-model.jpg",
+        "alt": "Interior",
+        "caption": "London-inspired salon design"
+      },
+      {
+        "src": "/images/bento-skin-model.jpg",
+        "alt": "Cutting",
+        "caption": "Precision cutting technique"
+      },
+      {
+        "src": "/images/natural-leaf.jpg",
+        "alt": "Color",
+        "caption": "Bold color transformations"
+      },
+      {
+        "src": "/images/hero-model.jpg",
+        "alt": "Products",
+        "caption": "Toni & Guy product range"
+      },
+      {
+        "src": "/images/bento-skin-model.jpg",
+        "alt": "Styling",
+        "caption": "Editorial-quality styling"
+      },
+      {
+        "src": "/images/natural-leaf.jpg",
+        "alt": "Team",
+        "caption": "Our talented team"
+      }
+    ],
+    "beforeAfterGallery": [
+      {
+        "before": "/images/natural-leaf.jpg",
+        "after": "/images/hero-model.jpg",
+        "service": "Fashion Color",
+        "stylist": "Shruti Mehra"
+      },
+      {
+        "before": "/images/bento-skin-model.jpg",
+        "after": "/images/natural-leaf.jpg",
+        "service": "Precision Cut",
+        "stylist": "James Wilson"
+      }
+    ],
+    "highlights": [
+      "World-famous London-born hairdressing brand",
+      "International art directors on team",
+      "Fashion week collaborations",
+      "TIGI product range exclusive",
+      "Training academy for aspiring stylists"
+    ],
+    "amenities": [
+      "Free WiFi",
+      "Complimentary Beverages",
+      "Dedicated Parking",
+      "Air Conditioned",
+      "Card Payment Accepted",
+      "Online Booking",
+      "Sanitized Equipment"
+    ],
+    "phone": "+91 22 2495 6789",
+    "email": "worli@toniandguy.in",
+    "website": "https://toniandguy.in",
+    "instagram": "https://instagram.com/toniandguyindia",
+    "openingHours": {
+      "Monday": "10:00 AM – 8:30 PM",
+      "Tuesday": "10:00 AM – 8:30 PM",
+      "Wednesday": "10:00 AM – 8:30 PM",
+      "Thursday": "10:00 AM – 8:30 PM",
+      "Friday": "10:00 AM – 9:00 PM",
+      "Saturday": "9:30 AM – 9:00 PM",
+      "Sunday": "10:00 AM – 7:00 PM"
+    }
+  },
+  "bliss-beauty-lounge": {
+    "name": "Bliss Beauty Lounge",
+    "tagline": "Pure bliss for skin and soul",
+    "heroImage": "/images/bento-skin-model.jpg",
+    "rating": 4.4,
+    "reviews": 312,
+    "location": "Panvel, Navi Mumbai",
+    "fullAddress": "Shop 5, City Centre Mall, Old Panvel, Navi Mumbai, Maharashtra 410206",
+    "liveStatus": "available",
+    "waitTime": "Walk-in",
+    "priceGuarantee": false,
+    "hygieneScore": 85,
+    "description": "Bliss Beauty Lounge focuses on skin care, spa services, and body treatments. We offer a peaceful retreat from the everyday hustle with our calming ambience and skilled therapists. Perfect for those seeking relaxation and rejuvenation.",
+    "aiReviewSummary": "Customers appreciate the relaxing atmosphere and skilled therapists. Spa treatments and body massages are the top-rated services. Affordable spa experience in Panvel area.",
+    "hygieneChecklist": {
+      "autoclaveSterlization": false,
+      "freshTowels": true,
+      "licensedStaff": true,
+      "disposableKits": false,
+      "regularSanitization": true,
+      "airPurification": false
+    },
+    "services": [
+      {
+        "name": "Relaxing Body Massage",
+        "price": "₹1,499",
+        "duration": "1 hr",
+        "category": "Spa"
+      },
+      {
+        "name": "Aromatherapy Massage",
+        "price": "₹1,999",
+        "duration": "1.5 hrs",
+        "category": "Spa"
+      },
+      {
+        "name": "Deep Cleansing Facial",
+        "price": "₹1,299",
+        "duration": "1 hr",
+        "category": "Skin"
+      },
+      {
+        "name": "Anti-Tan Treatment",
+        "price": "₹899",
+        "duration": "45 min",
+        "category": "Skin"
+      },
+      {
+        "name": "Body Scrub & Wrap",
+        "price": "₹2,499",
+        "duration": "1.5 hrs",
+        "category": "Body"
+      },
+      {
+        "name": "Head & Shoulder Massage",
+        "price": "₹599",
+        "duration": "30 min",
+        "category": "Spa"
+      },
+      {
+        "name": "Foot Reflexology",
+        "price": "₹799",
+        "duration": "30 min",
+        "category": "Spa"
+      }
+    ],
+    "stylists": [
+      {
+        "id": "s1",
+        "name": "Sunita Sharma",
+        "role": "Lead Therapist",
+        "rating": 4.5,
+        "reviewCount": 145,
+        "experience": "7 yrs",
+        "clients": "1.5k+",
+        "speciality": "Body Massage",
+        "availability": "available"
+      },
+      {
+        "id": "s2",
+        "name": "Lata Mishra",
+        "role": "Skin Care Specialist",
+        "rating": 4.4,
+        "reviewCount": 110,
+        "experience": "5 yrs",
+        "clients": "1k+",
+        "speciality": "Facials & Peels",
+        "availability": "available"
+      },
+      {
+        "id": "s3",
+        "name": "Geeta Pawar",
+        "role": "Spa Therapist",
+        "rating": 4.3,
+        "reviewCount": 95,
+        "experience": "4 yrs",
+        "clients": "800+",
+        "speciality": "Aromatherapy",
+        "availability": "off"
+      }
+    ],
+    "galleryImages": [
+      {
+        "src": "/images/bento-skin-model.jpg",
+        "alt": "Spa Room",
+        "caption": "Peaceful spa treatment rooms"
+      },
+      {
+        "src": "/images/hero-model.jpg",
+        "alt": "Massage",
+        "caption": "Relaxing massage therapy"
+      },
+      {
+        "src": "/images/natural-leaf.jpg",
+        "alt": "Products",
+        "caption": "Natural spa products"
+      },
+      {
+        "src": "/images/bento-skin-model.jpg",
+        "alt": "Facial",
+        "caption": "Professional facial treatments"
+      },
+      {
+        "src": "/images/hero-model.jpg",
+        "alt": "Lounge",
+        "caption": "Relaxation lounge"
+      },
+      {
+        "src": "/images/natural-leaf.jpg",
+        "alt": "Ambience",
+        "caption": "Calming ambience"
+      }
+    ],
+    "beforeAfterGallery": [],
+    "highlights": [
+      "Dedicated spa and wellness centre",
+      "Calming and peaceful environment",
+      "Affordable relaxation treatments",
+      "Experienced certified therapists"
+    ],
+    "amenities": [
+      "Air Conditioned",
+      "Complimentary Beverages",
+      "Sanitized Equipment",
+      "Card Payment Accepted",
+      "Online Booking"
+    ],
+    "phone": "+91 98765 99888",
+    "email": "relax@blissbeautylounge.in",
+    "website": "https://blissbeautylounge.in",
+    "instagram": "https://instagram.com/blissbeautypanvel",
+    "openingHours": {
+      "Monday": "10:00 AM – 7:30 PM",
+      "Tuesday": "10:00 AM – 7:30 PM",
+      "Wednesday": "10:00 AM – 7:30 PM",
+      "Thursday": "10:00 AM – 7:30 PM",
+      "Friday": "10:00 AM – 8:00 PM",
+      "Saturday": "9:30 AM – 8:00 PM",
+      "Sunday": "9:30 AM – 6:00 PM"
+    }
+  },
+  "naturals-salon": {
+    "name": "Naturals Unisex Salon",
+    "tagline": "Nature-inspired beauty rituals",
+    "heroImage": "/images/natural-leaf.jpg",
+    "rating": 4.3,
+    "reviews": 2100,
+    "location": "Thane West, Mumbai",
+    "fullAddress": "Shop 15, Viviana Mall, Eastern Express Highway, Thane West, Mumbai, Maharashtra 400601",
+    "liveStatus": "busy",
+    "waitTime": "~25 min",
+    "priceGuarantee": false,
+    "hygieneScore": 87,
+    "description": "Naturals is India's largest unisex salon chain, committed to providing quality services at accessible prices. Our Thane outlet offers the complete range of beauty and grooming services with a focus on natural ingredients and eco-conscious practices.",
+    "aiReviewSummary": "One of the most trusted salon chains in India. Customers love the consistent quality and wide accessibility. Bridal services and hair treatments are popular. Can get crowded on weekends.",
+    "hygieneChecklist": {
+      "autoclaveSterlization": true,
+      "freshTowels": true,
+      "licensedStaff": true,
+      "disposableKits": false,
+      "regularSanitization": true,
+      "airPurification": false
+    },
+    "services": [
+      {
+        "name": "Haircut - Women",
+        "price": "₹449",
+        "duration": "30 min",
+        "category": "Hair"
+      },
+      {
+        "name": "Haircut - Men",
+        "price": "₹199",
+        "duration": "20 min",
+        "category": "Hair"
+      },
+      {
+        "name": "Hair Color",
+        "price": "₹1,999",
+        "duration": "1.5 hrs",
+        "category": "Hair"
+      },
+      {
+        "name": "Herbal Facial",
+        "price": "₹899",
+        "duration": "45 min",
+        "category": "Skin"
+      },
+      {
+        "name": "Bridal Makeup",
+        "price": "₹8,999",
+        "duration": "2 hrs",
+        "category": "Bridal"
+      },
+      {
+        "name": "Hair Spa - Natural",
+        "price": "₹799",
+        "duration": "45 min",
+        "category": "Hair"
+      },
+      {
+        "name": "Manicure & Pedicure",
+        "price": "₹699",
+        "duration": "1 hr",
+        "category": "Nails"
+      },
+      {
+        "name": "Body Wax - Full",
+        "price": "₹1,299",
+        "duration": "1 hr",
+        "category": "Waxing"
+      },
+      {
+        "name": "De-Tan Pack",
+        "price": "₹699",
+        "duration": "30 min",
+        "category": "Skin"
+      },
+      {
+        "name": "Head Massage",
+        "price": "₹399",
+        "duration": "20 min",
+        "category": "Spa"
+      }
+    ],
+    "stylists": [
+      {
+        "id": "s1",
+        "name": "Meenakshi Iyer",
+        "role": "Branch Head",
+        "rating": 4.4,
+        "reviewCount": 380,
+        "experience": "12 yrs",
+        "clients": "5k+",
+        "speciality": "All Services",
+        "availability": "busy"
+      },
+      {
+        "id": "s2",
+        "name": "Prakash Soni",
+        "role": "Hair Specialist",
+        "rating": 4.3,
+        "reviewCount": 290,
+        "experience": "8 yrs",
+        "clients": "3k+",
+        "speciality": "Cuts & Color",
+        "availability": "available"
+      },
+      {
+        "id": "s3",
+        "name": "Asha Nambiar",
+        "role": "Bridal Specialist",
+        "rating": 4.5,
+        "reviewCount": 220,
+        "experience": "9 yrs",
+        "clients": "2.5k+",
+        "speciality": "Bridal Makeup",
+        "availability": "available"
+      },
+      {
+        "id": "s4",
+        "name": "Rajesh Kumar",
+        "role": "Men's Stylist",
+        "rating": 4.2,
+        "reviewCount": 175,
+        "experience": "5 yrs",
+        "clients": "1.8k+",
+        "speciality": "Men's Grooming",
+        "availability": "available"
+      },
+      {
+        "id": "s5",
+        "name": "Pallavi Thakur",
+        "role": "Skin Therapist",
+        "rating": 4.4,
+        "reviewCount": 145,
+        "experience": "6 yrs",
+        "clients": "1.5k+",
+        "speciality": "Facials & Skin",
+        "availability": "off"
+      }
+    ],
+    "galleryImages": [
+      {
+        "src": "/images/natural-leaf.jpg",
+        "alt": "Interior",
+        "caption": "Nature-inspired interiors"
+      },
+      {
+        "src": "/images/hero-model.jpg",
+        "alt": "Hair",
+        "caption": "Professional hair services"
+      },
+      {
+        "src": "/images/bento-skin-model.jpg",
+        "alt": "Skin",
+        "caption": "Natural skin treatments"
+      },
+      {
+        "src": "/images/natural-leaf.jpg",
+        "alt": "Bridal",
+        "caption": "Beautiful bridal setups"
+      },
+      {
+        "src": "/images/hero-model.jpg",
+        "alt": "Products",
+        "caption": "Herbal product range"
+      },
+      {
+        "src": "/images/bento-skin-model.jpg",
+        "alt": "Team",
+        "caption": "Experienced team"
+      }
+    ],
+    "beforeAfterGallery": [
+      {
+        "before": "/images/natural-leaf.jpg",
+        "after": "/images/hero-model.jpg",
+        "service": "Hair Color",
+        "stylist": "Prakash Soni"
+      },
+      {
+        "before": "/images/bento-skin-model.jpg",
+        "after": "/images/natural-leaf.jpg",
+        "service": "Bridal Makeup",
+        "stylist": "Asha Nambiar"
+      }
+    ],
+    "highlights": [
+      "India's largest salon chain",
+      "Eco-conscious and natural products",
+      "Affordable services for everyone",
+      "Comprehensive bridal packages",
+      "Consistent quality across all outlets"
+    ],
+    "amenities": [
+      "Free WiFi",
+      "Air Conditioned",
+      "Card Payment Accepted",
+      "Online Booking",
+      "Sanitized Equipment",
+      "Complimentary Beverages"
+    ],
+    "phone": "+91 22 2534 5678",
+    "email": "thane@naturals.in",
+    "website": "https://naturals.in",
+    "instagram": "https://instagram.com/naturalssalon",
+    "openingHours": {
+      "Monday": "10:00 AM – 9:00 PM",
+      "Tuesday": "10:00 AM – 9:00 PM",
+      "Wednesday": "10:00 AM – 9:00 PM",
+      "Thursday": "10:00 AM – 9:00 PM",
+      "Friday": "10:00 AM – 9:30 PM",
+      "Saturday": "9:30 AM – 9:30 PM",
+      "Sunday": "9:30 AM – 8:00 PM"
+    }
+  }
+}

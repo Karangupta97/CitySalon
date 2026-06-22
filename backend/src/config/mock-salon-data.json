@@ -1,0 +1,19 @@
+{
+  "services": [
+    { "id": "mock-svc-001", "name": "Haircut (Men)", "category": "Hair", "price": 300, "duration": 30 },
+    { "id": "mock-svc-002", "name": "Hair Coloring", "category": "Hair", "price": 1500, "duration": 90 },
+    { "id": "mock-svc-003", "name": "Beard Trim", "category": "Grooming", "price": 150, "duration": 15 },
+    { "id": "mock-svc-004", "name": "Facial (Gold)", "category": "Skin", "price": 800, "duration": 45 },
+    { "id": "mock-svc-005", "name": "Head Massage", "category": "Wellness", "price": 400, "duration": 30 }
+  ],
+  "staff": [
+    { "id": "mock-staff-001", "name": "Rajesh Kumar", "role": "Senior Stylist", "availability": "available" },
+    { "id": "mock-staff-002", "name": "Priya Sharma", "role": "Colorist", "availability": "available" },
+    { "id": "mock-staff-003", "name": "Amit Patel", "role": "Barber", "availability": "busy" }
+  ],
+  "todayAppointments": [
+    { "id": "mock-apt-001", "customer_name": "Arjun Mehta", "service_names": ["Haircut (Men)"], "start_time": "10:00", "status": "confirmed" },
+    { "id": "mock-apt-002", "customer_name": "Sneha Gupta", "service_names": ["Hair Coloring", "Head Massage"], "start_time": "11:30", "status": "pending" },
+    { "id": "mock-apt-003", "customer_name": "Vikram Singh", "service_names": ["Beard Trim"], "start_time": "14:00", "status": "completed" }
+  ]
+}

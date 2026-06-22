@@ -1,0 +1,63 @@
+{
+  "stylists": [
+    { "name": "Meena", "rating": 4.9, "color": "#3D5A3A" },
+    { "name": "Priya", "rating": 4.8, "color": "#7A9A6D" },
+    { "name": "Raj", "rating": 4.7, "color": "#C4A76C" },
+    { "name": "Anita", "rating": 4.6, "color": "#6E6960" }
+  ],
+  "services": [
+    { "name": "Hair Colour", "avgPrice": 1800, "weight": 0.25, "color": "#3D5A3A" },
+    { "name": "Haircut", "avgPrice": 600, "weight": 0.30, "color": "#7A9A6D" },
+    { "name": "Facial", "avgPrice": 1500, "weight": 0.18, "color": "#C4A76C" },
+    { "name": "Bridal", "avgPrice": 6500, "weight": 0.08, "color": "#E8E0D6" },
+    { "name": "Manicure", "avgPrice": 800, "weight": 0.12, "color": "#A3906B" },
+    { "name": "Beard Trim", "avgPrice": 350, "weight": 0.07, "color": "#6E6960" }
+  ],
+  "clients": [
+    "Priya Sharma", "Rohit Kapoor", "Ananya Mehta", "Vikram Singh", "Deepa Nair",
+    "Kavya Reddy", "Sanjay Dutt", "Aisha Gupta", "Karan Malhotra", "Riya Sen",
+    "Rahul Bose", "Neha Dhupia", "Amit Patel", "Sneha Rao", "Divya Teja"
+  ],
+  "festivalPresets": {
+    "diwali": {
+      "label": "Diwali Season (Oct 28 - Nov 03)",
+      "startMonth": 9,
+      "startDay": 28,
+      "endMonth": 10,
+      "endDay": 3,
+      "multiplier": 2.8
+    },
+    "eid": {
+      "label": "Eid Festive Week (Apr 10 - Apr 15)",
+      "startMonth": 3,
+      "startDay": 10,
+      "endMonth": 3,
+      "endDay": 15,
+      "multiplier": 2.1
+    },
+    "christmas": {
+      "label": "Christmas & New Year (Dec 24 - Jan 01)",
+      "startMonth": 11,
+      "startDay": 24,
+      "endMonth": 0,
+      "endDay": 1,
+      "multiplier": 2.4
+    },
+    "wedding": {
+      "label": "Wedding Peak Season (Nov 15 - Nov 30)",
+      "startMonth": 10,
+      "startDay": 15,
+      "endMonth": 10,
+      "endDay": 30,
+      "multiplier": 2.5
+    },
+    "holi": {
+      "label": "Holi Celebrations (Mar 10 - Mar 14)",
+      "startMonth": 2,
+      "startDay": 10,
+      "endMonth": 2,
+      "endDay": 14,
+      "multiplier": 1.8
+    }
+  }
+}

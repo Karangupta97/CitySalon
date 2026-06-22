@@ -1,0 +1,324 @@
+{
+  "productGrid": [
+    {
+      "id": "radiance-serum",
+      "name": "Radiance Serum",
+      "description": "Vitamin C brightening formula",
+      "price": 68,
+      "originalPrice": null,
+      "image": "/images/products/serum-bottles-1.png",
+      "badge": "Bestseller",
+      "category": "serum"
+    },
+    {
+      "id": "hydrating-serum",
+      "name": "Hydrating Serum",
+      "description": "Hyaluronic acid moisture boost",
+      "price": 62,
+      "originalPrice": null,
+      "image": "/images/products/eye-serum-bottles.png",
+      "badge": null,
+      "category": "serum"
+    },
+    {
+      "id": "age-defense-serum",
+      "name": "Age Defense Serum",
+      "description": "Retinol & peptide complex",
+      "price": 78,
+      "originalPrice": null,
+      "image": "/images/products/amber-dropper-bottles.png",
+      "badge": "New",
+      "category": "serum"
+    },
+    {
+      "id": "glow-serum",
+      "name": "Glow Serum",
+      "description": "Niacinamide brightening boost",
+      "price": 58,
+      "originalPrice": 68,
+      "image": "/images/products/spray-bottles.png",
+      "badge": "Sale",
+      "category": "serum"
+    },
+    {
+      "id": "hydra-cream",
+      "name": "Hydra Cream",
+      "description": "Deep moisture with hyaluronic acid",
+      "price": 54,
+      "originalPrice": null,
+      "image": "/images/products/cream-jars-colored.png",
+      "badge": null,
+      "category": "cream"
+    },
+    {
+      "id": "gentle-cleanser",
+      "name": "Gentle Cleanser",
+      "description": "Soothing botanical wash",
+      "price": 38,
+      "originalPrice": 48,
+      "image": "/images/products/tube-bottles.png",
+      "badge": "Sale",
+      "category": "cream"
+    },
+    {
+      "id": "night-cream",
+      "name": "Night Cream",
+      "description": "Restorative overnight treatment",
+      "price": 64,
+      "originalPrice": null,
+      "image": "/images/products/jars-wooden-lid.png",
+      "badge": "Bestseller",
+      "category": "cream"
+    },
+    {
+      "id": "day-cream-spf",
+      "name": "Day Cream SPF 30",
+      "description": "Protection & hydration",
+      "price": 58,
+      "originalPrice": null,
+      "image": "/images/products/pump-bottles-lavender.png",
+      "badge": null,
+      "category": "cream"
+    },
+    {
+      "id": "renewal-oil",
+      "name": "Renewal Oil",
+      "description": "Nourishing facial oil blend",
+      "price": 72,
+      "originalPrice": null,
+      "image": "/images/products/amber-dropper-bottles.png",
+      "badge": "New",
+      "category": "oil"
+    },
+    {
+      "id": "rosehip-oil",
+      "name": "Rosehip Oil",
+      "description": "Pure organic rosehip extract",
+      "price": 48,
+      "originalPrice": null,
+      "image": "/images/products/serum-bottles-1.png",
+      "badge": null,
+      "category": "oil"
+    },
+    {
+      "id": "jojoba-oil",
+      "name": "Jojoba Oil",
+      "description": "Balancing & lightweight",
+      "price": 42,
+      "originalPrice": null,
+      "image": "/images/products/spray-bottles.png",
+      "badge": null,
+      "category": "oil"
+    },
+    {
+      "id": "argan-oil",
+      "name": "Argan Oil",
+      "description": "Moroccan beauty elixir",
+      "price": 56,
+      "originalPrice": null,
+      "image": "/images/products/pump-bottles-cream.png",
+      "badge": "Bestseller",
+      "category": "oil"
+    }
+  ],
+  "shopProducts": [
+    {
+      "id": "radiance-serum",
+      "name": "Radiance Serum",
+      "description": "Vitamin C brightening formula",
+      "price": 68,
+      "originalPrice": null,
+      "image": "/images/products/serum-bottles-1.png",
+      "badge": "Bestseller",
+      "category": "serums"
+    },
+    {
+      "id": "hydrating-serum",
+      "name": "Hydrating Serum",
+      "description": "Hyaluronic acid moisture boost",
+      "price": 62,
+      "originalPrice": null,
+      "image": "/images/products/eye-serum-bottles.png",
+      "badge": null,
+      "category": "serums"
+    },
+    {
+      "id": "age-defense-serum",
+      "name": "Age Defense Serum",
+      "description": "Retinol & peptide complex",
+      "price": 78,
+      "originalPrice": null,
+      "image": "/images/products/amber-dropper-bottles.png",
+      "badge": "New",
+      "category": "serums"
+    },
+    {
+      "id": "glow-serum",
+      "name": "Glow Serum",
+      "description": "Niacinamide brightening boost",
+      "price": 58,
+      "originalPrice": 68,
+      "image": "/images/products/spray-bottles.png",
+      "badge": "Sale",
+      "category": "serums"
+    },
+    {
+      "id": "hydra-cream",
+      "name": "Hydra Cream",
+      "description": "Deep moisture with hyaluronic acid",
+      "price": 54,
+      "originalPrice": null,
+      "image": "/images/products/cream-jars-colored.png",
+      "badge": null,
+      "category": "moisturizers"
+    },
+    {
+      "id": "gentle-cleanser",
+      "name": "Gentle Cleanser",
+      "description": "Soothing botanical wash",
+      "price": 38,
+      "originalPrice": 48,
+      "image": "/images/products/tube-bottles.png",
+      "badge": "Sale",
+      "category": "cleansers"
+    },
+    {
+      "id": "night-cream",
+      "name": "Night Cream",
+      "description": "Restorative overnight treatment",
+      "price": 64,
+      "originalPrice": null,
+      "image": "/images/products/jars-wooden-lid.png",
+      "badge": "Bestseller",
+      "category": "moisturizers"
+    },
+    {
+      "id": "day-cream-spf",
+      "name": "Day Cream SPF 30",
+      "description": "Protection & hydration",
+      "price": 58,
+      "originalPrice": null,
+      "image": "/images/products/pump-bottles-lavender.png",
+      "badge": null,
+      "category": "moisturizers"
+    },
+    {
+      "id": "renewal-oil",
+      "name": "Renewal Oil",
+      "description": "Nourishing facial oil blend",
+      "price": 72,
+      "originalPrice": null,
+      "image": "/images/products/amber-dropper-bottles.png",
+      "badge": "New",
+      "category": "oils"
+    },
+    {
+      "id": "rosehip-oil",
+      "name": "Rosehip Oil",
+      "description": "Pure organic rosehip extract",
+      "price": 48,
+      "originalPrice": null,
+      "image": "/images/products/serum-bottles-1.png",
+      "badge": null,
+      "category": "oils"
+    },
+    {
+      "id": "jojoba-oil",
+      "name": "Jojoba Oil",
+      "description": "Balancing & lightweight",
+      "price": 42,
+      "originalPrice": null,
+      "image": "/images/products/spray-bottles.png",
+      "badge": null,
+      "category": "oils"
+    },
+    {
+      "id": "argan-oil",
+      "name": "Argan Oil",
+      "description": "Moroccan beauty elixir",
+      "price": 56,
+      "originalPrice": null,
+      "image": "/images/products/pump-bottles-cream.png",
+      "badge": "Bestseller",
+      "category": "oils"
+    },
+    {
+      "id": "glow-mask",
+      "name": "Glow Mask",
+      "description": "Weekly brightening treatment",
+      "price": 45,
+      "originalPrice": null,
+      "image": "/images/products/mask.jpg",
+      "badge": null,
+      "category": "masks"
+    },
+    {
+      "id": "balance-toner",
+      "name": "Balance Toner",
+      "description": "pH restoring mist",
+      "price": 32,
+      "originalPrice": null,
+      "image": "/images/products/toner.jpg",
+      "badge": "New",
+      "category": "toners"
+    }
+  ],
+  "productDetails": {
+    "radiance-serum": {
+      "id": "radiance-serum",
+      "name": "Radiance Serum",
+      "tagline": "Illuminate your natural glow",
+      "description": "A lightweight, fast-absorbing serum infused with Vitamin C and botanical extracts. Designed to brighten, even skin tone, and reveal your skin's natural radiance.",
+      "price": 68,
+      "originalPrice": null,
+      "image": "/images/products/serum.jpg",
+      "sizes": ["30ml", "50ml"],
+      "details": "Our Radiance Serum combines 15% stabilized Vitamin C with rosehip seed oil and sea buckthorn extract. The formula is designed to penetrate deep into the skin, targeting dark spots and uneven tone while protecting against environmental stressors. Suitable for all skin types, this serum is your daily dose of luminosity.",
+      "howToUse": "Apply 3-4 drops to cleansed face and neck morning and evening. Gently pat into skin until absorbed. Follow with your favorite CitySalon moisturizer. For best results, use consistently for 4-6 weeks.",
+      "ingredients": "Aqua, Ascorbic Acid (Vitamin C), Rosa Canina Seed Oil, Hippophae Rhamnoides Oil, Glycerin, Niacinamide, Tocopherol (Vitamin E), Ferulic Acid, Aloe Barbadensis Leaf Juice, Citrus Aurantium Dulcis Peel Oil, Lavandula Angustifolia Oil.",
+      "delivery": "Free standard shipping on orders over $50. Express shipping available at checkout. All orders ship within 1-2 business days. Returns accepted within 30 days of purchase if product is unused and sealed."
+    },
+    "hydra-cream": {
+      "id": "hydra-cream",
+      "name": "Hydra Cream",
+      "tagline": "Deep moisture, lasting comfort",
+      "description": "A rich yet lightweight moisturizer that delivers intense hydration without heaviness. Formulated with hyaluronic acid and botanical butters for all-day nourishment.",
+      "price": 54,
+      "originalPrice": null,
+      "image": "/images/products/moisturizer.jpg",
+      "sizes": ["50ml", "100ml"],
+      "details": "Hydra Cream features multi-weight hyaluronic acid to hydrate at every level of the skin. Shea butter and jojoba oil lock in moisture while squalane provides a silky, non-greasy finish. Perfect for normal to dry skin seeking lasting comfort.",
+      "howToUse": "After cleansing and serum, apply a small amount to face and neck. Massage gently in upward motions. Use morning and evening as the final step of your skincare routine.",
+      "ingredients": "Aqua, Butyrospermum Parkii Butter, Simmondsia Chinensis Seed Oil, Sodium Hyaluronate, Squalane, Glycerin, Cetearyl Alcohol, Calendula Officinalis Extract, Chamomilla Recutita Extract, Tocopherol.",
+      "delivery": "Free standard shipping on orders over $50. Express shipping available at checkout. All orders ship within 1-2 business days. Returns accepted within 30 days of purchase if product is unused and sealed."
+    },
+    "gentle-cleanser": {
+      "id": "gentle-cleanser",
+      "name": "Gentle Cleanser",
+      "tagline": "Cleanse without compromise",
+      "description": "A soothing botanical wash that removes impurities while respecting your skin's natural balance. Perfect for sensitive skin and daily use.",
+      "price": 38,
+      "originalPrice": 48,
+      "image": "/images/products/cleanser.jpg",
+      "sizes": ["150ml", "250ml"],
+      "details": "Our Gentle Cleanser uses coconut-derived surfactants that cleanse effectively without stripping. Enriched with chamomile, oat extract, and aloe vera, it calms and soothes as it cleanses. pH-balanced and dermatologist tested for sensitive skin.",
+      "howToUse": "Wet face with lukewarm water. Apply a small amount to fingertips and massage onto face in circular motions. Rinse thoroughly. Use morning and evening.",
+      "ingredients": "Aqua, Coco-Glucoside, Glycerin, Avena Sativa Kernel Extract, Aloe Barbadensis Leaf Juice, Chamomilla Recutita Extract, Panthenol, Allantoin, Citric Acid, Benzyl Alcohol, Potassium Sorbate.",
+      "delivery": "Free standard shipping on orders over $50. Express shipping available at checkout. All orders ship within 1-2 business days. Returns accepted within 30 days of purchase if product is unused and sealed."
+    },
+    "renewal-oil": {
+      "id": "renewal-oil",
+      "name": "Renewal Oil",
+      "tagline": "Nourish deeply, glow eternally",
+      "description": "A luxurious blend of precious botanical oils that deeply nourish and restore skin overnight. Wake up to softer, more supple skin.",
+      "price": 72,
+      "originalPrice": null,
+      "image": "/images/products/oil.jpg",
+      "sizes": ["30ml", "50ml"],
+      "details": "Renewal Oil combines argan, rosehip, and marula oils with vitamin E for intensive overnight nourishment. This dry oil absorbs quickly, leaving skin soft without residue. Ideal for mature or dehydrated skin seeking restoration.",
+      "howToUse": "Apply 4-6 drops to palms and warm between hands. Press gently onto face and neck as the final step of your evening routine. Can also be mixed with moisturizer for added hydration.",
+      "ingredients": "Argania Spinosa Kernel Oil, Rosa Canina Seed Oil, Sclerocarya Birrea Seed Oil, Tocopherol, Rosa Damascena Flower Oil, Lavandula Angustifolia Oil, Helianthus Annuus Seed Oil, Limonene, Linalool.",
+      "delivery": "Free standard shipping on orders over $50. Express shipping available at checkout. All orders ship within 1-2 business days. Returns accepted within 30 days of purchase if product is unused and sealed."
+    }
+  }
+}

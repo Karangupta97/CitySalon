@@ -2,27 +2,9 @@
 
 import { Star } from "lucide-react"
 import { useScrollReveal } from "@/hooks/use-scroll-reveal"
+import componentData from "@/data/mock-components.json"
 
-const reviews = [
-  {
-    name: "Priya S.",
-    text: "Found my perfect stylist. The booking was seamless and the salon was exactly as described.",
-    rating: 5,
-    salon: "Akreations, Bandra",
-  },
-  {
-    name: "Ananya R.",
-    text: "I love how easy it is to compare prices and read real reviews. No more guessing about quality.",
-    rating: 5,
-    salon: "Hair Masters, Andheri",
-  },
-  {
-    name: "Meera P.",
-    text: "Booked bridal makeup stress-free. The artist was incredible and everything was transparent.",
-    rating: 5,
-    salon: "The Bridal Room, Khar",
-  },
-]
+const reviews = componentData.testimonials
 
 export function Testimonials() {
   const { ref, isVisible } = useScrollReveal()
