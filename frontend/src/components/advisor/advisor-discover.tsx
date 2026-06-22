@@ -349,10 +349,10 @@ function SalonCard({ salon, rank }: { salon: SalonResult; rank: number }) {
             <p style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 500, fontSize: "22px", color: "#1A1A1A" }}>from \u20B9{salon.startingPrice.toLocaleString("en-IN")}</p>
             <p style={{ fontFamily: "Inter, sans-serif", fontSize: "10px", color: "#9E958A" }}>for this service</p>
           </div>
-          <a href={`/${salon.id}`} style={{ display: "block", background: "#3D4A35", color: "#FFFFFF", borderRadius: "10px", padding: "10px", fontFamily: "Inter, sans-serif", fontSize: "12px", fontWeight: 500, textAlign: "center", textDecoration: "none" }}>
+          <a href={`/${(salon as any).username || salon.id}`} style={{ display: "block", background: "#3D4A35", color: "#FFFFFF", borderRadius: "10px", padding: "10px", fontFamily: "Inter, sans-serif", fontSize: "12px", fontWeight: 500, textAlign: "center", textDecoration: "none" }}>
             Book salon →
           </a>
-          <a href={`/${salon.id}`} style={{ display: "block", textAlign: "center", fontFamily: "Inter, sans-serif", fontSize: "11px", color: "#3D4A35", textDecoration: "none" }}>
+          <a href={`/${(salon as any).username || salon.id}`} style={{ display: "block", textAlign: "center", fontFamily: "Inter, sans-serif", fontSize: "11px", color: "#3D4A35", textDecoration: "none" }}>
             View profile
           </a>
           {salon.availableSlots.length > 0 && (

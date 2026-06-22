@@ -17,6 +17,8 @@ export interface SalonListItem {
   hygieneScore: number
   distance: string
   openNow: boolean
+  username?: string
+  verified?: boolean
 }
 
 export const salonsList: SalonListItem[] = salonsListData as SalonListItem[]

@@ -51,7 +51,7 @@ const steps = [
 
 export default function BookNowPage() {
   const params = useParams()
-  const idOrSlug = params.idOrSlug as string
+  const idOrSlug = params.salon as string
   const { salon, isLoading } = useSalon(idOrSlug)
 
   const [currentStep, setCurrentStep] = useState(1)

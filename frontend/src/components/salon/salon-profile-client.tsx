@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { useParams } from "next/navigation"
+import { type SalonData } from "@/data/salons"
 import {
   ChevronLeft,
   ChevronDown,
@@ -41,7 +41,6 @@ import {
   BadgeCheck,
   CreditCard,
 } from "lucide-react"
-import { useSalon } from "@/lib/useSalon"
 
 const salonNavItems = [
   { id: "overview", label: "Overview" },
@@ -66,11 +65,12 @@ const amenityIcons: Record<string, typeof Wifi> = {
   "Sanitized Equipment": ShieldCheck,
 }
 
-export default function SalonPersonalPage() {
-  const params = useParams()
-  const idOrSlug = params.idOrSlug as string
-  const { salon, isLoading } = useSalon(idOrSlug)
+interface SalonProfileClientProps {
+  initialSalon: SalonData;
+  username: string;
+}
 
+export default function SalonProfileClient({ initialSalon: salon, username: idOrSlug }: SalonProfileClientProps) {
   const [activeCategory, setActiveCategory] = useState("All")
   const [activeGalleryIndex, setActiveGalleryIndex] = useState(0)
   const [isFavorited, setIsFavorited] = useState(false)
@@ -102,37 +102,6 @@ export default function SalonPersonalPage() {
         salonNavRef.current.scrollIntoView({ behavior: "smooth", block: "start" })
       }
     }
-  }
-
-  if (isLoading) {
-    return (
-      <main className="min-h-screen bg-background flex items-center justify-center pt-28">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-muted-foreground text-sm font-medium">Loading salon details...</p>
-        </div>
-      </main>
-    )
-  }
-
-  if (!salon) {
-    return (
-      <main className="min-h-screen">
-        <div className="pt-28 pb-20 text-center max-w-7xl mx-auto px-4">
-          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-muted flex items-center justify-center">
-            <MapPin className="w-8 h-8 text-muted-foreground" />
-          </div>
-          <h1 className="font-serif text-3xl text-foreground mb-3">Salon not found</h1>
-          <p className="text-muted-foreground mb-8 max-w-sm mx-auto">
-            The salon you&apos;re looking for doesn&apos;t exist or has been removed.
-          </p>
-          <Link href="/salons" className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-full text-sm font-medium boty-transition hover:bg-primary/90">
-            <ChevronLeft className="w-4 h-4" />
-            Browse Salons
-          </Link>
-        </div>
-      </main>
-    )
   }
 
   const serviceCategories = ["All", ...Array.from(new Set(salon.services.map((s) => s.category)))]

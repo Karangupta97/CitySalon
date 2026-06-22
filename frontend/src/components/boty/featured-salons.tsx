@@ -134,7 +134,7 @@ export function FeaturedSalons() {
           {salons.map((salon, index) => (
             <Link
               key={salon.id}
-              href={`/${salon.id}`}
+              href={`/${(salon as any).username || salon.id}`}
               className={`group flex-shrink-0 w-[280px] sm:w-auto snap-start rounded-2xl overflow-hidden bg-card boty-transition hover:-translate-y-2 hover:shadow-xl scroll-reveal-scale ${isVisible ? "visible" : ""} stagger-${index + 1}`}
             >
               {/* Image */}

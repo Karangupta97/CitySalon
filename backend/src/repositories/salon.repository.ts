@@ -4,6 +4,7 @@ export interface SalonRow {
   id?: string;
   owner_id: string;
   name: string;
+  slug?: string;
   tagline?: string;
   description?: string;
   phone?: string;
@@ -37,6 +38,8 @@ export interface SalonRow {
   gallery?: any[];
   created_at?: string;
   updated_at?: string;
+  username?: string;
+  verified?: boolean;
 }
 
 export class SalonRepository {
@@ -46,6 +49,18 @@ export class SalonRepository {
 
   static async findById(id: string): Promise<SalonRow | null> {
     const { data, error } = await this.table.select("*").eq("id", id).maybeSingle();
+    if (error) throw new Error(`Database query failed: ${error.message}`);
+    return data;
+  }
+
+  static async findByUsername(username: string): Promise<SalonRow | null> {
+    const { data, error } = await this.table.select("*").eq("username", username.toLowerCase()).maybeSingle();
+    if (error) throw new Error(`Database query failed: ${error.message}`);
+    return data;
+  }
+
+  static async findBySlug(slug: string): Promise<SalonRow | null> {
+    const { data, error } = await this.table.select("*").eq("slug", slug).maybeSingle();
     if (error) throw new Error(`Database query failed: ${error.message}`);
     return data;
   }

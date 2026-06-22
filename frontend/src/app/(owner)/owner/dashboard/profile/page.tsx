@@ -56,6 +56,7 @@ interface Product {
 // ─── Default Data ────────────────────────────────────────────────
 const defaultProfile = {
   name: "Radiance Beauty Studio",
+  username: "radiance_beauty",
   tagline: "Where beauty meets care, every day",
   description: "A premium salon specialising in hair, skin, and wellness services with over 8 years of trusted excellence in Mumbai.",
   phone: "+91 98765 43210",
@@ -148,6 +149,32 @@ export default function SalonProfilePage() {
   const heroInputRef = useRef<HTMLInputElement>(null)
   const galleryInputRef = useRef<HTMLInputElement>(null)
 
+  const [isCheckingDashUsername, setIsCheckingDashUsername] = useState(false)
+  const [dashUsernameFeedback, setDashUsernameFeedback] = useState<{ available: boolean; reason?: string } | null>(null)
+
+  const checkDashboardUsername = async (val: string) => {
+    if (!val || val.length < 3) {
+      setDashUsernameFeedback({ available: false, reason: "Username must be at least 3 characters." })
+      return
+    }
+    setIsCheckingDashUsername(true)
+    try {
+      const RAW_API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1"
+      const API_URL = RAW_API_URL.endsWith("/api/v1") ? RAW_API_URL : RAW_API_URL.replace(/\/+$/, "") + "/api/v1"
+      const res = await fetch(`${API_URL}/public/username-availability?username=${val}&excludeSalonId=${salonId || ""}`)
+      if (res.ok) {
+        const json = await res.json()
+        if (json.status === "success") {
+          setDashUsernameFeedback(json.data)
+        }
+      }
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setIsCheckingDashUsername(false)
+    }
+  }
+
   // Offer state
   const [newOffer, setNewOffer] = useState<Omit<Offer, "id">>({ title: "", description: "", originalPrice: "", offerPrice: "", badge: "", validity: "" })
   // FAQ state
@@ -183,6 +210,7 @@ export default function SalonProfilePage() {
           if (s) {
             setProfile({
               name: s.name || "",
+              username: s.username || "",
               tagline: s.tagline || "",
               description: s.description || "",
               phone: s.phone || "",
@@ -246,12 +274,14 @@ export default function SalonProfilePage() {
 
       let sId = salonId
       if (!sId) {
+        const cachedUsername = typeof window !== "undefined" ? localStorage.getItem("citysalon_temp_register_username") : ""
         const createRes: any = await apiFetch("/owner/salons", {
           method: "POST",
           bodyData: {
             name: profile.name || "Untitled Salon",
             city: profile.city || "",
             full_address: profile.fullAddress || "",
+            username: profile.username || cachedUsername || undefined,
           },
           headers: { Authorization: `Bearer ${token}` }
         })
@@ -312,6 +342,7 @@ export default function SalonProfilePage() {
 
       const patchData = {
         name: profile.name,
+        username: profile.username,
         tagline: profile.tagline,
         description: profile.description,
         phone: profile.phone,
@@ -543,6 +574,29 @@ export default function SalonProfilePage() {
                   <label className="block text-[10px] font-bold text-[#6E6960] uppercase tracking-wider mb-1.5">Salon Name *</label>
                   <input type="text" value={profile.name} onChange={(e) => setProfile((p) => ({ ...p, name: e.target.value }))}
                     className="w-full px-4 py-2.5 rounded-xl bg-white border border-[#E2D9CE] text-sm text-[#1A1A1A] focus:outline-none focus:border-[#3D5A3A] focus:ring-2 focus:ring-[#3D5A3A]/10 transition-all font-sans" />
+                </div>
+                <div className="sm:col-span-2">
+                  <label className="block text-[10px] font-bold text-[#6E6960] uppercase tracking-wider mb-1.5">Username (Custom Profile Link) *</label>
+                  <div className="relative">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm text-[#6E6960]/60 font-semibold select-none font-sans">citysalon.com/</span>
+                    <input type="text" value={profile.username || ""} 
+                      onChange={(e) => {
+                        const val = e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, "");
+                        setProfile((p) => ({ ...p, username: val }));
+                        checkDashboardUsername(val);
+                      }}
+                      className="w-full pl-28 pr-4 py-2.5 rounded-xl bg-white border border-[#E2D9CE] text-sm text-[#1A1A1A] focus:outline-none focus:border-[#3D5A3A] focus:ring-2 focus:ring-[#3D5A3A]/10 transition-all font-sans" />
+                  </div>
+                  {profile.username && (
+                    <p className={`text-[10px] mt-1.5 font-bold uppercase tracking-wider font-sans ${
+                      isCheckingDashUsername ? "text-muted-foreground" :
+                      dashUsernameFeedback?.available ? "text-green-600 animate-fade-in" : "text-red-500 animate-fade-in"
+                    }`}>
+                      {isCheckingDashUsername ? "Checking availability..." :
+                       dashUsernameFeedback?.available ? "✓ Username is available!" :
+                       `✗ ${dashUsernameFeedback?.reason || "Username is not available."}`}
+                    </p>
+                  )}
                 </div>
                 <div className="sm:col-span-2">
                   <label className="block text-[10px] font-bold text-[#6E6960] uppercase tracking-wider mb-1.5">Tagline</label>

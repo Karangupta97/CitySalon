@@ -407,7 +407,7 @@ function SalonCard({
 
   return (
     <Link
-      href={`/${salon.id}`}
+      href={`/${salon.username || salon.id}`}
       className={`group rounded-2xl sm:rounded-3xl overflow-hidden bg-card boty-transition hover:-translate-y-1.5 hover:shadow-xl transition-all duration-700 ease-out ${
         isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
       }`}

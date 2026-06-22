@@ -13,6 +13,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { apiFetch } from "@/lib/api"
 import { useAuth } from "@/components/boty/auth-context"
 
+function formatUsername(name: string): string {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9_]/g, "_")
+    .replace(/__+/g, "_")
+    .replace(/^_+|_+$/g, "")
+    .substring(0, 30);
+}
+
 export default function SalonRegisterPage() {
   const router = useRouter()
   const { login } = useAuth()
@@ -32,6 +42,32 @@ export default function SalonRegisterPage() {
   const [salonName, setSalonName] = useState("")
   const [salonCity, setSalonCity] = useState("")
   const [salonAddress, setSalonAddress] = useState("")
+  const [username, setUsername] = useState("")
+  const [isCheckingUsername, setIsCheckingUsername] = useState(false)
+  const [usernameFeedback, setUsernameFeedback] = useState<{ available: boolean; reason?: string } | null>(null)
+
+  const checkUsername = async (val: string) => {
+    if (!val || val.length < 3) {
+      setUsernameFeedback({ available: false, reason: "Username must be at least 3 characters." })
+      return
+    }
+    setIsCheckingUsername(true)
+    try {
+      const RAW_API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1"
+      const API_URL = RAW_API_URL.endsWith("/api/v1") ? RAW_API_URL : RAW_API_URL.replace(/\/+$/, "") + "/api/v1"
+      const res = await fetch(`${API_URL}/public/username-availability?username=${val}`)
+      if (res.ok) {
+        const json = await res.json()
+        if (json.status === "success") {
+          setUsernameFeedback(json.data)
+        }
+      }
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setIsCheckingUsername(false)
+    }
+  }
 
   const passwordChecks = [
     { label: "8+ characters", met: password.length >= 8 },
@@ -84,6 +120,12 @@ export default function SalonRegisterPage() {
     setErrorMsg("")
     setIsLoading(true)
 
+    if (usernameFeedback && !usernameFeedback.available) {
+      setErrorMsg("Please choose an available username first.")
+      setIsLoading(false)
+      return
+    }
+
     try {
       // Register the owner account via partner auth (separate from client users)
       await apiFetch("/salon-auth/register", {
@@ -97,6 +139,11 @@ export default function SalonRegisterPage() {
           business_name: salonName || undefined,
         },
       })
+
+      // Save username to temp register cache
+      if (username) {
+        localStorage.setItem("citysalon_temp_register_username", username)
+      }
 
       // Save newly registered salon to localStorage for instant local directory visibility
       try {
@@ -295,9 +342,37 @@ export default function SalonRegisterPage() {
             <Store className={`absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors duration-300 ${
               focusedField === "salonName" ? "text-primary" : "text-muted-foreground/60"
             }`} />
-            <Input type="text" placeholder="Salon name *" value={salonName} onChange={(e) => setSalonName(e.target.value)}
+            <Input type="text" placeholder="Salon name *" value={salonName} onChange={(e) => {
+              setSalonName(e.target.value)
+              const generated = formatUsername(e.target.value)
+              setUsername(generated)
+              checkUsername(generated)
+            }}
               onFocus={() => setFocusedField("salonName")} onBlur={() => setFocusedField(null)} required
               className="h-10 pl-10 rounded-xl bg-muted/30 border-border/40 focus:border-primary/60 focus:bg-background/80 focus:ring-2 focus:ring-primary/10 placeholder:text-muted-foreground/45 text-sm transition-all shadow-sm" />
+          </div>
+
+          {/* Username Input Field */}
+          <div className="space-y-1">
+            <div className="relative">
+              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs text-muted-foreground/60 font-semibold select-none">citysalon.com/</span>
+              <Input type="text" placeholder="username *" value={username} onChange={(e) => {
+                const val = e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, "")
+                setUsername(val)
+                checkUsername(val)
+              }} required
+                className="h-10 pl-24 rounded-xl bg-muted/30 border-border/40 focus:border-primary/60 focus:bg-background/80 focus:ring-2 focus:ring-primary/10 placeholder:text-muted-foreground/45 text-sm transition-all shadow-sm" />
+            </div>
+            {username.length > 0 && (
+              <p className={`text-[10px] px-1 font-semibold ${
+                isCheckingUsername ? "text-muted-foreground" :
+                usernameFeedback?.available ? "text-green-600 animate-fade-in" : "text-red-500 animate-fade-in"
+              }`}>
+                {isCheckingUsername ? "Checking availability..." :
+                 usernameFeedback?.available ? "✓ Username is available!" :
+                 `✗ ${usernameFeedback?.reason || "Username is not available."}`}
+              </p>
+            )}
           </div>
 
           <div className="relative">

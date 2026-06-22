@@ -6,6 +6,7 @@ import { getSupabaseAdmin } from "@config/db";
 import { logger } from "@utils/logger";
 import { ServiceRepository } from "@repositories/service.repository";
 import { StaffRepository } from "@repositories/staff.repository";
+import { cache } from "@utils/cache";
 
 const router = Router();
 
@@ -70,6 +71,8 @@ router.get(
       const mapped = (data || []).map((s: any) => ({
         id: s.id,
         name: s.name,
+        username: s.username,
+        verified: !!s.verified,
         tagline: s.tagline || "Where beauty meets care, every day",
         image: s.hero_image || "/images/hero-model.jpg",
         rating: s.rating || 5.0,
@@ -95,35 +98,95 @@ router.get(
 );
 
 /**
- * GET /public/salons/:idOrSlug — Get salon details by ID or Slug
+ * GET /public/salons/:idOrSlug — Get salon details by ID or Username Slug
  */
 router.get(
   "/salons/:idOrSlug",
   asyncHandler(async (req: Request, res: Response) => {
     const idOrSlug = req.params.idOrSlug as string;
-    let salon: any = null;
 
+    // Check cache first
+    const cacheKey = `salon:${idOrSlug.toLowerCase()}`;
+    const cachedData = await cache.get(cacheKey);
+    if (cachedData) {
+      if (cachedData.status === "redirect") {
+        return res.status(200).json(cachedData);
+      }
+      return res.status(200).json({ status: "success", data: cachedData });
+    }
+
+    let salon: any = null;
     const isUuid = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(idOrSlug);
 
     try {
-      if (isUuid) {
-        const { data, error } = await getSupabaseAdmin()
-          .from("salons")
-          .select("*")
-          .eq("id", idOrSlug)
-          .maybeSingle();
-        if (error) throw error;
-        salon = data;
+      // 1. Query by username first (case-insensitive)
+      const { data: userRow, error: userErr } = await getSupabaseAdmin()
+        .from("salons")
+        .select("*")
+        .ilike("username", idOrSlug)
+        .maybeSingle();
+      if (userErr) throw userErr;
+
+      if (userRow) {
+        salon = userRow;
       } else {
-        // Query by name slug (convert hyphen to space)
-        const nameQuery = idOrSlug.replace(/-/g, " ");
-        const { data, error } = await getSupabaseAdmin()
-          .from("salons")
-          .select("*")
-          .ilike("name", nameQuery)
-          .maybeSingle();
-        if (error) throw error;
-        salon = data;
+        // 2. Query by UUID if applicable
+        if (isUuid) {
+          const { data, error } = await getSupabaseAdmin()
+            .from("salons")
+            .select("*")
+            .eq("id", idOrSlug)
+            .maybeSingle();
+          if (error) throw error;
+          salon = data;
+        } else {
+          // 3. Query by slug (legacy support)
+          const { data: slugData, error: slugErr } = await getSupabaseAdmin()
+            .from("salons")
+            .select("*")
+            .ilike("slug", idOrSlug)
+            .maybeSingle();
+          if (slugErr) throw slugErr;
+
+          if (slugData) {
+            salon = slugData;
+          } else {
+            // 4. Check username_history for redirects (SEO preservation)
+            const { data: histRow, error: histErr } = await getSupabaseAdmin()
+              .from("username_history")
+              .select("salon_id")
+              .ilike("old_username", idOrSlug)
+              .maybeSingle();
+            if (histErr) throw histErr;
+
+            if (histRow) {
+              // Fetch salon to get current username
+              const { data: curSalon, error: curErr } = await getSupabaseAdmin()
+                .from("salons")
+                .select("username")
+                .eq("id", histRow.salon_id)
+                .maybeSingle();
+              if (curErr) throw curErr;
+
+              if (curSalon) {
+                const redirectRes = { status: "redirect", redirectTo: curSalon.username };
+                // Cache the redirect for 5 minutes
+                await cache.set(cacheKey, redirectRes, 300);
+                return res.status(200).json(redirectRes);
+              }
+            }
+
+            // 5. Fallback: Query by name slug (convert hyphen to space)
+            const nameQuery = idOrSlug.replace(/-/g, " ");
+            const { data: nameData, error: nameErr } = await getSupabaseAdmin()
+              .from("salons")
+              .select("*")
+              .ilike("name", nameQuery)
+              .maybeSingle();
+            if (nameErr) throw nameErr;
+            salon = nameData;
+          }
+        }
       }
     } catch (err) {
       logger.error("Failed to query salon by ID or Slug", { idOrSlug, err });
