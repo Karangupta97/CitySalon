@@ -6,6 +6,7 @@ export interface TokenPayload {
   userId: string;
   email: string;
   role?: string;
+  isDemo?: boolean;  // true for demo, judge, and dev-team accounts
   jti?: string;      // JWT ID for blacklisting
   sessionId?: string; // Session tracking
 }

@@ -34,6 +34,13 @@ const envSchema = z.object({
   // Gemini AI
   GEMINI_API_KEY: z.string().optional(),
   FRONTEND_URL: z.string().default("http://localhost:3000"),
+  BACKEND_URL: z.string().default("http://localhost:5000"),
+
+  // AWS S3
+  AWS_ACCESS_KEY_ID: z.string().optional().or(z.literal("")),
+  AWS_SECRET_ACCESS_KEY: z.string().optional().or(z.literal("")),
+  AWS_REGION: z.string().default("ap-south-1"),
+  AWS_S3_BUCKET_NAME: z.string().default("citysalon"),
 });
 
 const parsed = envSchema.safeParse(process.env);

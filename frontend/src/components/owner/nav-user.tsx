@@ -29,17 +29,27 @@ import {
     useSidebar,
 } from "@/components/ui/sidebar"
 
+function getInitials(name: string) {
+    if (!name) return "RS"
+    const parts = name.trim().split(/\s+/)
+    if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase()
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+}
+
 export function NavUser({
     user,
+    logout,
 }: {
     user: {
         name: string
         email: string
         avatar: string
     }
+    logout?: () => void
 }) {
     const { isMobile, state } = useSidebar()
     const isCollapsed = state === "collapsed"
+    const initials = getInitials(user.name)
 
     return (
         <SidebarMenu>
@@ -56,7 +66,7 @@ export function NavUser({
                                 isCollapsed ? "h-8 w-8 text-[10px]" : "h-9 w-9 text-[11px]"
                             }`}>
                                 <AvatarImage src={user.avatar} alt={user.name} />
-                                <AvatarFallback className="rounded-xl bg-transparent text-[#FAFAF7]">RS</AvatarFallback>
+                                <AvatarFallback className="rounded-xl bg-transparent text-[#FAFAF7]">{initials}</AvatarFallback>
                             </Avatar>
                             <div className="grid flex-1 text-left text-xs leading-tight ml-2.5 group-data-[collapsible=icon]:hidden font-sans">
                                 <span className="truncate font-semibold text-[#1A1A1A] text-[13px]">{user.name}</span>
@@ -77,7 +87,7 @@ export function NavUser({
                             <div className="flex items-center gap-3 px-2 py-2.5 text-left text-sm">
                                 <Avatar className="h-9 w-9 rounded-xl border border-[#E2D9CE] bg-[#3D5A3A]">
                                     <AvatarImage src={user.avatar} alt={user.name} />
-                                    <AvatarFallback className="rounded-xl bg-transparent text-[#FAFAF7] text-xs font-bold">RS</AvatarFallback>
+                                    <AvatarFallback className="rounded-xl bg-transparent text-[#FAFAF7] text-xs font-bold">{initials}</AvatarFallback>
                                 </Avatar>
                                 <div className="grid flex-1 text-left text-sm leading-tight">
                                     <span className="truncate font-semibold text-[#1A1A1A]">{user.name}</span>
@@ -103,7 +113,7 @@ export function NavUser({
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={logout} className="cursor-pointer">
                             <IconLogout />
                             Log out
                         </DropdownMenuItem>

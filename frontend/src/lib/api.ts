@@ -27,6 +27,11 @@ export async function apiFetch<T>(path: string, options: FetchOptions = {}): Pro
   }
 
   if (!response.ok) {
+    if (response.status === 401 && typeof window !== "undefined") {
+      localStorage.removeItem("citysalon_user");
+      localStorage.removeItem("accessToken");
+      window.location.href = "/auth/salon/login";
+    }
     throw new Error(data?.message || `Server error: ${response.status} ${response.statusText}`);
   }
 

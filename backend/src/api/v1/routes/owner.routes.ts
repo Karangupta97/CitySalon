@@ -20,6 +20,7 @@ import {
   analyticsQuerySchema,
   dateQuerySchema,
   dateRangeQuerySchema,
+  uploadImageSchema,
 } from "@schemas/owner.schema";
 
 const router = Router();
@@ -30,6 +31,7 @@ router.use(authenticate, requireOwner);
 // ─── Salon Profile ───────────────────────────────────────────────
 router.get("/salons", OwnerSalonController.listSalons);
 router.post("/salons", validate(createSalonSchema), OwnerSalonController.createSalon);
+router.post("/upload", validate(uploadImageSchema), OwnerSalonController.uploadImage);
 router.get("/:salonId", OwnerSalonController.getSalon);
 router.patch("/:salonId", validate(updateSalonSchema), OwnerSalonController.updateSalon);
 

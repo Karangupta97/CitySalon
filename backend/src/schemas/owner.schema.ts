@@ -24,6 +24,34 @@ export const updateSalonSchema = z.object({
     hc_air_purification: z.boolean().optional(),
     highlights: z.array(z.string()).optional(),
     amenities: z.array(z.string()).optional(),
+    instagram: z.string().url().optional().or(z.literal("")),
+    opening_hours: z.record(z.string(), z.string()).optional(),
+    offers: z.array(z.object({
+      id: z.string(),
+      title: z.string(),
+      description: z.string().optional(),
+      originalPrice: z.string().optional(),
+      offerPrice: z.string(),
+      badge: z.string().optional(),
+      validity: z.string().optional(),
+    })).optional(),
+    products: z.array(z.object({
+      id: z.string(),
+      name: z.string(),
+      category: z.string().optional(),
+      description: z.string().optional(),
+    })).optional(),
+    faqs: z.array(z.object({
+      id: z.string(),
+      question: z.string(),
+      answer: z.string(),
+    })).optional(),
+    gallery: z.array(z.object({
+      id: z.string(),
+      src: z.string(),
+      alt: z.string().optional(),
+      caption: z.string().optional(),
+    })).optional(),
   }).optional().default({}),
   params: z.object({ salonId: z.string().uuid() }).optional(),
 });
@@ -33,6 +61,14 @@ export const createSalonSchema = z.object({
     name: z.string().min(2).max(255),
     city: z.string().max(100).optional(),
     full_address: z.string().max(500).optional(),
+  }),
+});
+
+export const uploadImageSchema = z.object({
+  body: z.object({
+    filename: z.string().min(1),
+    contentType: z.string().min(1),
+    base64Data: z.string().min(1),
   }),
 });
 

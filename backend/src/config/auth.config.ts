@@ -97,13 +97,37 @@ export const AUTH_CONFIG = {
       { id: "mock-apt-003", customer_name: "Vikram Singh", service_names: ["Beard Trim"], start_time: "14:00", status: "completed" },
     ],
   },
+
+  /**
+   * Dev team emails — these accounts see mock data during development.
+   * Add your team member emails here.
+   */
+  DEV_TEAM_EMAILS: [
+    "dev@citysalon.com",
+    "karan@citysalon.com",
+    "admin@citysalon.com",
+  ] as string[],
 } as const;
 
 /**
- * Check if an email belongs to a demo/mock account.
+ * Dev team emails — members of the CitySalon dev team who see mock data.
+ * Extend this array with real team member emails.
+ */
+export const DEV_TEAM_EMAILS: string[] = [
+  "dev@citysalon.com",
+  "karan@citysalon.com",
+  "admin@citysalon.com",
+];
+
+/**
+ * Check if an email belongs to a demo/mock account OR dev team member.
  */
 export function isDemoAccount(email: string): boolean {
-  return email.toLowerCase().trim() in AUTH_CONFIG.DEMO_ACCOUNTS;
+  const normalized = email.toLowerCase().trim();
+  return (
+    normalized in AUTH_CONFIG.DEMO_ACCOUNTS ||
+    DEV_TEAM_EMAILS.map((e) => e.toLowerCase()).includes(normalized)
+  );
 }
 
 /**
@@ -112,4 +136,18 @@ export function isDemoAccount(email: string): boolean {
 export function getDemoAccount(email: string) {
   const key = email.toLowerCase().trim() as keyof typeof AUTH_CONFIG.DEMO_ACCOUNTS;
   return AUTH_CONFIG.DEMO_ACCOUNTS[key] || null;
+}
+
+/**
+ * Check specifically if this is a named demo account (not just dev team).
+ */
+export function isNamedDemoAccount(email: string): boolean {
+  return email.toLowerCase().trim() in AUTH_CONFIG.DEMO_ACCOUNTS;
+}
+
+/**
+ * Check if email belongs to the dev team.
+ */
+export function isDevTeamAccount(email: string): boolean {
+  return DEV_TEAM_EMAILS.map((e) => e.toLowerCase()).includes(email.toLowerCase().trim());
 }

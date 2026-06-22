@@ -11,8 +11,10 @@ import v1Routes from "@api/v1";
 export function createApp(): Application {
   const app = express();
 
-  // Security headers
-  app.use(helmet());
+  // Security headers — allow cross-origin image loading for the public image proxy
+  app.use(helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+  }));
 
   // Enable CORS with configured origins
   app.use(cors({
@@ -22,10 +24,10 @@ export function createApp(): Application {
   }));
 
   // Parse JSON payloads
-  app.use(express.json({ limit: "10kb" }));
+  app.use(express.json({ limit: "10mb" }));
 
   // Parse URL-encoded payloads
-  app.use(express.urlencoded({ extended: true }));
+  app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
   // Parse cookies (required for HttpOnly refresh token rotation)
   app.use(cookieParser());

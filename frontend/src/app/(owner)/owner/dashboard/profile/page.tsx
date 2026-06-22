@@ -1,6 +1,8 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
+import { useAuth } from "@/components/boty/auth-context"
+import { apiFetch } from "@/lib/api"
 import Image from "next/image"
 import {
   Store, Check, ShieldCheck, Plus, X, Phone, Mail, Globe, MapPin,
@@ -65,7 +67,7 @@ const defaultProfile = {
   city: "Mumbai",
   liveStatus: "available" as const,
   priceGuarantee: true,
-  heroImage: "",
+  heroImage: "/hero/Hero.svg",
   hygiene: {
     autoclave: true, freshTowels: true, licensedStaff: true,
     disposableKits: true, sanitization: true, airPurification: false,
@@ -86,8 +88,8 @@ const defaultProfile = {
     Sunday: "10:00 AM – 6:00 PM",
   } as Record<string, string>,
   gallery: [
-    { id: "1", src: "/hero/salon-interior.svg", alt: "Salon Interior", caption: "Our premium styling area" },
-    { id: "2", src: "/hero/salon-exterior.svg", alt: "Salon Exterior", caption: "Welcome to our studio" },
+    { id: "1", src: "/images/salons/akreations.jpg", alt: "Salon Interior", caption: "Our premium styling area" },
+    { id: "2", src: "/images/salons/enrich-salon.jpg", alt: "Salon Exterior", caption: "Welcome to our studio" },
   ] as GalleryImage[],
   offers: [
     { id: "1", title: "Bridal Glow Package", description: "Complete bridal prep — facial, hair spa, mani-pedi, and trial makeup", originalPrice: "₹24,999", offerPrice: "₹18,999", badge: "Save 24%", validity: "Valid till Dec 2026" },
@@ -134,6 +136,11 @@ const tabs: { id: TabId; label: string; icon: typeof Store }[] = [
 
 // ─── Component ───────────────────────────────────────────────────
 export default function SalonProfilePage() {
+  const { user } = useAuth()
+  const [salonId, setSalonId] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [isSaving, setIsSaving] = useState(false)
+  const [errorMsg, setErrorMsg] = useState("")
   const [profile, setProfile] = useState(defaultProfile)
   const [saved, setSaved] = useState(false)
   const [newHighlight, setNewHighlight] = useState("")
@@ -149,7 +156,211 @@ export default function SalonProfilePage() {
   // Product state
   const [newProduct, setNewProduct] = useState<Omit<Product, "id">>({ name: "", category: "", description: "" })
 
-  const handleSave = () => { setSaved(true); setTimeout(() => setSaved(false), 2000) }
+  useEffect(() => {
+    async function loadSalon() {
+      if (!user) return
+      setIsLoading(true)
+      try {
+        const token = localStorage.getItem("accessToken")
+        if (!token) return
+
+        let sId = user.salonId
+        if (!sId) {
+          const res: any = await apiFetch("/owner/salons", {
+            headers: { Authorization: `Bearer ${token}` }
+          })
+          const salons = res?.data || []
+          if (salons.length > 0) {
+            sId = salons[0].id
+          }
+        }
+
+        if (sId) {
+          setSalonId(sId)
+          const salonRes: any = await apiFetch(`/owner/${sId}`, {
+            headers: { Authorization: `Bearer ${token}` }
+          })
+          const s = salonRes?.data
+          if (s) {
+            setProfile({
+              name: s.name || "",
+              tagline: s.tagline || "",
+              description: s.description || "",
+              phone: s.phone || "",
+              email: s.email || "",
+              website: s.website || "",
+              instagram: s.instagram || "",
+              fullAddress: s.full_address || "",
+              city: s.city || "",
+              liveStatus: s.live_status || "available",
+              priceGuarantee: !!s.price_guarantee,
+              heroImage: s.hero_image || "/hero/Hero.svg",
+              hygiene: {
+                autoclave: !!s.hc_autoclave,
+                freshTowels: !!s.hc_fresh_towels,
+                licensedStaff: !!s.hc_licensed_staff,
+                disposableKits: !!s.hc_disposable_kits,
+                sanitization: !!s.hc_sanitization,
+                airPurification: !!s.hc_air_purification,
+              },
+              highlights: Array.isArray(s.highlights) ? s.highlights : [],
+              amenities: Array.isArray(s.amenities) ? s.amenities : [],
+              openingHours: s.opening_hours || defaultProfile.openingHours,
+              gallery: Array.isArray(s.gallery) && s.gallery.length > 0
+                ? s.gallery.map(img => {
+                    if (img.src === "/hero/salon-interior.svg") {
+                      return { ...img, src: "/images/salons/akreations.jpg" };
+                    }
+                    if (img.src === "/hero/salon-exterior.svg") {
+                      return { ...img, src: "/images/salons/enrich-salon.jpg" };
+                    }
+                    return img;
+                  })
+                : [
+                    { id: "1", src: "/images/salons/akreations.jpg", alt: "Salon Interior", caption: "Our premium styling area" },
+                    { id: "2", src: "/images/salons/enrich-salon.jpg", alt: "Salon Exterior", caption: "Welcome to our studio" },
+                  ],
+              offers: Array.isArray(s.offers) ? s.offers : [],
+              products: Array.isArray(s.products) ? s.products : [],
+              faqs: Array.isArray(s.faqs) ? s.faqs : [],
+            })
+          }
+        }
+      } catch (err: any) {
+        console.error("Failed to load salon:", err)
+        setErrorMsg("Failed to load salon profile details.")
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    loadSalon()
+  }, [user])
+
+  const handleSave = async () => {
+    setErrorMsg("")
+    setIsSaving(true)
+    setSaved(false)
+    try {
+      const token = localStorage.getItem("accessToken")
+      if (!token) throw new Error("No authentication token found.")
+
+      let sId = salonId
+      if (!sId) {
+        const createRes: any = await apiFetch("/owner/salons", {
+          method: "POST",
+          bodyData: {
+            name: profile.name || "Untitled Salon",
+            city: profile.city || "",
+            full_address: profile.fullAddress || "",
+          },
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        const createdSalon = createRes?.data
+        if (!createdSalon?.id) throw new Error("Failed to create salon record.")
+        sId = createdSalon.id
+        setSalonId(sId)
+      }
+
+      // Upload base64 hero image if new
+      let finalHeroImage = profile.heroImage
+      if (profile.heroImage && profile.heroImage.startsWith("data:image/")) {
+        const mimeType = profile.heroImage.match(/[^:]\w+\/[\w-+\d.]+(?=;|,)/)?.[0] || "image/jpeg"
+        const ext = mimeType.split("/")[1] || "jpg"
+        const filename = `hero_${Date.now()}.${ext}`
+
+        const uploadRes: any = await apiFetch("/owner/upload", {
+          method: "POST",
+          bodyData: {
+            filename,
+            contentType: mimeType,
+            base64Data: profile.heroImage,
+          },
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        const uploadedUrl = uploadRes?.data?.url
+        if (!uploadedUrl) throw new Error("Failed to upload hero image to storage.")
+        finalHeroImage = uploadedUrl
+      }
+
+      // Upload new gallery base64 images
+      const finalGallery: GalleryImage[] = []
+      for (const img of profile.gallery) {
+        if (img.src.startsWith("data:image/")) {
+          const mimeType = img.src.match(/[^:]\w+\/[\w-+\d.]+(?=;|,)/)?.[0] || "image/jpeg"
+          const ext = mimeType.split("/")[1] || "jpg"
+          const filename = `gallery_${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${ext}`
+
+          const uploadRes: any = await apiFetch("/owner/upload", {
+            method: "POST",
+            bodyData: {
+              filename,
+              contentType: mimeType,
+              base64Data: img.src,
+            },
+            headers: { Authorization: `Bearer ${token}` }
+          })
+          const uploadedUrl = uploadRes?.data?.url
+          if (!uploadedUrl) throw new Error(`Failed to upload gallery image "${img.alt}" to storage.`)
+          finalGallery.push({
+            ...img,
+            src: uploadedUrl,
+          })
+        } else {
+          finalGallery.push(img)
+        }
+      }
+
+      const patchData = {
+        name: profile.name,
+        tagline: profile.tagline,
+        description: profile.description,
+        phone: profile.phone,
+        email: profile.email,
+        website: profile.website,
+        instagram: profile.instagram,
+        full_address: profile.fullAddress,
+        city: profile.city,
+        live_status: profile.liveStatus,
+        price_guarantee: profile.priceGuarantee,
+        hero_image: finalHeroImage,
+        hc_autoclave: profile.hygiene.autoclave,
+        hc_fresh_towels: profile.hygiene.freshTowels,
+        hc_licensed_staff: profile.hygiene.licensedStaff,
+        hc_disposable_kits: profile.hygiene.disposableKits,
+        hc_sanitization: profile.hygiene.sanitization,
+        hc_air_purification: profile.hygiene.airPurification,
+        highlights: profile.highlights,
+        amenities: profile.amenities,
+        opening_hours: profile.openingHours,
+        gallery: finalGallery,
+        offers: profile.offers,
+        products: profile.products,
+        faqs: profile.faqs,
+      }
+
+      await apiFetch(`/owner/${sId}`, {
+        method: "PATCH",
+        bodyData: patchData,
+        headers: { Authorization: `Bearer ${token}` }
+      })
+
+      // Sync state back to finalized URLs
+      setProfile((prev) => ({
+        ...prev,
+        heroImage: finalHeroImage,
+        gallery: finalGallery,
+      }))
+
+      setSaved(true)
+      setTimeout(() => setSaved(false), 3000)
+    } catch (err: any) {
+      console.error("Save failed:", err)
+      setErrorMsg(err.message || "Failed to save salon profile.")
+    } finally {
+      setIsSaving(false)
+    }
+  }
 
   const toggleHygiene = (key: keyof HygieneChecklist) => {
     setProfile((prev) => ({ ...prev, hygiene: { ...prev.hygiene, [key]: !prev.hygiene[key] } }))
@@ -169,24 +380,42 @@ export default function SalonProfilePage() {
   }
   const removeAmenity = (i: number) => setProfile((prev) => ({ ...prev, amenities: prev.amenities.filter((_, idx) => idx !== i) }))
 
-  const handleHeroUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleHeroUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (file) {
-      const url = URL.createObjectURL(file)
-      setProfile((prev) => ({ ...prev, heroImage: url }))
+    if (!file) return
+
+    const reader = new FileReader()
+    reader.onload = () => {
+      const base64Data = reader.result as string
+      setProfile((prev) => ({ ...prev, heroImage: base64Data }))
     }
+    reader.readAsDataURL(file)
   }
 
-  const handleGalleryUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
-    if (files) {
-      const newImages: GalleryImage[] = Array.from(files).map((file, i) => ({
-        id: Date.now().toString() + i,
-        src: URL.createObjectURL(file),
-        alt: file.name,
-        caption: "",
-      }))
+    if (!files || files.length === 0) return
+
+    const newImages: GalleryImage[] = []
+    try {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i]
+        const base64Data = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader()
+          reader.onload = () => resolve(reader.result as string)
+          reader.onerror = reject
+          reader.readAsDataURL(file)
+        })
+        newImages.push({
+          id: "temp-" + Date.now() + "-" + i,
+          src: base64Data,
+          alt: file.name,
+          caption: "",
+        })
+      }
       setProfile((prev) => ({ ...prev, gallery: [...prev.gallery, ...newImages] }))
+    } catch (err) {
+      console.error("Gallery preview failed:", err)
     }
   }
 
@@ -215,6 +444,15 @@ export default function SalonProfilePage() {
 
   const activeStatus = liveStatusOptions.find(o => o.value === profile.liveStatus) || liveStatusOptions[0]
 
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px] gap-3">
+        <div className="w-12 h-12 border-4 border-[#3D5A3A] border-t-transparent rounded-full animate-spin"></div>
+        <p className="text-sm text-[#6E6960] font-sans font-medium">Loading salon profile...</p>
+      </div>
+    )
+  }
+
   return (
     <div className="max-w-[1440px] mx-auto space-y-6 animate-blur-in">
       {/* Header */}
@@ -225,13 +463,31 @@ export default function SalonProfilePage() {
         </div>
         <Button
           onClick={handleSave}
+          disabled={isSaving}
           className={`rounded-xl px-6 py-2.5 h-10 gap-2 font-bold font-sans text-xs tracking-wider uppercase shadow-md transition-all duration-300 cursor-pointer ${
             saved ? "bg-emerald-600 hover:bg-emerald-700" : "bg-[#3D5A3A] hover:bg-[#2B3F29]"
-          } text-white border-none`}
+          } text-white border-none disabled:opacity-60`}
         >
-          {saved ? <><Check className="w-4 h-4 text-[#C4A76C]" /> Saved</> : "Save Changes"}
+          {isSaving ? (
+            <>
+              <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              Saving...
+            </>
+          ) : saved ? (
+            <>
+              <Check className="w-4 h-4 text-[#C4A76C]" /> Saved
+            </>
+          ) : (
+            "Save Changes"
+          )}
         </Button>
       </div>
+
+      {errorMsg && (
+        <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-xs font-bold text-red-700 uppercase tracking-wider font-sans">
+          Error: {errorMsg}
+        </div>
+      )}
 
       {/* Live Status Controller */}
       <div className="p-5 rounded-2xl bg-white/70 backdrop-blur-md border border-[#E2D9CE]/50 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">

@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import Image from "next/image"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import {
   IconCalendar,
   IconChartBar,
@@ -17,6 +17,7 @@ import {
   IconBell,
 } from "@tabler/icons-react"
 
+import { useAuth } from "@/components/boty/auth-context"
 import { NavMain } from "@/components/owner/nav-main"
 import { NavSecondary } from "@/components/owner/nav-secondary"
 import { NavUser } from "@/components/owner/nav-user"
@@ -136,7 +137,19 @@ function SidebarLogo() {
   )
 }
 
-function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+function getInitials(name: string) {
+  if (!name) return "RS"
+  const parts = name.trim().split(/\s+/)
+  if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase()
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+}
+
+function AppSidebar({ user, logout, ...props }: React.ComponentProps<typeof Sidebar> & { user: any; logout?: () => void }) {
+  const sidebarUser = {
+    name: user?.businessName || user?.full_name || "Radiance Studio",
+    email: user?.email || "hello@radiancebeauty.in",
+    avatar: "",
+  }
   return (
     <Sidebar collapsible="icon" {...props} className="border-r border-[#E2D9CE]/40">
       <SidebarHeader className="border-b border-[#E2D9CE]/40 bg-sidebar/50 px-3 py-4">
@@ -147,7 +160,7 @@ function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavSecondary items={data.navSecondary} className="mt-auto border-t border-[#E2D9CE]/30 pt-3" />
       </SidebarContent>
       <SidebarFooter className="border-t border-[#E2D9CE]/40 bg-sidebar/50 px-2 py-3">
-        <NavUser user={data.user} />
+        <NavUser user={sidebarUser} logout={logout} />
       </SidebarFooter>
     </Sidebar>
   )
@@ -155,14 +168,32 @@ function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
 export default function OwnerLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
+  const router = useRouter()
+  const { user, isLoading, logout } = useAuth()
   
   // Resolve breadcrumbs dynamically based on path
   const pathParts = pathname.split("/").filter(Boolean)
   const isDashboard = pathParts.includes("dashboard") && pathParts.length === 2
 
+  React.useEffect(() => {
+    if (!isLoading && !user) {
+      router.push("/auth/salon/login")
+    }
+  }, [user, isLoading, router])
+
+  if (isLoading || !user) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-[#FAFAF7]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#3D5A3A]"></div>
+      </div>
+    )
+  }
+
+  const initials = getInitials(user.businessName || user.full_name || "Radiance Studio")
+
   return (
     <SidebarProvider>
-      <AppSidebar />
+      <AppSidebar user={user} logout={logout} />
       <SidebarInset className="bg-[#FAFAF7]">
         {/* Dynamic header control bar */}
         <header className="flex h-15 shrink-0 items-center justify-between border-b border-[#E2D9CE]/40 px-4 md:px-6 bg-[#FAFAF7]/90 backdrop-blur-md sticky top-0 z-50 transition-all duration-200">
@@ -219,11 +250,15 @@ export default function OwnerLayout({ children }: { children: React.ReactNode })
             {/* Micro User widget */}
             <div className="flex items-center gap-2">
               <div className="w-7 h-7 rounded-lg overflow-hidden border border-[#E2D9CE] flex items-center justify-center bg-[#3D5A3A] text-[#FAFAF7] text-xs font-bold font-serif select-none shadow-xs">
-                RS
+                {initials}
               </div>
               <div className="hidden lg:flex flex-col text-left">
-                <span className="text-[11px] font-bold text-[#1A1A1A] leading-tight">Radiance Studio</span>
-                <span className="text-[9px] font-semibold text-[#6E6960]/80 leading-none">Salon Owner</span>
+                <span className="text-[11px] font-bold text-[#1A1A1A] leading-tight text-ellipsis overflow-hidden whitespace-nowrap max-w-[120px]">
+                  {user.businessName || user.full_name || "Radiance Studio"}
+                </span>
+                <span className="text-[9px] font-semibold text-[#6E6960]/80 leading-none">
+                  {user.role === "owner" ? "Salon Owner" : user.role || "Salon Owner"}
+                </span>
               </div>
             </div>
           </div>

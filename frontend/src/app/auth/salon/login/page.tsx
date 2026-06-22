@@ -24,8 +24,6 @@ export default function SalonLoginPage() {
     setErrorMsg("")
     setIsLoading(true)
 
-    const isDemo = email.toLowerCase().trim() === "judge@citysalon.com" && password === "Password123!"
-
     try {
       const response: any = await apiFetch("/salon-auth/login", {
         method: "POST",
@@ -33,7 +31,16 @@ export default function SalonLoginPage() {
       })
 
       if (response?.data?.accessToken && response?.data?.partner) {
-        login(response.data.partner, response.data.accessToken)
+        const { partner, salon, isDemo } = response.data
+        login(
+          {
+            ...partner,
+            isDemo: isDemo ?? false,
+            salonId: salon?.id ?? null,
+            businessName: partner.business_name ?? salon?.name ?? null,
+          },
+          response.data.accessToken
+        )
       }
 
       router.push("/owner/dashboard")
@@ -44,17 +51,7 @@ export default function SalonLoginPage() {
         router.push(`/auth/salon/verify-email?email=${encodeURIComponent(email)}`)
         return
       }
-
-      if (isDemo) {
-        login(
-          { id: "demo-owner-id", full_name: "Demo Salon Owner", email: "judge@citysalon.com" },
-          "demo-owner-jwt-token"
-        )
-        router.push("/owner/dashboard")
-        router.refresh()
-      } else {
-        setErrorMsg(err.message || "Invalid credentials. Please check your email and password.")
-      }
+      setErrorMsg(err.message || "Invalid credentials. Please check your email and password.")
     } finally {
       setIsLoading(false)
     }
@@ -73,15 +70,33 @@ export default function SalonLoginPage() {
       })
 
       if (response?.data?.accessToken && response?.data?.partner) {
-        login(response.data.partner, response.data.accessToken)
+        const { partner, salon, isDemo } = response.data
+        login(
+          {
+            ...partner,
+            isDemo: isDemo ?? true,
+            salonId: salon?.id ?? null,
+            businessName: partner.business_name ?? salon?.name ?? null,
+          },
+          response.data.accessToken
+        )
       }
 
       router.push("/owner/dashboard")
       router.refresh()
     } catch (err: any) {
+      // Fallback for offline/network errors
       login(
-        { id: "demo-owner-id", full_name: "Demo Salon Owner", email: "judge@citysalon.com" },
-        "demo-owner-jwt-token"
+        {
+          id: "demo-judge-00000000-0000-0000-0000-000000000003",
+          full_name: "Hackathon Judge",
+          email: "judge@citysalon.com",
+          isDemo: true,
+          salonId: "demo-salon-00000000-0000-0000-0000-000000000002",
+          businessName: "Judge's Premium Salon",
+          role: "owner",
+        },
+        "demo-judge-jwt-fallback"
       )
       router.push("/owner/dashboard")
       router.refresh()

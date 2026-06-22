@@ -13,7 +13,7 @@ import {
 } from "@utils/token";
 import { sendVerificationEmail, sendPasswordResetEmail } from "@utils/email";
 import { BadRequestError, UnauthorizedError, ForbiddenError } from "@errors/HttpError";
-import { AUTH_CONFIG, isDemoAccount, getDemoAccount } from "@config/auth.config";
+import { AUTH_CONFIG, isDemoAccount, getDemoAccount, isDevTeamAccount } from "@config/auth.config";
 
 // ─────────────────────────────────────────────────────────────
 // Types
@@ -530,41 +530,44 @@ export class SalonAuthService {
    */
   private static handleDemoLogin(email: string, password: string): AuthResult {
     const demoAccount = getDemoAccount(email);
-    if (!demoAccount) {
-      throw new UnauthorizedError("Invalid demo credentials.");
-    }
 
-    if (password !== demoAccount.password) {
-      throw new UnauthorizedError("Invalid email or password.");
-    }
+    // Named demo account (owner@citysalon.demo, judge@citysalon.com, etc.)
+    if (demoAccount) {
+      if (password !== demoAccount.password) {
+        throw new UnauthorizedError("Invalid email or password.");
+      }
 
-    // Generate real JWTs so middleware works seamlessly
-    const payload: TokenPayload = {
-      userId: demoAccount.id,
-      email: demoAccount.email,
-      role: demoAccount.role,
-    };
-
-    const accessToken = generateAccessToken(payload);
-    const refreshToken = generateRefreshToken(payload);
-
-    return {
-      accessToken,
-      refreshToken,
-      partner: {
-        id: demoAccount.id,
-        full_name: demoAccount.full_name,
+      const payload: TokenPayload = {
+        userId: demoAccount.id,
         email: demoAccount.email,
-        phone_number: demoAccount.phone_number,
         role: demoAccount.role,
-        is_verified: true,
-        business_name: demoAccount.salon?.name || null,
-        avatar_url: null,
-        last_login_at: new Date().toISOString(),
-      },
-      salon: demoAccount.salon,
-      isDemo: true,
-    };
+        isDemo: true,
+      };
+
+      const accessToken = generateAccessToken(payload);
+      const refreshToken = generateRefreshToken(payload);
+
+      return {
+        accessToken,
+        refreshToken,
+        partner: {
+          id: demoAccount.id,
+          full_name: demoAccount.full_name,
+          email: demoAccount.email,
+          phone_number: demoAccount.phone_number,
+          role: demoAccount.role,
+          is_verified: true,
+          business_name: demoAccount.salon?.name || null,
+          avatar_url: null,
+          last_login_at: new Date().toISOString(),
+        },
+        salon: demoAccount.salon,
+        isDemo: true,
+      };
+    }
+
+    // Dev team account — validate against real DB but mark as demo for dashboard
+    throw new UnauthorizedError("Invalid demo credentials.");
   }
 
   /**
@@ -667,11 +670,15 @@ export class SalonAuthService {
       console.warn(`Partner ${partner.id} has ${activeSessions} active sessions (limit: ${AUTH_CONFIG.MAX_ACTIVE_SESSIONS_PER_USER})`);
     }
 
+    // Dev team accounts see mock data (isDemo flag in token)
+    const isDevTeam = isDevTeamAccount(partner.email);
+
     // Generate tokens
     const payload: TokenPayload = {
       userId: partner.id!,
       email: partner.email,
       role: partner.role || "owner",
+      isDemo: isDevTeam,
     };
 
     const familyId = generateFamilyId();
@@ -694,7 +701,7 @@ export class SalonAuthService {
       refreshToken,
       partner: this.sanitizePartner(partner),
       salon: null,
-      isDemo: false,
+      isDemo: isDevTeam,
     };
   }
 

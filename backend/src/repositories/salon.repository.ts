@@ -29,6 +29,12 @@ export interface SalonRow {
   ai_review_summary?: string;
   highlights?: string[];
   amenities?: string[];
+  instagram?: string;
+  opening_hours?: Record<string, string>;
+  offers?: any[];
+  products?: any[];
+  faqs?: any[];
+  gallery?: any[];
   created_at?: string;
   updated_at?: string;
 }

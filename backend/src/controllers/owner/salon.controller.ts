@@ -2,10 +2,18 @@ import { Request, Response } from "express";
 import { SalonService } from "@services/salon.service";
 import { ServiceRepository } from "@repositories/service.repository";
 import { StaffService } from "@services/staff.service";
+import { StorageService } from "@services/storage.service";
 import { sendSuccess } from "@utils/response";
 import { asyncHandler } from "@utils/asyncHandler";
 
 export class OwnerSalonController {
+  /** POST /owner/upload — Upload image to S3 */
+  static uploadImage = asyncHandler(async (req: Request, res: Response) => {
+    const { filename, contentType, base64Data } = req.body;
+    const url = await StorageService.uploadBase64(base64Data, filename, contentType);
+    return sendSuccess(res, { url }, "Image uploaded successfully.", 201);
+  });
+
   /** GET /owner/:salonId — Get salon profile */
   static getSalon = asyncHandler(async (req: Request, res: Response) => {
     const ownerId = req.user!.userId;
