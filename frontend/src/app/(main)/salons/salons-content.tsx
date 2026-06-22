@@ -63,6 +63,54 @@ export function SalonsContent() {
   const [minRating, setMinRating] = useState(0)
   const [isVisible, setIsVisible] = useState(false)
 
+  const [dbSalons, setDbSalons] = useState<SalonListItem[]>([])
+  const [localSalons, setLocalSalons] = useState<SalonListItem[]>([])
+
+  useEffect(() => {
+    // 1. Load locally registered salons from localStorage
+    try {
+      const stored = localStorage.getItem("citysalon_registered_salons")
+      if (stored) {
+        setLocalSalons(JSON.parse(stored))
+      }
+    } catch (e) {
+      console.error("Failed to load local salons from localStorage", e)
+    }
+
+    // 2. Fetch live salons from public API
+    const fetchPublicSalons = async () => {
+      try {
+        const RAW_API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1"
+        const API_URL = RAW_API_URL.endsWith("/api/v1")
+          ? RAW_API_URL
+          : RAW_API_URL.replace(/\/+$/, "") + "/api/v1"
+
+        const res = await fetch(`${API_URL}/public/salons`)
+        if (res.ok) {
+          const json = await res.json()
+          if (json?.status === "success" && Array.isArray(json?.data)) {
+            setDbSalons(json.data)
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch public salons from API", err)
+      }
+    }
+
+    fetchPublicSalons()
+  }, [])
+
+  const combinedSalons = useMemo(() => {
+    const list = [...dbSalons, ...localSalons, ...salonsList]
+    const seen = new Set<string>()
+    return list.filter((item) => {
+      if (!item.id) return false
+      if (seen.has(item.id)) return false
+      seen.add(item.id)
+      return true
+    })
+  }, [dbSalons, localSalons])
+
   const gridRef = useRef<HTMLDivElement>(null)
   const sortRef = useRef<HTMLDivElement>(null)
 
@@ -97,7 +145,7 @@ export function SalonsContent() {
   }, [selectedCategory, searchQuery, sortBy, openNowFilter, minRating])
 
   const filteredSalons = useMemo(() => {
-    let results = [...salonsList]
+    let results = [...combinedSalons]
 
     // Search
     if (searchQuery.trim()) {
@@ -152,7 +200,7 @@ export function SalonsContent() {
     }
 
     return results
-  }, [searchQuery, selectedCategory, sortBy, openNowFilter, minRating])
+  }, [combinedSalons, searchQuery, selectedCategory, sortBy, openNowFilter, minRating])
 
   return (
     <main className="min-h-screen">
@@ -337,6 +385,7 @@ export function SalonsContent() {
           setOpenNowFilter={setOpenNowFilter}
           minRating={minRating}
           setMinRating={setMinRating}
+          totalSalonsCount={combinedSalons.length}
           onClose={() => setShowFilters(false)}
         />
       )}
@@ -358,7 +407,7 @@ function SalonCard({
 
   return (
     <Link
-      href={`/salon/${salon.id}`}
+      href={`/${salon.id}`}
       className={`group rounded-2xl sm:rounded-3xl overflow-hidden bg-card boty-transition hover:-translate-y-1.5 hover:shadow-xl transition-all duration-700 ease-out ${
         isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
       }`}
@@ -476,12 +525,14 @@ function FilterDrawer({
   setOpenNowFilter,
   minRating,
   setMinRating,
+  totalSalonsCount,
   onClose,
 }: {
   openNowFilter: boolean
   setOpenNowFilter: (v: boolean) => void
   minRating: number
   setMinRating: (v: number) => void
+  totalSalonsCount: number
   onClose: () => void
 }) {
   return (
@@ -600,7 +651,7 @@ function FilterDrawer({
               onClick={onClose}
               className="w-full py-3.5 rounded-full bg-primary text-primary-foreground text-sm font-medium boty-transition hover:bg-primary/90"
             >
-              Show {salonsList.length} salons
+              Show {totalSalonsCount} salons
             </button>
           </div>
         </div>

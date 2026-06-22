@@ -98,6 +98,34 @@ export default function SalonRegisterPage() {
         },
       })
 
+      // Save newly registered salon to localStorage for instant local directory visibility
+      try {
+        const newSalon = {
+          id: `reg-${Date.now()}`,
+          name: salonName,
+          tagline: "Where luxury meets comfort",
+          image: "/images/hero-model.jpg",
+          rating: 5.0,
+          reviews: 1,
+          location: `${salonAddress ? salonAddress + ", " : ""}${salonCity}`,
+          services: ["Hair", "Skin", "Makeup"],
+          badge: "New",
+          badgeColor: "bg-primary text-primary-foreground text-white",
+          priceRange: "₹₹",
+          liveStatus: "available",
+          waitTime: "Walk-in",
+          hygieneScore: 98,
+          distance: "0.1 km",
+          openNow: true,
+        }
+        const existing = localStorage.getItem("citysalon_registered_salons")
+        const list = existing ? JSON.parse(existing) : []
+        list.push(newSalon)
+        localStorage.setItem("citysalon_registered_salons", JSON.stringify(list))
+      } catch (err) {
+        console.error("Failed to cache registered salon locally:", err)
+      }
+
       // Redirect to verify email, then they'll proceed to dashboard
       router.push(`/auth/salon/verify-email?email=${encodeURIComponent(email)}`)
     } catch (err: any) {

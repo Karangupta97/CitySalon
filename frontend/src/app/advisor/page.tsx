@@ -641,7 +641,7 @@ export default function AIBeautyAdvisorPage() {
                                   return (
                                     <Link
                                       key={salon.id + salon.service}
-                                      href={`/salon/${salon.id}`}
+                                      href={`/${salon.id}`}
                                       className="flex items-center gap-3.5 p-3 rounded-xl bg-background/60 border border-border/20 hover:border-primary/25 hover:shadow-md boty-transition group"
                                     >
                                       <div className="relative w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 ring-1 ring-border/10">
